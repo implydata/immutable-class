@@ -1,0 +1,6 @@
+.DS_Store
+.idea/workspace.xml
+.idea/tasks.xml
+node_modules/
+build/
+test/*.js

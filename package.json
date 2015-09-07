@@ -1,0 +1,34 @@
+{
+  "name": "immutable-class",
+  "version": "0.3.1",
+  "description": "A template for creating immutable classes",
+  "keywords": [
+    "immutable",
+    "higher",
+    "object"
+  ],
+  "author": {
+    "name": "Vadim Ogievetsky",
+    "url": "http://vadim.ogievetsky.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/implyio/immutable-class.git"
+  },
+  "main": "build/index.js",
+  "typescript": {
+    "definition": "build/immutable-class.d.ts"
+  },
+  "scripts": {
+    "test": "./run-tests"
+  },
+  "dependencies": {
+    "chai": "~1.9.0"
+  },
+  "devDependencies": {
+    "mocha": "~2.0.0",
+    "typescript": "^1.5.3",
+    "dts-bundle": "~0.2.0"
+  }
+}

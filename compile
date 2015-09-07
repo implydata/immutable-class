@@ -1,0 +1,15 @@
+#!/bin/bash
+
+rm -rf build/*
+mkdir -p build
+
+# All files
+echo "Compile TypeScript"
+node_modules/.bin/tsc \
+  --declaration \
+  --module commonjs \
+  --outDir build \
+  src/*
+
+echo "Bundle type definitions"
+node dts-bundle.js
