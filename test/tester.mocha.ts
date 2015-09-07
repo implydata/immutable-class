@@ -4,7 +4,7 @@ import chai = require("chai");
 import expect = chai.expect;
 
 import { isInstanceOf } from '../build/index';
-import { testHigherObjects } from '../build/tester';
+import { testImmutableClass } from '../build/tester';
 
 class Animal {
   static fromJS(name: string) {
@@ -137,9 +137,9 @@ class AnimalWithContext {
 }
 
 
-describe("testHigherObjects", () => {
+describe("testImmutableClass", () => {
   it("works for Animal class", () => {
-    testHigherObjects(Animal, [
+    testImmutableClass(Animal, [
       "Koala",
       "Snake",
       "Dog",
@@ -149,7 +149,7 @@ describe("testHigherObjects", () => {
 
   it("fails when given non fixed point js", () => {
     expect(() => {
-      testHigherObjects(Animal, [
+      testImmutableClass(Animal, [
         "Koala",
         "Snake",
         "Dog",
@@ -160,7 +160,7 @@ describe("testHigherObjects", () => {
 
   it("rejects AnimalNoFromJS class", () => {
     expect(() => {
-      testHigherObjects(AnimalNoFromJS, [
+      testImmutableClass(AnimalNoFromJS, [
         "Koala",
         "Snake",
         "Dog"
@@ -170,7 +170,7 @@ describe("testHigherObjects", () => {
 
   it("rejects AnimalBadToJS class", () => {
     expect(() => {
-      testHigherObjects(AnimalBadToJS, [
+      testImmutableClass(AnimalBadToJS, [
         "Koala",
         "Snake",
         "Dog"
@@ -184,7 +184,7 @@ describe("testHigherObjects", () => {
       "Snake": 4,
       "Dog": 12
     };
-    testHigherObjects(AnimalWithContext, [
+    testImmutableClass(AnimalWithContext, [
       "Koala",
       "Snake",
       "Dog"

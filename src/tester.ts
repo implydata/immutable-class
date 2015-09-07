@@ -1,11 +1,7 @@
 /// <reference path="../typings/chai/chai.d.ts" />
 "use strict";
 
-import chai = require("chai");
-import expect = chai.expect;
-
-import HigherObjectModule = require("./index");
-import ImmutableClass = HigherObjectModule.ImmutableClass;
+import { expect } from "chai";
 
 export interface TesterOptions {
   newThrows?: boolean;
@@ -18,7 +14,7 @@ export interface TesterOptions {
  * @param objects - An array of JS values to test on
  * @param options - Some testing options
  */
-export function testHigherObjects(ClassFn: any, objects: any[], options: TesterOptions = {}) {
+export function testImmutableClass(ClassFn: any, objects: any[], options: TesterOptions = {}) {
   if (typeof ClassFn !== 'function') throw new TypeError("ClassFn must be a constructor function");
   if (!Array.isArray(objects) || !objects.length) {
     throw new TypeError("objects must be a non-empty array of js to test");

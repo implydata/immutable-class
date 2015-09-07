@@ -73,17 +73,17 @@ export function arraysEqual<T>(arrayA: T[], arrayB: T[]): boolean {
 /**
  * Interface that the Immutable Class class should extend (types the instance)
  */
-export interface ImmutableInstance<ValueType, JSType> {
+export interface Instance<ValueType, JSType> {
   valueOf(): ValueType
   toJS(): JSType
   toJSON(): JSType
-  equals(other: ImmutableInstance<ValueType, JSType>): boolean
+  equals(other: Instance<ValueType, JSType>): boolean
 }
 
 /**
  * Interface that the Immutable Class class should conform to (types the class)
  */
-export interface ImmutableClass<ValueType, JSType> {
-  fromJS(properties: JSType): ImmutableInstance<ValueType, JSType>
+export interface Class<ValueType, JSType> {
+  fromJS(properties: JSType): Instance<ValueType, JSType>
   new (properties: ValueType): any
 }
