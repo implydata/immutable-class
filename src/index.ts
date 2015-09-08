@@ -45,11 +45,7 @@ export function isArrayOf(things: any[], constructor: any): boolean {
 export function isImmutableClass(thing: any): boolean {
   if (!thing || typeof thing !== 'object') return false;
   var ClassFn = thing.constructor;
-  var className = ClassFn.name;
-  return className.length > 1 &&
-         className[0].toUpperCase() === className[0] && // First letter is upper case
-         typeof ClassFn['is' + className] === 'function' && // Has Class.isClass
-         typeof ClassFn.fromJS === 'function' && // Has Class.fromJS
+  return typeof ClassFn.fromJS === 'function' && // Has Class.fromJS
          typeof thing.toJS === 'function' && // Has Class#toJS
          typeof thing.equals === 'function'; // Has Class#equals
 }
@@ -65,7 +61,7 @@ export function arraysEqual<T>(arrayA: T[], arrayB: T[]): boolean {
   if (length !== arrayB.length) return false;
   for (var i = 0; i < length; i++) {
     var vA: any = arrayA[i];
-    if (!isImmutableClass(vA) || !vA.equals(arrayB[i])) return false;
+    if (!(vA && typeof vA.equals === 'function' && vA.equals(arrayB[i]))) return false;
   }
   return true;
 }
