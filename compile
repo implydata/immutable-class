@@ -9,7 +9,7 @@ node_modules/.bin/tsc \
   --declaration \
   --module commonjs \
   --outDir build \
-  src/*
+  typings/tsd.d.ts src/*
 
 echo "Bundle type definitions"
 node dts-bundle.js

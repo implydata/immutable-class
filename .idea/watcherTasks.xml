@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectTasksOptions" suppressed-tasks="TypeScript">
     <TaskOptions isEnabled="true">
-      <option name="arguments" value="-d -m commonjs --noImplicitAny --outDir $ProjectFileDir$/build $FileName$" />
+      <option name="arguments" value="" />
       <option name="checkSyntaxErrors" value="true" />
       <option name="description" value="Compiles .ts files into .js files" />
       <option name="exitCodeBehavior" value="ERROR" />
@@ -21,10 +21,10 @@
       </option>
       <option name="outputFromStdout" value="false" />
       <option name="passParentEnvs" value="true" />
-      <option name="program" value="/usr/local/bin/tsc" />
+      <option name="program" value="$ProjectFileDir$/compile" />
       <option name="scopeName" value="Source Files" />
       <option name="trackOnlyRoot" value="false" />
-      <option name="workingDir" value="$FileDir$" />
+      <option name="workingDir" value="$ProjectFileDir$" />
       <envs />
     </TaskOptions>
     <TaskOptions isEnabled="true">
