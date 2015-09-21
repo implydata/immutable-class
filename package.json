@@ -24,11 +24,11 @@
     "test": "./run-tests"
   },
   "dependencies": {
-    "chai": "~1.9.0"
+    "chai": "3.3.0"
   },
   "devDependencies": {
-    "mocha": "~2.0.0",
-    "typescript": "^1.5.3",
-    "dts-bundle": "~0.2.0"
+    "mocha": "2.3.3",
+    "typescript": "1.6.2",
+    "dts-bundle": "0.3.0"
   }
 }
