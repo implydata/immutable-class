@@ -104,7 +104,7 @@ export function immutableArraysEqual<T extends Equalable>(arrayA: T[], arrayB: T
  * @param lookupB - lookup to compare
  * @returns {boolean}
  */
-export function immutableLookupsEqual(lookupA: { [k: string]: Equalable }, lookupB: { [k: string]: Equalable }): boolean {
+export function immutableLookupsEqual<T extends Equalable>(lookupA: { [k: string]: T }, lookupB: { [k: string]: T }): boolean {
   if (lookupA === lookupB) return true;
   if (!lookupA !== !lookupB) return false;
   var keysA = Object.keys(lookupA);
