@@ -71,17 +71,29 @@ export interface Equalable {
 }
 
 /**
+ * Checks if two immutable classes are equal (if both null it counts as yes)
+ * @param arrayA - array to compare
+ * @param arrayB - array to compare
+ * @returns {boolean}
+ */
+export function immutableEqual<T extends Equalable>(a: T, b: T): boolean {
+  if (a === b) return true;
+  return Boolean(a) && a.equals(b);
+}
+
+/**
  * Checks if two arrays have equal immutable classes
  * @param arrayA - array to compare
  * @param arrayB - array to compare
  * @returns {boolean}
  */
 export function immutableArraysEqual<T extends Equalable>(arrayA: T[], arrayB: T[]): boolean {
+  if (arrayA === arrayB) return true;
+  if (!arrayA !== !arrayB) return false;
   var length = arrayA.length;
   if (length !== arrayB.length) return false;
   for (var i = 0; i < length; i++) {
-    var vA: Equalable = arrayA[i];
-    if (!(vA && typeof vA.equals === 'function' && vA.equals(arrayB[i]))) return false;
+    if (!immutableEqual(arrayA[i], arrayB[i])) return false;
   }
   return true;
 }
@@ -93,12 +105,13 @@ export function immutableArraysEqual<T extends Equalable>(arrayA: T[], arrayB: T
  * @returns {boolean}
  */
 export function immutableLookupsEqual(lookupA: { [k: string]: Equalable }, lookupB: { [k: string]: Equalable }): boolean {
+  if (lookupA === lookupB) return true;
+  if (!lookupA !== !lookupB) return false;
   var keysA = Object.keys(lookupA);
   var keysB = Object.keys(lookupB);
   if (keysA.length !== keysB.length) return false;
   for (var k of keysA) {
-    var vA: Equalable = lookupA[k];
-    if (!(vA && typeof vA.equals === 'function' && vA.equals(lookupB[k]))) return false;
+    if (!immutableEqual(lookupA[k], lookupB[k])) return false;
   }
   return true;
 }

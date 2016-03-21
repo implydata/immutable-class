@@ -2,7 +2,7 @@
 
 import { expect } from "chai";
 
-import { isInstanceOf, isArrayOf, isImmutableClass, arraysEqual, lookupsEqual } from '../build/index';
+import { isInstanceOf, isArrayOf, isImmutableClass, immutableEqual, immutableArraysEqual, immutableLookupsEqual } from '../build/index';
 
 class Animal {
   public name: string;
@@ -145,40 +145,74 @@ describe("utils", () => {
       expect(isImmutableClass(Animal)).to.equal(false);
 
       expect(isImmutableClass(new Person('Bob')), "Person is a Immutable Class").to.equal(true);
-    })
-  });
-
-  describe("arraysEqual", () => {
-    it("works", () => {
-      var tom = new Person('Tom');
-      var bob1 = new Person('Bob');
-      var bob2 = new Person('Bob');
-
-      expect(arraysEqual([tom], [])).to.equal(false);
-      expect(arraysEqual([tom], [bob1])).to.equal(false);
-      expect(arraysEqual([bob1, null], [bob1, tom])).to.equal(false);
-      expect(arraysEqual([bob1, tom], [bob1, null])).to.equal(false);
-
-      expect(arraysEqual([bob1], [bob2])).to.equal(true);
-      expect(arraysEqual([bob1, tom], [bob2, tom])).to.equal(true);
     });
 
   });
 
 
-  describe("lookupsEqual", () => {
+  describe("immutableEqual", () => {
     it("works", () => {
       var tom = new Person('Tom');
       var bob1 = new Person('Bob');
       var bob2 = new Person('Bob');
 
-      expect(lookupsEqual({ a: tom }, {})).to.equal(false);
-      expect(lookupsEqual({ a: tom }, { a: bob1 })).to.equal(false);
-      expect(lookupsEqual({ a: bob1, b: null }, { a: bob1, b: tom })).to.equal(false);
-      expect(lookupsEqual({ a: bob1, b: tom }, { a: bob1, b: null })).to.equal(false);
+      expect(immutableEqual(null, null)).to.equal(true);
 
-      expect(lookupsEqual({ a: bob1 }, { a: bob2 })).to.equal(true);
-      expect(lookupsEqual({ a: bob1, b: tom }, { a: bob2, b: tom })).to.equal(true);
+      expect(immutableEqual(tom, null)).to.equal(false);
+      expect(immutableEqual(null, tom)).to.equal(false);
+      expect(immutableEqual(tom, bob1)).to.equal(false);
+
+      expect(immutableEqual(bob1, bob2)).to.equal(true);
+    });
+
+  });
+
+
+  describe("immutableArraysEqual", () => {
+    it("works", () => {
+      var tom = new Person('Tom');
+      var bob1 = new Person('Bob');
+      var bob2 = new Person('Bob');
+
+      expect(immutableArraysEqual(null, null)).to.equal(true);
+
+      expect(immutableArraysEqual([], null)).to.equal(false);
+      expect(immutableArraysEqual([tom], null)).to.equal(false);
+      expect(immutableArraysEqual(null, [])).to.equal(false);
+      expect(immutableArraysEqual(null, [tom])).to.equal(false);
+      expect(immutableArraysEqual([tom], [])).to.equal(false);
+      expect(immutableArraysEqual([tom], [bob1])).to.equal(false);
+      expect(immutableArraysEqual([bob1, null], [bob1, tom])).to.equal(false);
+      expect(immutableArraysEqual([bob1, tom], [bob1, null])).to.equal(false);
+
+      expect(immutableArraysEqual([], [])).to.equal(true);
+      expect(immutableArraysEqual([bob1], [bob2])).to.equal(true);
+      expect(immutableArraysEqual([bob1, tom], [bob2, tom])).to.equal(true);
+    });
+
+  });
+
+
+  describe("immutableLookupsEqual", () => {
+    it("works", () => {
+      var tom = new Person('Tom');
+      var bob1 = new Person('Bob');
+      var bob2 = new Person('Bob');
+
+      expect(immutableLookupsEqual(null, null)).to.equal(true);
+
+      expect(immutableLookupsEqual({}, null)).to.equal(false);
+      expect(immutableLookupsEqual({ a: tom }, null)).to.equal(false);
+      expect(immutableLookupsEqual(null, {})).to.equal(false);
+      expect(immutableLookupsEqual(null, { a: tom })).to.equal(false);
+      expect(immutableLookupsEqual({ a: tom }, {})).to.equal(false);
+      expect(immutableLookupsEqual({ a: tom }, { a: bob1 })).to.equal(false);
+      expect(immutableLookupsEqual({ a: bob1, b: null }, { a: bob1, b: tom })).to.equal(false);
+      expect(immutableLookupsEqual({ a: bob1, b: tom }, { a: bob1, b: null })).to.equal(false);
+
+      expect(immutableLookupsEqual({}, {})).to.equal(true);
+      expect(immutableLookupsEqual({ a: bob1 }, { a: bob2 })).to.equal(true);
+      expect(immutableLookupsEqual({ a: bob1, b: tom }, { a: bob2, b: tom })).to.equal(true);
     });
 
   });
