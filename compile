@@ -8,6 +8,11 @@ echo "Compile TypeScript"
 node_modules/.bin/tsc \
   --declaration \
   --module commonjs \
+  --noImplicitAny \
+  --noEmitOnError \
+  --removeComments \
+  --noFallthroughCasesInSwitch \
+  --noImplicitReturns \
   --outDir build \
   typings/tsd.d.ts src/*
 

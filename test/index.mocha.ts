@@ -1,9 +1,8 @@
 /// <reference path="../typings/tsd.d.ts" />
 
-import chai = require("chai");
-import expect = chai.expect;
+import { expect } from "chai";
 
-import { isInstanceOf, isArrayOf, isImmutableClass, arraysEqual } from '../build/index';
+import { isInstanceOf, isArrayOf, isImmutableClass, arraysEqual, lookupsEqual } from '../build/index';
 
 class Animal {
   public name: string;
@@ -155,7 +154,6 @@ describe("utils", () => {
       var bob1 = new Person('Bob');
       var bob2 = new Person('Bob');
 
-      expect(arraysEqual([1], [1])).to.equal(false);
       expect(arraysEqual([tom], [])).to.equal(false);
       expect(arraysEqual([tom], [bob1])).to.equal(false);
       expect(arraysEqual([bob1, null], [bob1, tom])).to.equal(false);
@@ -163,6 +161,26 @@ describe("utils", () => {
 
       expect(arraysEqual([bob1], [bob2])).to.equal(true);
       expect(arraysEqual([bob1, tom], [bob2, tom])).to.equal(true);
-    })
+    });
+
   });
+
+
+  describe("lookupsEqual", () => {
+    it("works", () => {
+      var tom = new Person('Tom');
+      var bob1 = new Person('Bob');
+      var bob2 = new Person('Bob');
+
+      expect(lookupsEqual({ a: tom }, {})).to.equal(false);
+      expect(lookupsEqual({ a: tom }, { a: bob1 })).to.equal(false);
+      expect(lookupsEqual({ a: bob1, b: null }, { a: bob1, b: tom })).to.equal(false);
+      expect(lookupsEqual({ a: bob1, b: tom }, { a: bob1, b: null })).to.equal(false);
+
+      expect(lookupsEqual({ a: bob1 }, { a: bob2 })).to.equal(true);
+      expect(lookupsEqual({ a: bob1, b: tom }, { a: bob2, b: tom })).to.equal(true);
+    });
+
+  });
+
 });

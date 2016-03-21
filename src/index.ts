@@ -1,4 +1,20 @@
-"use strict";
+/**
+ * Interface that the Immutable Class class should extend (types the instance)
+ */
+export interface Instance<ValueType, JSType> {
+  valueOf(): ValueType
+  toJS(): JSType
+  toJSON(): JSType
+  equals(other: Instance<ValueType, JSType>): boolean
+}
+
+/**
+ * Interface that the Immutable Class class should conform to (types the class)
+ */
+export interface Class<ValueType, JSType> {
+  fromJS(properties: JSType): Instance<ValueType, JSType>
+  new (properties: ValueType): any
+}
 
 /**
  * Checks to see if thing is an instance of the given constructor.
@@ -50,36 +66,39 @@ export function isImmutableClass(thing: any): boolean {
          typeof thing.equals === 'function'; // Has Class#equals
 }
 
+export interface Equalable {
+  equals(other: any): boolean;
+}
+
 /**
- * Checks is two arrays have equal immutable classes
+ * Checks if two arrays have equal immutable classes
  * @param arrayA - array to compare
  * @param arrayB - array to compare
  * @returns {boolean}
  */
-export function arraysEqual<T>(arrayA: T[], arrayB: T[]): boolean {
+export function arraysEqual<T extends Equalable>(arrayA: T[], arrayB: T[]): boolean {
   var length = arrayA.length;
   if (length !== arrayB.length) return false;
   for (var i = 0; i < length; i++) {
-    var vA: any = arrayA[i];
+    var vA: Equalable = arrayA[i];
     if (!(vA && typeof vA.equals === 'function' && vA.equals(arrayB[i]))) return false;
   }
   return true;
 }
 
 /**
- * Interface that the Immutable Class class should extend (types the instance)
+ * Checks if two lookups have equal immutable classes
+ * @param lookupA - lookup to compare
+ * @param lookupB - lookup to compare
+ * @returns {boolean}
  */
-export interface Instance<ValueType, JSType> {
-  valueOf(): ValueType
-  toJS(): JSType
-  toJSON(): JSType
-  equals(other: Instance<ValueType, JSType>): boolean
-}
-
-/**
- * Interface that the Immutable Class class should conform to (types the class)
- */
-export interface Class<ValueType, JSType> {
-  fromJS(properties: JSType): Instance<ValueType, JSType>
-  new (properties: ValueType): any
+export function lookupsEqual(lookupA: { [k: string]: Equalable }, lookupB: { [k: string]: Equalable }): boolean {
+  var keysA = Object.keys(lookupA);
+  var keysB = Object.keys(lookupB);
+  if (keysA.length !== keysB.length) return false;
+  for (var k of keysA) {
+    var vA: Equalable = lookupA[k];
+    if (!(vA && typeof vA.equals === 'function' && vA.equals(lookupB[k]))) return false;
+  }
+  return true;
 }
