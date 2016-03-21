@@ -76,7 +76,7 @@ export interface Equalable {
  * @param arrayB - array to compare
  * @returns {boolean}
  */
-export function arraysEqual<T extends Equalable>(arrayA: T[], arrayB: T[]): boolean {
+export function immutableArraysEqual<T extends Equalable>(arrayA: T[], arrayB: T[]): boolean {
   var length = arrayA.length;
   if (length !== arrayB.length) return false;
   for (var i = 0; i < length; i++) {
@@ -92,7 +92,7 @@ export function arraysEqual<T extends Equalable>(arrayA: T[], arrayB: T[]): bool
  * @param lookupB - lookup to compare
  * @returns {boolean}
  */
-export function lookupsEqual(lookupA: { [k: string]: Equalable }, lookupB: { [k: string]: Equalable }): boolean {
+export function immutableLookupsEqual(lookupA: { [k: string]: Equalable }, lookupB: { [k: string]: Equalable }): boolean {
   var keysA = Object.keys(lookupA);
   var keysB = Object.keys(lookupB);
   if (keysA.length !== keysB.length) return false;
