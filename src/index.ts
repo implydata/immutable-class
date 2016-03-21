@@ -72,8 +72,8 @@ export interface Equalable {
 
 /**
  * Checks if two immutable classes are equal (if both null it counts as yes)
- * @param arrayA - array to compare
- * @param arrayB - array to compare
+ * @param a - thing to compare
+ * @param b - thing to compare
  * @returns {boolean}
  */
 export function immutableEqual<T extends Equalable>(a: T, b: T): boolean {
