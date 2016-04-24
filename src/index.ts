@@ -71,6 +71,25 @@ export interface Equalable {
 }
 
 /**
+ * Checks if two things (that might be immutable) are equal (if both null it counts as yes)
+ * @param a - thing to compare
+ * @param b - thing to compare
+ * @returns {boolean}
+ */
+export function generalEqual<T>(a: T, b: T): boolean {
+  if (a === b) return true;
+  if (a && b) {
+    if (typeof (a as any).toISOString === 'function' && typeof (b as any).toISOString === 'function') {
+      return a.valueOf() === b.valueOf();
+    }
+    if (typeof (a as any).equals === 'function') {
+      return immutableEqual(a as any, b as any);
+    }
+  }
+  return false;
+}
+
+/**
  * Checks if two immutable classes are equal (if both null it counts as yes)
  * @param a - thing to compare
  * @param b - thing to compare

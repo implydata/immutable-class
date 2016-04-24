@@ -2,7 +2,7 @@
 
 import { expect } from "chai";
 
-import { isInstanceOf, isArrayOf, isImmutableClass, immutableEqual, immutableArraysEqual, immutableLookupsEqual } from '../build/index';
+import { isInstanceOf, isArrayOf, isImmutableClass, generalEqual, immutableEqual, immutableArraysEqual, immutableLookupsEqual } from '../build/index';
 
 class Animal {
   public name: string;
@@ -150,8 +150,54 @@ describe("utils", () => {
   });
 
 
+  describe("generalEqual", () => {
+    it("works with basics (strings)", () => {
+      var tom = 'Tom';
+      var bob1 = 'Bob';
+      var bob2 = 'Bob';
+
+      expect(generalEqual(null, null)).to.equal(true);
+
+      expect(generalEqual(tom, null)).to.equal(false);
+      expect(generalEqual(null, tom)).to.equal(false);
+      expect(generalEqual(tom, bob1)).to.equal(false);
+
+      expect(generalEqual(bob1, bob2)).to.equal(true);
+    });
+
+    it("works with basics (Dates)", () => {
+      var tom = new Date('2016');
+      var bob1 = new Date('2015');
+      var bob2 = new Date('2015');
+
+      expect(generalEqual(null, null)).to.equal(true);
+
+      expect(generalEqual(tom, null)).to.equal(false);
+      expect(generalEqual(null, tom)).to.equal(false);
+      expect(generalEqual(tom, bob1)).to.equal(false);
+
+      expect(generalEqual(bob1, bob2)).to.equal(true);
+    });
+
+    it("works immutables", () => {
+      var tom = new Person('Tom');
+      var bob1 = new Person('Bob');
+      var bob2 = new Person('Bob');
+
+      expect(generalEqual(null, null)).to.equal(true);
+
+      expect(generalEqual(tom, null)).to.equal(false);
+      expect(generalEqual(null, tom)).to.equal(false);
+      expect(generalEqual(tom, bob1)).to.equal(false);
+
+      expect(generalEqual(bob1, bob2)).to.equal(true);
+    });
+
+  });
+
+
   describe("immutableEqual", () => {
-    it("works", () => {
+    it("works immutables", () => {
       var tom = new Person('Tom');
       var bob1 = new Person('Bob');
       var bob2 = new Person('Bob');
