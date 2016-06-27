@@ -17,4 +17,4 @@ node_modules/.bin/tsc \
   typings/tsd.d.ts src/*
 
 echo "Bundle type definitions"
-node dts-bundle.js
+node extra/dts-bundle.js

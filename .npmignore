@@ -1,1 +1,17 @@
-.idea
+# === WebStorm ===
+/.idea/
+
+# === Build ===
+
+/compile
+/script/
+/extra/
+
+# === Source ===
+
+/src/
+
+# === Test ===
+
+/test/
+/run-tests
