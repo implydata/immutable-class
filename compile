@@ -14,7 +14,11 @@ node_modules/.bin/tsc \
   --noFallthroughCasesInSwitch \
   --noImplicitReturns \
   --outDir build \
-  typings/tsd.d.ts src/*
+  typings/tsd.d.ts \
+  src/baseImmutable.ts \
+  src/equality.ts \
+  src/index.ts \
+  src/tester.ts
 
 echo "Bundle type definitions"
 node extra/dts-bundle.js
