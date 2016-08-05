@@ -17,10 +17,9 @@
 
 /// <reference path="../typings/tsd.d.ts" />
 
-import chai = require("chai");
-import expect = chai.expect;
+import { expect } from "chai";
 
-import { isInstanceOf } from '../build/index';
+import { isInstanceOf, BaseImmutable } from '../build/index';
 import { testImmutableClass } from '../build/tester';
 
 class Animal {
@@ -154,6 +153,53 @@ class AnimalWithContext {
 }
 
 
+interface CarValue {
+  name: string;
+  fuel: string;
+}
+
+interface CarJS {
+  name: string;
+  fuel?: string;
+}
+
+class Car extends BaseImmutable<CarValue, CarJS> {
+  static PROPERTIES = [
+    {
+      name: 'name'
+    },
+    {
+      name: 'fuel',
+      defaultValue: 'electric'
+    },
+    {
+      name: 'subCar',
+      immutableClass: Car
+    }
+  ];
+
+  static isCar(animal) {
+    return isInstanceOf(animal, Car);
+  }
+
+  static fromJS(properties: CarJS) {
+    return new Car(BaseImmutable.jsToValue(Car.PROPERTIES, properties));
+  }
+
+  static isAnimalWithContext(animal) {
+    return isInstanceOf(animal, AnimalWithContext);
+  }
+
+
+  public name: string;
+  public fuel: string;
+
+  constructor(properties: CarValue) {
+    super(properties);
+  }
+}
+
+
 describe("testImmutableClass", () => {
   it("works for Animal class", () => {
     testImmutableClass(Animal, [
@@ -209,4 +255,13 @@ describe("testImmutableClass", () => {
       context: animalWeights
     })
   });
+
+  it("works with Car (BaseImmutable)", () => {
+    testImmutableClass(Car, [
+      { name: 'ford', fuel: 'gas' },
+      { name: 'tesla' },
+      { name: 'vauxhall', fuel: 'diesel', subCar: { name: 'opel', fuel: 'diesel' } }
+    ]);
+  })
+
 });

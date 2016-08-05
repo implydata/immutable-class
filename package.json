@@ -1,6 +1,6 @@
 {
   "name": "immutable-class",
-  "version": "0.4.6",
+  "version": "0.5.0",
   "description": "A template for creating immutable classes",
   "keywords": [
     "immutable",
@@ -27,8 +27,8 @@
     "chai": "3.5.0"
   },
   "devDependencies": {
-    "mocha": "2.5.3",
-    "typescript": "1.8.10",
-    "dts-bundle": "0.4.3"
+    "mocha": "3.0.1",
+    "typescript": "beta",
+    "dts-bundle": "0.5.0"
   }
 }
