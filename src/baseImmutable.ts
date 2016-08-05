@@ -40,20 +40,25 @@ export abstract class BaseImmutable<ValueType, JSType> {
   }
 
   constructor(value: ValueType) {
-    var properties = this.getProperties();
+    var properties = this.ownProperties();
     for (var property of properties) {
       var propertyName = property.name;
       (this as any)[propertyName] = (value as any)[propertyName];
     }
   }
 
-  public getProperties(): Property[] {
+  public ownProperties(): Property[] {
     return (this.constructor as any).PROPERTIES;
+  }
+
+  public findOwnProperty(propName: string): Property {
+    var properties = this.ownProperties();
+    return properties.filter(p => p.name === propName)[0] || null; // ToDo: replace redneck find with real find
   }
 
   public valueOf(): ValueType {
     var value: any = {};
-    var properties = this.getProperties();
+    var properties = this.ownProperties();
     for (var property of properties) {
       var propertyName = property.name;
       value[propertyName] = (this as any)[propertyName];
@@ -63,7 +68,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
 
   public toJS(): JSType {
     var js: any = {};
-    var properties = this.getProperties();
+    var properties = this.ownProperties();
     for (var property of properties) {
       var propertyName = property.name;
       var propertyImmutableClass = property.immutableClass;
@@ -86,7 +91,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
     if (this === other) return true;
     if (!isInstanceOf(other, this.constructor)) return false;
 
-    var properties = this.getProperties();
+    var properties = this.ownProperties();
     for (var property of properties) {
       var propertyName = property.name;
       var equal = property.equal || generalEqual;
@@ -97,12 +102,24 @@ export abstract class BaseImmutable<ValueType, JSType> {
   }
 
   public get(propName: string): any {
-    var properties = this.getProperties();
+    var properties = this.ownProperties();
     for (var property of properties) {
       if (property.name === propName) {
         return (this as any)[propName] || property.defaultValue;
       }
     }
     throw new Error(`can not find prop ${propName}`);
+  }
+
+  public change(propName: string, newValue: any): this {
+    var value = this.valueOf();
+
+    var property = this.findOwnProperty(propName);
+    if (!property) {
+      throw new Error(`Unknown property: ${propName}`);
+    }
+
+    (value as any)[propName] = newValue;
+    return new (this.constructor as any)(value);
   }
 }
