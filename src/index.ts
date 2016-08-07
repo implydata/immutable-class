@@ -23,16 +23,16 @@ export * from './baseImmutable';
  * Interface that the Immutable Class class should extend (types the instance)
  */
 export interface Instance<ValueType, JSType> {
-  valueOf(): ValueType
-  toJS(): JSType
-  toJSON(): JSType
-  equals(other: Instance<ValueType, JSType>): boolean
+  valueOf(): ValueType;
+  toJS(): JSType;
+  toJSON(): JSType;
+  equals(other: Instance<ValueType, JSType>): boolean;
 }
 
 /**
  * Interface that the Immutable Class class should conform to (types the class)
  */
 export interface Class<ValueType, JSType> {
-  fromJS(properties: JSType): Instance<ValueType, JSType>
-  new (properties: ValueType): any
+  fromJS(properties: JSType): Instance<ValueType, JSType>;
+  new (properties: ValueType): any;
 }

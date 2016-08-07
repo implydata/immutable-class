@@ -17,11 +17,22 @@
 import { isInstanceOf } from './utils';
 import { generalEqual } from './equality';
 
+function firstUp(name: string): string {
+  return name[0].toUpperCase() + name.substr(1);
+}
+
 export interface Property {
   name: string;
   defaultValue?: any;
+  validate?: (x: any) => void;
   immutableClass?: typeof BaseImmutable;
   equal?: (a: any, b: any) => boolean;
+}
+
+export interface ClassFnType {
+  PROPERTIES: Property[];
+  fromJS(properties: any): any;
+  new (properties: any): any;
 }
 
 export abstract class BaseImmutable<ValueType, JSType> {
@@ -39,11 +50,34 @@ export abstract class BaseImmutable<ValueType, JSType> {
     return value;
   }
 
+  static finalize(ClassFn: ClassFnType): void {
+    var proto = (ClassFn as any).prototype;
+    ClassFn.PROPERTIES.forEach((property: Property) => {
+      var propertyName = property.name;
+      var upped = firstUp(property.name);
+      // These have to be function and not => so that they do not bind this
+      proto['get' + upped] = function() {
+        return (this as any).get(propertyName);
+      };
+      proto['change' + upped] = function(newValue: any): any {
+        return (this as any).change(propertyName, newValue);
+      };
+    });
+  }
+
   constructor(value: ValueType) {
     var properties = this.ownProperties();
     for (var property of properties) {
       var propertyName = property.name;
-      (this as any)[propertyName] = (value as any)[propertyName];
+      var pv = (value as any)[propertyName];
+      if (property.validate) {
+        try {
+          property.validate(pv);
+        } catch (e) {
+          throw new Error(`${(this.constructor as any).name}.${propertyName} ${e.message}`);
+        }
+      }
+      (this as any)[propertyName] = pv;
     }
   }
 

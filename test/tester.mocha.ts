@@ -156,11 +156,13 @@ class AnimalWithContext {
 interface CarValue {
   name: string;
   fuel: string;
+  subCar: Car;
 }
 
 interface CarJS {
   name: string;
   fuel?: string;
+  subCar?: CarJS;
 }
 
 class Car extends BaseImmutable<CarValue, CarJS> {
@@ -178,16 +180,12 @@ class Car extends BaseImmutable<CarValue, CarJS> {
     }
   ];
 
-  static isCar(animal) {
-    return isInstanceOf(animal, Car);
+  static isCar(car) {
+    return isInstanceOf(car, Car);
   }
 
   static fromJS(properties: CarJS) {
     return new Car(BaseImmutable.jsToValue(Car.PROPERTIES, properties));
-  }
-
-  static isAnimalWithContext(animal) {
-    return isInstanceOf(animal, AnimalWithContext);
   }
 
 
