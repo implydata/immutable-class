@@ -17,9 +17,7 @@
     "url": "http://github.com/implydata/immutable-class.git"
   },
   "main": "build/index.js",
-  "typescript": {
-    "definition": "build/immutable-class.d.ts"
-  },
+  "typings": "build/immutable-class.d.ts",
   "scripts": {
     "test": "./run-tests"
   },
