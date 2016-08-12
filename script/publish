@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -eu
 
 if [ `git symbolic-ref --short HEAD` != "master" ]
 then
@@ -8,7 +8,7 @@ fi
 
 if [ "$(git status --porcelain)" != "" ]
 then
-  echo "pivot git status not clean!" >&2
+  echo "git status not clean!" >&2
   exit 1
 fi
 

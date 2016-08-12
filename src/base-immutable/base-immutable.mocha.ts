@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-/// <reference path="../typings/tsd.d.ts" />
-
 import { expect } from "chai";
 
-import { isInstanceOf, BaseImmutable } from '../build/index';
+import { BaseImmutable } from './base-immutable';
 
 
 interface CarValue {
@@ -37,22 +35,24 @@ class Car extends BaseImmutable<CarValue, CarJS> {
   static PROPERTIES = [
     {
       name: 'name',
-      validate: (n) => {
+      validate: (n: string) => {
         if (n.toLowerCase() !== n) throw new Error('must be lowercase');
       }
     },
     {
       name: 'fuel',
-      defaultValue: 'electric'
+      defaultValue: 'electric',
+      possibleValues: ['gas', 'diesel', 'electric']
     },
     {
       name: 'subCar',
-      immutableClass: Car
+      immutableClass: Car,
+      optional: true
     }
   ];
 
-  static isCar(car) {
-    return isInstanceOf(car, Car);
+  static isCar(car: Car) {
+    return car instanceof Car;
   }
 
   static fromJS(properties: CarJS) {
@@ -91,8 +91,20 @@ describe("BaseImmutable", () => {
 
   it("works with errors", () => {
     expect(() => {
+      Car.fromJS({ fuel: 'electric' } as any)
+    }).to.throw('Car.name must be defined');
+
+    expect(() => {
       Car.fromJS({ name: 'Ford', fuel: 'electric' })
     }).to.throw('Car.name must be lowercase');
+
+    expect(() => {
+      Car.fromJS({ name: 'ford' })
+    }).to.throw('Car.fuel must be defined');
+
+    expect(() => {
+      Car.fromJS({ name: 'ford', fuel: 'farts' })
+    }).to.throw("Car.fuel can not have value 'farts' must be one of [gas, diesel, electric]");
   });
 
 });

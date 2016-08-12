@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { isInstanceOf } from './utils';
-import { generalEqual } from './equality';
+import { isInstanceOf } from '../utils/utils';
+import { generalEqual } from '../equality/equality';
 
 function firstUp(name: string): string {
   return name[0].toUpperCase() + name.substr(1);
@@ -24,6 +24,8 @@ function firstUp(name: string): string {
 export interface Property {
   name: string;
   defaultValue?: any;
+  optional?: boolean;
+  possibleValues?: any[];
   validate?: (x: any) => void;
   immutableClass?: typeof BaseImmutable;
   equal?: (a: any, b: any) => boolean;
@@ -70,6 +72,16 @@ export abstract class BaseImmutable<ValueType, JSType> {
     for (var property of properties) {
       var propertyName = property.name;
       var pv = (value as any)[propertyName];
+
+      if (!property.optional && pv == null) {
+        throw new Error(`${(this.constructor as any).name}.${propertyName} must be defined`);
+      }
+
+      var possibleValues = property.possibleValues;
+      if (possibleValues && possibleValues.indexOf(pv) === -1) {
+        throw new Error(`${(this.constructor as any).name}.${propertyName} can not have value '${pv}' must be one of [${possibleValues.join(', ')}]`);
+      }
+
       if (property.validate) {
         try {
           property.validate(pv);
@@ -77,6 +89,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
           throw new Error(`${(this.constructor as any).name}.${propertyName} ${e.message}`);
         }
       }
+
       (this as any)[propertyName] = pv;
     }
   }

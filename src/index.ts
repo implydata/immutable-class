@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-export * from './utils';
-export * from './equality';
-export * from './baseImmutable';
+export * from './utils/utils';
+export * from './equality/equality';
+export * from './base-immutable/base-immutable';
 
 /**
  * Interface that the Immutable Class class should extend (types the instance)

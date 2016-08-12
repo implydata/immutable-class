@@ -1,25 +1,7 @@
-#!/bin/bash
+#!/bin/bash -eu
 
 rm -rf build/*
 mkdir -p build
 
 # All files
-echo "Compile TypeScript"
-node_modules/.bin/tsc \
-  --declaration \
-  --module commonjs \
-  --noImplicitAny \
-  --noEmitOnError \
-  --removeComments \
-  --noFallthroughCasesInSwitch \
-  --noImplicitReturns \
-  --strictNullChecks \
-  --outDir build \
-  typings/tsd.d.ts \
-  src/baseImmutable.ts \
-  src/equality.ts \
-  src/index.ts \
-  src/tester.ts
-
-echo "Bundle type definitions"
-node extra/dts-bundle.js
+node_modules/.bin/tsc
