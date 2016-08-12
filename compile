@@ -13,6 +13,7 @@ node_modules/.bin/tsc \
   --removeComments \
   --noFallthroughCasesInSwitch \
   --noImplicitReturns \
+  --strictNullChecks \
   --outDir build \
   typings/tsd.d.ts \
   src/baseImmutable.ts \

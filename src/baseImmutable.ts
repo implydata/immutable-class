@@ -85,7 +85,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
     return (this.constructor as any).PROPERTIES;
   }
 
-  public findOwnProperty(propName: string): Property {
+  public findOwnProperty(propName: string): Property | null {
     var properties = this.ownProperties();
     return properties.filter(p => p.name === propName)[0] || null; // ToDo: replace redneck find with real find
   }
@@ -117,7 +117,9 @@ export abstract class BaseImmutable<ValueType, JSType> {
   }
 
   public toString(): string {
-    return '[ImmutableClass]';
+    var name: any = (this as any).name;
+    var extra = name === 'string' ? `: ${name}` : '';
+    return `[ImmutableClass${extra}]`;
   }
 
   public equals(other: BaseImmutable<ValueType, JSType>): boolean {
