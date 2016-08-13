@@ -72,20 +72,22 @@ export abstract class BaseImmutable<ValueType, JSType> {
       var propertyName = property.name;
       var pv = (value as any)[propertyName];
 
-      if (!property.hasOwnProperty('defaultValue') && pv == null) {
-        throw new Error(`${(this.constructor as any).name}.${propertyName} must be defined`);
-      }
+      if (pv == null) {
+        if (!property.hasOwnProperty('defaultValue')) {
+          throw new Error(`${(this.constructor as any).name}.${propertyName} must be defined`);
+        }
+      } else {
+        var possibleValues = property.possibleValues;
+        if (possibleValues && possibleValues.indexOf(pv) === -1) {
+          throw new Error(`${(this.constructor as any).name}.${propertyName} can not have value '${pv}' must be one of [${possibleValues.join(', ')}]`);
+        }
 
-      var possibleValues = property.possibleValues;
-      if (pv != null && possibleValues && possibleValues.indexOf(pv) === -1) {
-        throw new Error(`${(this.constructor as any).name}.${propertyName} can not have value '${pv}' must be one of [${possibleValues.join(', ')}]`);
-      }
-
-      if (property.validate) {
-        try {
-          property.validate(pv);
-        } catch (e) {
-          throw new Error(`${(this.constructor as any).name}.${propertyName} ${e.message}`);
+        if (property.validate) {
+          try {
+            property.validate(pv);
+          } catch (e) {
+            throw new Error(`${(this.constructor as any).name}.${propertyName} ${e.message}`);
+          }
         }
       }
 
