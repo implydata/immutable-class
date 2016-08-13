@@ -24,7 +24,6 @@ function firstUp(name: string): string {
 export interface Property {
   name: string;
   defaultValue?: any;
-  optional?: boolean;
   possibleValues?: any[];
   validate?: (x: any) => void;
   immutableClass?: typeof BaseImmutable;
@@ -73,7 +72,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
       var propertyName = property.name;
       var pv = (value as any)[propertyName];
 
-      if (!property.optional && pv == null) {
+      if (!property.hasOwnProperty('defaultValue') && pv == null) {
         throw new Error(`${(this.constructor as any).name}.${propertyName} must be defined`);
       }
 
