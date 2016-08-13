@@ -77,7 +77,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
       }
 
       var possibleValues = property.possibleValues;
-      if (possibleValues && possibleValues.indexOf(pv) === -1) {
+      if (pv != null && possibleValues && possibleValues.indexOf(pv) === -1) {
         throw new Error(`${(this.constructor as any).name}.${propertyName} can not have value '${pv}' must be one of [${possibleValues.join(', ')}]`);
       }
 
