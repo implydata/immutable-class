@@ -16,7 +16,7 @@
 
 import { expect } from "chai";
 
-import { BaseImmutable } from './base-immutable';
+import { BaseImmutable, Property } from './base-immutable';
 
 
 interface CarValue {
@@ -32,7 +32,7 @@ interface CarJS {
 }
 
 class Car extends BaseImmutable<CarValue, CarJS> {
-  static PROPERTIES = [
+  static PROPERTIES: Property[] = [
     {
       name: 'name',
       validate: (n: string) => {
@@ -46,8 +46,8 @@ class Car extends BaseImmutable<CarValue, CarJS> {
     },
     {
       name: 'subCar',
-      immutableClass: Car,
-      optional: true
+      defaultValue: null,
+      immutableClass: Car
     }
   ];
 
@@ -97,10 +97,6 @@ describe("BaseImmutable", () => {
     expect(() => {
       Car.fromJS({ name: 'Ford', fuel: 'electric' })
     }).to.throw('Car.name must be lowercase');
-
-    expect(() => {
-      Car.fromJS({ name: 'ford' })
-    }).to.throw('Car.fuel must be defined');
 
     expect(() => {
       Car.fromJS({ name: 'ford', fuel: 'farts' })

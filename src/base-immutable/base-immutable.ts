@@ -56,11 +56,13 @@ export abstract class BaseImmutable<ValueType, JSType> {
     ClassFn.PROPERTIES.forEach((property: Property) => {
       var propertyName = property.name;
       var upped = firstUp(property.name);
-      // These have to be function and not => so that they do not bind this
-      proto['get' + upped] = function() {
+      var getUpped = 'get' + upped;
+      var changeUpped = 'change' + upped;
+      // These have to be function and not => so that they do not bind 'this'
+      proto[getUpped] = proto[getUpped] || function() {
         return (this as any).get(propertyName);
       };
-      proto['change' + upped] = function(newValue: any): any {
+      proto[changeUpped] = proto[changeUpped] || function(newValue: any): any {
         return (this as any).change(propertyName, newValue);
       };
     });
