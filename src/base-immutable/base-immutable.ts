@@ -21,11 +21,15 @@ function firstUp(name: string): string {
   return name[0].toUpperCase() + name.substr(1);
 }
 
+export interface Validator {
+  (x: any): void;
+}
+
 export interface Property {
   name: string;
   defaultValue?: any;
   possibleValues?: any[];
-  validate?: (x: any) => void;
+  validate?: Validator | Validator[];
   immutableClass?: typeof BaseImmutable;
   equal?: (a: any, b: any) => boolean;
 }
@@ -68,6 +72,12 @@ export abstract class BaseImmutable<ValueType, JSType> {
     });
   }
 
+  static ensure = {
+    number: (n: any): void => {
+      if (isNaN(n) || typeof n !== 'number') throw new Error(`must be a number`);
+    }
+  };
+
   constructor(value: ValueType) {
     var properties = this.ownProperties();
     for (var property of properties) {
@@ -84,9 +94,11 @@ export abstract class BaseImmutable<ValueType, JSType> {
           throw new Error(`${(this.constructor as any).name}.${propertyName} can not have value '${pv}' must be one of [${possibleValues.join(', ')}]`);
         }
 
-        if (property.validate) {
+        var validate = property.validate;
+        if (validate) {
+          var validators: Validator[] = Array.isArray(validate) ? validate : [validate];
           try {
-            property.validate(pv);
+            for (var validator of validators) validator(pv);
           } catch (e) {
             throw new Error(`${(this.constructor as any).name}.${propertyName} ${e.message}`);
           }
@@ -157,7 +169,8 @@ export abstract class BaseImmutable<ValueType, JSType> {
     var properties = this.ownProperties();
     for (var property of properties) {
       if (property.name === propName) {
-        return (this as any)[propName] || property.defaultValue;
+        var pv = (this as any)[propName];
+        return pv != null ? pv : property.defaultValue;
       }
     }
     throw new Error(`can not find prop ${propName}`);

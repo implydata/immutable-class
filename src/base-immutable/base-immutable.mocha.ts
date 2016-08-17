@@ -23,12 +23,18 @@ interface CarValue {
   name: string;
   fuel: string;
   subCar: Car;
+  range?: number;
 }
 
 interface CarJS {
   name: string;
   fuel?: string;
   subCar?: CarJS;
+  range?: number;
+}
+
+function ensureNonNegative(n: any): void {
+  if (n < 0) throw new Error('must non negative positive');
 }
 
 class Car extends BaseImmutable<CarValue, CarJS> {
@@ -48,6 +54,11 @@ class Car extends BaseImmutable<CarValue, CarJS> {
       name: 'subCar',
       defaultValue: null,
       immutableClass: Car
+    },
+    {
+      name: 'range',
+      defaultValue: 100,
+      validate: [BaseImmutable.ensure.number, ensureNonNegative]
     }
   ];
 
@@ -63,13 +74,17 @@ class Car extends BaseImmutable<CarValue, CarJS> {
   public name: string;
   public fuel: string;
   public subCar: Car;
-
-  public changeFuel: (fuel: string) => this;
-  public getFuel: () => string;
+  public range: number;
 
   constructor(properties: CarValue) {
     super(properties);
   }
+
+  public changeFuel: (fuel: string) => this;
+  public getFuel: () => string;
+
+  public changeRange: (range: number) => this;
+  public getRange: () => number;
 }
 BaseImmutable.finalize(Car);
 
@@ -81,12 +96,16 @@ describe("BaseImmutable", () => {
 
     expect(car.get('name')).to.equal('ford');
     expect(car.get('fuel')).to.equal('electric');
+    expect(car.getRange()).to.equal(100);
 
     car = car.change('fuel', 'gas');
     expect(car.get('fuel')).to.equal('gas');
 
     car = car.changeFuel('diesel');
     expect(car.getFuel()).to.equal('diesel');
+
+    car = car.changeRange(0);
+    expect(car.getRange()).to.equal(0);
   });
 
   it("works with errors", () => {
@@ -101,6 +120,14 @@ describe("BaseImmutable", () => {
     expect(() => {
       Car.fromJS({ name: 'ford', fuel: 'farts' })
     }).to.throw("Car.fuel can not have value 'farts' must be one of [gas, diesel, electric]");
+
+    expect(() => {
+      Car.fromJS({ name: 'ford', fuel: 'electric', range: ('lol' as any) })
+    }).to.throw("Car.range must be a number");
+
+    expect(() => {
+      Car.fromJS({ name: 'ford', fuel: 'electric', range: -3 })
+    }).to.throw("Car.range must non negative positive");
   });
 
 });
