@@ -50,7 +50,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
       var propertyName = property.name;
       var propertyImmutableClass = property.immutableClass;
       var pv = js[propertyName];
-      value[propertyName] = pv ? (propertyImmutableClass ? (propertyImmutableClass as any).fromJS(pv) : pv) : null;
+      value[propertyName] = (pv != null) ? (propertyImmutableClass ? (propertyImmutableClass as any).fromJS(pv) : pv) : null;
     }
     return value;
   }

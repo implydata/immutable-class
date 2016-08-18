@@ -106,6 +106,15 @@ describe("BaseImmutable", () => {
 
     car = car.changeRange(0);
     expect(car.getRange()).to.equal(0);
+    expect(car.toJS()).to.deep.equal({
+      "fuel": "diesel",
+      "name": "ford",
+      "range": 0
+    });
+
+    var car2 = Car.fromJS(car.toJS());
+    expect(car2.equals(car)).to.equal(true);
+    expect(car2.toJS()).to.deep.equal(car.toJS());
   });
 
   it("works with errors", () => {
