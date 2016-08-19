@@ -1,13 +1,5 @@
 <component name="libraryTable">
   <library name="Generated files" type="javaScript">
-    <properties>
-      <sourceFilesUrls>
-        <item url="file://$PROJECT_DIR$/test/tester.mocha.js" />
-        <item url="file://$PROJECT_DIR$/test/equality.mocha.js" />
-        <item url="file://$PROJECT_DIR$/test/index.mocha.js" />
-        <item url="file://$PROJECT_DIR$/test/baseImmutable.mocha.js" />
-      </sourceFilesUrls>
-    </properties>
     <CLASSES>
       <root url="file://$PROJECT_DIR$/test/tester.mocha.js" />
       <root url="file://$PROJECT_DIR$/test/equality.mocha.js" />

@@ -31,6 +31,7 @@ export interface Property {
   possibleValues?: any[];
   validate?: Validator | Validator[];
   immutableClass?: typeof BaseImmutable;
+  immutableClassArray?: typeof BaseImmutable;
   equal?: (a: any, b: any) => boolean;
 }
 
@@ -48,9 +49,17 @@ export abstract class BaseImmutable<ValueType, JSType> {
     var value: any = {};
     for (var property of properties) {
       var propertyName = property.name;
-      var propertyImmutableClass = property.immutableClass;
-      var pv = js[propertyName];
-      value[propertyName] = (pv != null) ? (propertyImmutableClass ? (propertyImmutableClass as any).fromJS(pv) : pv) : null;
+      var pv: any = js[propertyName];
+      if (pv != null) {
+        if (property.immutableClass) {
+          pv = (property.immutableClass as any).fromJS(pv)
+        } else if (property.immutableClassArray) {
+          if (!Array.isArray(pv)) throw new Error(`expected ${propertyName} to be an array`);
+          var propertyImmutableClassArray: any = property.immutableClassArray;
+          pv = pv.map((v: any) => propertyImmutableClassArray.fromJS(v))
+        }
+      }
+      value[propertyName] = pv;
     }
     return value;
   }
@@ -133,9 +142,15 @@ export abstract class BaseImmutable<ValueType, JSType> {
     var properties = this.ownProperties();
     for (var property of properties) {
       var propertyName = property.name;
-      var propertyImmutableClass = property.immutableClass;
-      var pv = (this as any)[propertyName];
-      if (pv != null) js[propertyName] = propertyImmutableClass ? pv.toJS() : pv;
+      var pv: any = (this as any)[propertyName];
+      if (pv != null) {
+        if (property.immutableClass) {
+          pv = pv.toJS();
+        } else if (property.immutableClassArray) {
+          pv = pv.map((v: any) => v.toJS());
+        }
+        js[propertyName] = pv;
+      }
     }
     return js;
   }

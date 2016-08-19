@@ -24,6 +24,7 @@ interface CarValue {
   fuel: string;
   subCar: Car;
   range?: number;
+  relatedCars?: Car[];
 }
 
 interface CarJS {
@@ -31,6 +32,7 @@ interface CarJS {
   fuel?: string;
   subCar?: CarJS;
   range?: number;
+  relatedCars?: CarJS[];
 }
 
 function ensureNonNegative(n: any): void {
@@ -59,7 +61,12 @@ class Car extends BaseImmutable<CarValue, CarJS> {
       name: 'range',
       defaultValue: 100,
       validate: [BaseImmutable.ensure.number, ensureNonNegative]
-    }
+    },
+    {
+      name: 'relatedCars',
+      defaultValue: [],
+      immutableClassArray: Car
+    },
   ];
 
   static isCar(car: Car) {
@@ -137,6 +144,27 @@ describe("BaseImmutable", () => {
     expect(() => {
       Car.fromJS({ name: 'ford', fuel: 'electric', range: -3 })
     }).to.throw("Car.range must non negative positive");
+
+    expect(() => {
+      Car.fromJS({
+        name: 'ford',
+        fuel: 'electric',
+        range: 30,
+        relatedCars: (123 as any)
+      })
+    }).to.throw("expected relatedCars to be an array");
+
+    expect(() => {
+      Car.fromJS({
+        name: 'ford',
+        fuel: 'electric',
+        range: 30,
+        relatedCars: [
+          { name: 'Toyota', fuel: 'electric', range: 31 },
+          { name: 'Toyota', fuel: 'electric', range: 32 }
+        ]
+      })
+    }).to.throw("Car.name must be lowercase");
   });
 
 });
