@@ -25,6 +25,7 @@ interface CarValue {
   subCar: Car;
   range?: number;
   relatedCars?: Car[];
+  createdOn?: Date;
 }
 
 interface CarJS {
@@ -33,6 +34,7 @@ interface CarJS {
   subCar?: CarJS;
   range?: number;
   relatedCars?: CarJS[];
+  createdOn?: Date | string;
 }
 
 function ensureNonNegative(n: any): void {
@@ -67,6 +69,11 @@ class Car extends BaseImmutable<CarValue, CarJS> {
       defaultValue: [],
       immutableClassArray: Car
     },
+    {
+      name: 'createdOn',
+      defaultValue: null,
+      isDate: true
+    }
   ];
 
   static isCar(car: Car) {
@@ -82,6 +89,7 @@ class Car extends BaseImmutable<CarValue, CarJS> {
   public fuel: string;
   public subCar: Car;
   public range: number;
+  public createdOn: Date;
 
   constructor(properties: CarValue) {
     super(properties);
@@ -122,6 +130,16 @@ describe("BaseImmutable", () => {
     var car2 = Car.fromJS(car.toJS());
     expect(car2.equals(car)).to.equal(true);
     expect(car2.toJS()).to.deep.equal(car.toJS());
+  });
+
+  it("works with dates", () => {
+    var car = Car.fromJS({ name: 'ford', fuel: 'electric', createdOn: '2016-01-01T01:02:03.456Z' });
+
+    expect(car.toJS()).to.deep.equal({
+      "name": "ford",
+      "fuel": "electric",
+      "createdOn": new Date('2016-01-01T01:02:03.456Z')
+    });
   });
 
   it("works with errors", () => {
@@ -165,6 +183,16 @@ describe("BaseImmutable", () => {
         ]
       })
     }).to.throw("Car.name must be lowercase");
+
+    expect(() => {
+      Car.fromJS({
+        name: 'ford',
+        fuel: 'electric',
+        range: 30,
+        createdOn: 'time for laughs'
+      })
+    }).to.throw("Car.createdOn must be a Date");
+
   });
 
 });

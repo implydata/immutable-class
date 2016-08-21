@@ -30,6 +30,7 @@ export interface Property {
   defaultValue?: any;
   possibleValues?: any[];
   validate?: Validator | Validator[];
+  isDate?: boolean;
   immutableClass?: typeof BaseImmutable;
   immutableClassArray?: typeof BaseImmutable;
   equal?: (a: any, b: any) => boolean;
@@ -51,12 +52,17 @@ export abstract class BaseImmutable<ValueType, JSType> {
       var propertyName = property.name;
       var pv: any = js[propertyName];
       if (pv != null) {
-        if (property.immutableClass) {
-          pv = (property.immutableClass as any).fromJS(pv)
+        if (property.isDate) {
+          pv = new Date(pv);
+
+        } else if (property.immutableClass) {
+          pv = (property.immutableClass as any).fromJS(pv);
+
         } else if (property.immutableClassArray) {
           if (!Array.isArray(pv)) throw new Error(`expected ${propertyName} to be an array`);
           var propertyImmutableClassArray: any = property.immutableClassArray;
-          pv = pv.map((v: any) => propertyImmutableClassArray.fromJS(v))
+          pv = pv.map((v: any) => propertyImmutableClassArray.fromJS(v));
+
         }
       }
       value[propertyName] = pv;
@@ -101,6 +107,12 @@ export abstract class BaseImmutable<ValueType, JSType> {
         var possibleValues = property.possibleValues;
         if (possibleValues && possibleValues.indexOf(pv) === -1) {
           throw new Error(`${(this.constructor as any).name}.${propertyName} can not have value '${pv}' must be one of [${possibleValues.join(', ')}]`);
+        }
+
+        if (property.isDate) {
+          if (isNaN(pv)) {
+            throw new Error(`${(this.constructor as any).name}.${propertyName} must be a Date`);
+          }
         }
 
         var validate = property.validate;
