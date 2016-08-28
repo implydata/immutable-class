@@ -47,6 +47,10 @@ export abstract class BaseImmutable<ValueType, JSType> {
   //abstract static PROPERTIES: Property[];
 
   static jsToValue(properties: Property[], js: any): any {
+    if (properties == null) {
+      throw new Error(`JS is not defined`);
+    }
+
     var value: any = {};
     for (var property of properties) {
       var propertyName = property.name;
@@ -90,6 +94,12 @@ export abstract class BaseImmutable<ValueType, JSType> {
   static ensure = {
     number: (n: any): void => {
       if (isNaN(n) || typeof n !== 'number') throw new Error(`must be a number`);
+    },
+    positive: (n: any): void => {
+      if (n < 0) throw new Error('must be positive');
+    },
+    nonNegative: (n: any): void => {
+      if (n < 0) throw new Error('must be non negative');
     }
   };
 
