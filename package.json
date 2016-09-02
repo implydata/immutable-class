@@ -21,9 +21,9 @@
     "test": "./run-tests"
   },
   "devDependencies": {
-    "@types/chai": "3.4.30",
+    "@types/chai": "3.4.32",
     "chai": "3.5.0",
-    "immutable-class-tester": "0.5.1",
+    "immutable-class-tester": "0.5.3",
     "mocha": "3.0.2",
     "typescript": "2.0.0"
   }
