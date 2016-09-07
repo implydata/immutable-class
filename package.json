@@ -18,6 +18,7 @@
   "main": "build/index.js",
   "typings": "build/index.d.ts",
   "scripts": {
+    "compile": "./compile",
     "test": "./run-tests"
   },
   "devDependencies": {
