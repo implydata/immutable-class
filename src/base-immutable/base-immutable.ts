@@ -25,14 +25,18 @@ export interface Validator {
   (x: any): void;
 }
 
+export interface ImmutableLike {
+  fromJS: (js: any) => any;
+}
+
 export interface Property {
   name: string;
   defaultValue?: any;
   possibleValues?: any[];
   validate?: Validator | Validator[];
   isDate?: boolean;
-  immutableClass?: typeof BaseImmutable;
-  immutableClassArray?: typeof BaseImmutable;
+  immutableClass?: ImmutableLike;
+  immutableClassArray?: ImmutableLike;
   equal?: (a: any, b: any) => boolean;
 }
 
