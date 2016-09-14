@@ -172,10 +172,8 @@ export abstract class BaseImmutable<ValueType, JSType> {
       var propertyName = property.name;
       var pv: any = (this as any)[propertyName];
       if (pv != null) {
-        if (property.toJS) {
-          var val = property.toJS(pv);
-          if (!val) continue;
-          pv = val;
+        if (typeof property.toJS === 'function') {
+          pv = property.toJS(pv);
         } else if (property.immutableClass) {
           pv = pv.toJS();
         } else if (property.immutableClassArray) {
