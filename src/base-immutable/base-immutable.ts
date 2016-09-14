@@ -21,6 +21,10 @@ function firstUp(name: string): string {
   return name[0].toUpperCase() + name.substr(1);
 }
 
+function includeInJS(v: any) {
+  return Array.isArray(v) ? v.length : v != null;
+}
+
 export interface Validator {
   (x: any): void;
 }
@@ -38,6 +42,7 @@ export interface Property {
   immutableClass?: ImmutableLike;
   immutableClassArray?: ImmutableLike;
   equal?: (a: any, b: any) => boolean;
+  toJSOverride?: (v: any) => any; // todo..
 }
 
 export interface ClassFnType {
@@ -169,8 +174,10 @@ export abstract class BaseImmutable<ValueType, JSType> {
     for (var property of properties) {
       var propertyName = property.name;
       var pv: any = (this as any)[propertyName];
-      if (pv != null) {
-        if (property.immutableClass) {
+      if (includeInJS(pv)) {
+        if (property.toJSOverride) {
+          pv = property.toJSOverride.call(null, pv);
+        } else if (property.immutableClass) {
           pv = pv.toJS();
         } else if (property.immutableClassArray) {
           pv = pv.map((v: any) => v.toJS());
