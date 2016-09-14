@@ -22,10 +22,6 @@ function firstUp(name: string): string {
   return name[0].toUpperCase() + name.substr(1);
 }
 
-function includeInJS(v: any) {
-  return Array.isArray(v) ? v.length : v != null;
-}
-
 export interface Validator {
   (x: any): void;
 }
@@ -175,9 +171,11 @@ export abstract class BaseImmutable<ValueType, JSType> {
     for (var property of properties) {
       var propertyName = property.name;
       var pv: any = (this as any)[propertyName];
-      if (includeInJS(pv)) {
-        if (typeof property.toJS === 'function') {
-          pv = property.toJS(pv);
+      if (pv != null) {
+        if (property.toJS) {
+          var val = property.toJS(pv);
+          if (!val) continue;
+          pv = val;
         } else if (property.immutableClass) {
           pv = pv.toJS();
         } else if (property.immutableClassArray) {
