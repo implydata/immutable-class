@@ -16,6 +16,7 @@
 
 import { isInstanceOf } from '../utils/utils';
 import { generalEqual } from '../equality/equality';
+import { NamedArray } from "../named-array/named-array";
 
 function firstUp(name: string): string {
   return name[0].toUpperCase() + name.substr(1);
@@ -42,7 +43,7 @@ export interface Property {
   immutableClass?: ImmutableLike;
   immutableClassArray?: ImmutableLike;
   equal?: (a: any, b: any) => boolean;
-  toJSOverride?: (v: any) => any; // todo..
+  toJS?: (v: any) => any; // todo.. stricter js type?
 }
 
 export interface ClassFnType {
@@ -155,7 +156,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
 
   public findOwnProperty(propName: string): Property | null {
     var properties = this.ownProperties();
-    return properties.filter(p => p.name === propName)[0] || null; // ToDo: replace redneck find with real find
+    return NamedArray.findByName(properties, propName);
   }
 
   public valueOf(): ValueType {
@@ -175,8 +176,8 @@ export abstract class BaseImmutable<ValueType, JSType> {
       var propertyName = property.name;
       var pv: any = (this as any)[propertyName];
       if (includeInJS(pv)) {
-        if (property.toJSOverride) {
-          pv = property.toJSOverride.call(null, pv);
+        if (typeof property.toJS === 'function') {
+          pv = property.toJS(pv);
         } else if (property.immutableClass) {
           pv = pv.toJS();
         } else if (property.immutableClassArray) {
