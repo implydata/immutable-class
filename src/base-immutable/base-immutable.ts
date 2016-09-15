@@ -45,7 +45,6 @@ export interface Property {
   defaultValue?: any;
   possibleValues?: any[];
   validate?: Validator | Validator[];
-  isDate?: boolean;
   type?: PropertyType;
   immutableClass?: ImmutableLike;
   immutableClassArray?: ImmutableLike;
@@ -124,7 +123,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
     var properties = this.ownProperties();
     for (var property of properties) {
       var propertyName = property.name;
-      var propertyType = property.isDate ? PropertyType.DATE : property.type;
+      var propertyType = property.hasOwnProperty('isDate') ? PropertyType.DATE : property.type;
       var pv = (value as any)[propertyName];
 
       if (pv == null) {
