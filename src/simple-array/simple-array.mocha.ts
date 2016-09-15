@@ -45,4 +45,27 @@ describe("SimpleArray", () => {
     });
   });
 
+  describe("delete", () => {
+    it('something that exists', () => {
+      expect(SimpleArray.delete(someArray, 'USA')).to.deep.equal([ 'UK', 'Italy' ]);
+    });
+
+    it('something that does not exist', () => {
+      expect(SimpleArray.delete(someArray, 'Russia')).to.deep.equal([ 'UK', 'USA', 'Italy' ]);
+    });
+
+    it('custom equals that does exist', () => {
+      var array = [{'country': 'US'}, {'country': 'UK'}, {'country': 'Italy'}];
+      expect(SimpleArray.delete(array, {'country': 'UK'}, (a, b) => a.country === b.country)).to.deep.equal(
+        [
+          {
+            "country": "US"
+          },
+          {
+            "country": "Italy"
+          }
+        ]
+      );
+    });
+  });
 });

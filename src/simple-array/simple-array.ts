@@ -30,4 +30,8 @@ export class SimpleArray {
     }
     return -1;
   }
+
+  static delete<T>(array: T[], value: T, equals?: (t1:T, t2:T) => boolean): T[] {
+    return array.filter((a) => equals ? !(equals(a, value)) : a !== value);
+  }
 }
