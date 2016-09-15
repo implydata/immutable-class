@@ -44,6 +44,10 @@ export class NamedArray {
     return SimpleArray.find(array, (x) => x.name === name);
   }
 
+  static findByNameCI<T extends Nameable>(array: T[], name: string): T {
+    return SimpleArray.find(array, (x) => x.name.toLowerCase() === name.toLowerCase());
+  }
+
   static findByName<T extends Nameable>(array: T[], name: string): T {
     return NamedArray.get(array, name);
   }
