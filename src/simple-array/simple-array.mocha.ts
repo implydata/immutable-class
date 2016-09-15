@@ -56,7 +56,7 @@ describe("SimpleArray", () => {
 
     it('custom equals that does exist', () => {
       var array = [{'country': 'US'}, {'country': 'UK'}, {'country': 'Italy'}];
-      expect(SimpleArray.delete(array, {'country': 'UK'}, (a, b) => a.country === b.country)).to.deep.equal(
+      expect(SimpleArray.delete(array, (a) => a.country === 'UK')).to.deep.equal(
         [
           {
             "country": "US"
@@ -68,4 +68,20 @@ describe("SimpleArray", () => {
       );
     });
   });
+
+  describe("contains", () => {
+    it('something that exists', () => {
+      expect(SimpleArray.contains(someArray, 'USA')).to.equal(true);
+    });
+
+    it('something that does not exist', () => {
+      expect(SimpleArray.contains(someArray, 'Russia')).to.equal(false);
+    });
+
+    it('custom equals that does exist', () => {
+      var array = [{'country': 'US'}, {'country': 'UK'}, {'country': 'Italy'}];
+      expect(SimpleArray.contains(array, (x) => x.country === 'UK')).to.deep.equal(true);
+    });
+  });
+
 });
