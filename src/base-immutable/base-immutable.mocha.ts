@@ -98,8 +98,32 @@ class Car extends BaseImmutable<CarValue, CarJS> {
   public changeFuel: (fuel: string) => this;
   public getFuel: () => string;
 
-  public changeRange: (range: number) => this;
   public getRange: () => number;
+  public getName: () => string;
+  public getRelatedCars: () => Car[];
+
+  public getSubCar() {
+    var { name } = this;
+    if (name === 'ford') return Car.fromJS({ name: 'pinto', fuel: 'gas' });
+    if (name === 'toyota') return Car.fromJS({ name: 'prius' , fuel: 'electric' });
+    return null;
+  }
+
+  public changeRange(n: number) {
+    var value = this.valueOf();
+    var { fuel } = value;
+    if (fuel === 'electric') {
+      value.range = n > 400 ? 400 : n;
+      return new Car(value);
+    }
+    if (fuel === 'diesel') {
+      value.range = n > 2000 ? 2000 : n;
+      return new Car(value);
+    }
+
+    value.range = n;
+    return new Car(value);
+  }
 }
 BaseImmutable.finalize(Car);
 
@@ -127,9 +151,30 @@ describe("BaseImmutable", () => {
       "range": 0
     });
 
+    expect(car.getRelatedCars()).to.deep.equal([]);
     var car2 = Car.fromJS(car.toJS());
     expect(car2.equals(car)).to.equal(true);
     expect(car2.toJS()).to.deep.equal(car.toJS());
+  });
+
+  it("calling general getter calls defined getter", () => {
+    var ford = Car.fromJS({ name: 'ford' });
+    expect(ford.get('subCar').getName()).to.deep.equal('pinto');
+    expect(ford.getSubCar().getName()).to.deep.equal('pinto');
+
+    var toyota = Car.fromJS({ name: 'toyota'});
+    expect(toyota.get('subCar').getName()).to.deep.equal('prius');
+    expect(toyota.getSubCar().getName()).to.deep.equal('prius');
+  });
+
+  it("calling general changer calls defined changer", () => {
+    var leaf = Car.fromJS({ name: 'leaf', fuel: 'electric' });
+    expect(leaf.change('range', 900).getRange()).to.equal(400);
+    expect(leaf.changeRange(900).getRange()).to.equal(400);
+
+    var truck = Car.fromJS({ name: 'truck', fuel: 'diesel' });
+    expect(truck.change('range', 900).getRange()).to.equal(900);
+    expect(truck.changeRange(900).getRange()).to.equal(900);
   });
 
   it("works with dates", () => {

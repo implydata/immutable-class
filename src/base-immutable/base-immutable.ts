@@ -98,12 +98,15 @@ export abstract class BaseImmutable<ValueType, JSType> {
       var getUpped = 'get' + upped;
       var changeUpped = 'change' + upped;
       // These have to be function and not => so that they do not bind 'this'
-      proto[getUpped] = proto[getUpped] || function() {
-        return (this as any).get(propertyName);
-      };
+      (proto)[getUpped] = (proto)[getUpped] || function() {
+          var pv = (this as any)[propertyName];
+          return pv != null ? pv : property.defaultValue;
+        };
       proto[changeUpped] = proto[changeUpped] || function(newValue: any): any {
-        return (this as any).change(propertyName, newValue);
-      };
+          var value = this.valueOf();
+          (value as any)[propertyName] = newValue;
+          return new (this.constructor as any)(value);
+        };
     });
   }
 
@@ -127,7 +130,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
       var pv = (value as any)[propertyName];
 
       if (pv == null) {
-        if (propertyType === PropertyType.ARRAY) {
+        if (propertyType === PropertyType.ARRAY || property.immutableClassArray) {
           (this as any)[propertyName] = [];
           continue;
         }
@@ -227,25 +230,14 @@ export abstract class BaseImmutable<ValueType, JSType> {
   }
 
   public get(propName: string): any {
-    var properties = this.ownProperties();
-    for (var property of properties) {
-      if (property.name === propName) {
-        var pv = (this as any)[propName];
-        return pv != null ? pv : property.defaultValue;
-      }
-    }
-    throw new Error(`can not find prop ${propName}`);
+    var getter = (this as any)['get' + firstUp(propName)];
+    if (!getter) throw new Error(`can not find prop ${propName}`);
+    return getter.bind(this)();
   }
 
   public change(propName: string, newValue: any): this {
-    var value = this.valueOf();
-
-    var property = this.findOwnProperty(propName);
-    if (!property) {
-      throw new Error(`Unknown property: ${propName}`);
-    }
-
-    (value as any)[propName] = newValue;
-    return new (this.constructor as any)(value);
+    var changer = (this as any)['change' + firstUp(propName)];
+    if (!changer) throw new Error(`Unknown property: ${propName}`);
+    return changer.bind(this)(newValue);
   }
 }
