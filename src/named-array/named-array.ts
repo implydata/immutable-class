@@ -15,9 +15,24 @@
  */
 
 import { SimpleArray } from '../simple-array/simple-array';
+import { immutableEqual } from '../equality/equality';
 
 export interface Nameable {
   name: string;
+}
+
+function getName(thing: any): string {
+  return thing.name;
+}
+
+function noop() {}
+
+export interface SynchronizerOptions<T> {
+  key?: (thing: T, index?: number) => string;
+  equals?: (thingA: T, thingB: T) => boolean;
+  onEnter?: (newThing: T) => void;
+  onUpdate?: (newThing: T, oldThing: T) => void;
+  onExit?: (oldThing: T) => void;
 }
 
 export class NamedArray {
@@ -81,6 +96,41 @@ export class NamedArray {
 
   static deleteByName<T extends Nameable>(array: T[], name: string): T[] {
     return array.filter((a) => a.name !== name);
+  }
+
+  static synchronize<T>(oldThings: T[], newThings: T[], updatedOptions: SynchronizerOptions<T>): void {
+    const key = updatedOptions.key || getName;
+    const equals = updatedOptions.equals || immutableEqual;
+    const onEnter = updatedOptions.onEnter || noop;
+    const onUpdate = updatedOptions.onUpdate || noop;
+    const onExit = updatedOptions.onExit || noop;
+
+    var initialByKey: { [k: string]: T } = Object.create(null);
+    for (var i = 0; i < oldThings.length; i++) {
+      var initialThing = oldThings[i];
+      var initialThingKey = key(initialThing);
+      if (initialByKey[initialThingKey]) throw new Error(`duplicate key '${initialThingKey}'`);
+      initialByKey[initialThingKey] = initialThing;
+    }
+
+    for (var j = 0; j < newThings.length; j++) {
+      var newThing = newThings[j];
+      var newThingKey = key(newThing);
+      var oldThing = initialByKey[newThingKey];
+      if (oldThing) {
+        if (!equals(newThing, oldThing)) {
+          onUpdate(newThing, oldThing);
+        }
+        delete initialByKey[newThingKey];
+      } else {
+        onEnter(newThing);
+      }
+    }
+
+    for (var k in initialByKey) {
+      if (!initialByKey[k]) continue;
+      onExit(initialByKey[k]);
+    }
   }
 
 }

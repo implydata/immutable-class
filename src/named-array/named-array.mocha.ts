@@ -35,6 +35,7 @@ describe("NamedArray", () => {
     });
   });
 
+
   describe("findIndexByName", () => {
     it('something that exists', () => {
       expect(NamedArray.findIndexByName(someArray, 'USA')).to.equal(1);
@@ -44,6 +45,7 @@ describe("NamedArray", () => {
       expect(NamedArray.findIndexByName(someArray, 'Russia')).to.equal(-1);
     });
   });
+
 
   describe("overrideByName", () => {
     it('overrides (in order)', () => {
@@ -65,6 +67,7 @@ describe("NamedArray", () => {
 
   });
 
+
   describe("deleteByName", () => {
     it('something that exists', () => {
       expect(NamedArray.deleteByName(someArray, 'USA')).to.deep.equal([
@@ -78,6 +81,7 @@ describe("NamedArray", () => {
     });
   });
 
+
   describe("findByNameCI", () => {
     it('something that exists', () => {
       expect(NamedArray.findByNameCI(someArray, 'usa')).to.deep.equal({ name: 'USA', score: 2 });
@@ -88,4 +92,105 @@ describe("NamedArray", () => {
       expect(NamedArray.findByNameCI(someArray, 'RUsSia')).to.equal(null);
     });
   });
+
+
+  describe('synchronize', () => {
+    function valueEqual(a: any, b: any) {
+      return a.value === b.value;
+    }
+
+    it('one enter', () => {
+      var ops: string[] = [];
+
+      NamedArray.synchronize(
+        [],
+        [{ name: 'A' }],
+        {
+          equals: valueEqual,
+          onEnter: (newThing) => {
+            ops.push(`Enter ${newThing.name}`);
+          },
+          onUpdate: (newThing, oldThing) => {
+            ops.push(`Update ${oldThing.name} ${oldThing.value} => ${newThing.value}`);
+          },
+          onExit: (oldThing) => {
+            ops.push(`Exit ${oldThing.name}`);
+          }
+        }
+      );
+
+      expect(ops.join('; ')).to.equal('Enter A');
+    });
+
+    it('one exit', () => {
+      var ops: string[] = [];
+
+      NamedArray.synchronize(
+        [{ name: 'A' }],
+        [],
+        {
+          equals: valueEqual,
+          onEnter: (newThing) => {
+            ops.push(`Enter ${newThing.name}`);
+          },
+          onUpdate: (newThing, oldThing) => {
+            ops.push(`Update ${oldThing.name} ${oldThing.value} => ${newThing.value}`);
+          },
+          onExit: (oldThing) => {
+            ops.push(`Exit ${oldThing.name}`);
+          }
+        }
+      );
+
+      expect(ops.join('; ')).to.equal('Exit A');
+    });
+
+    it('enter / exit', () => {
+      var ops: string[] = [];
+
+      NamedArray.synchronize(
+        [{ name: 'A' }],
+        [{ name: 'B' }],
+        {
+          equals: valueEqual,
+          onEnter: (newThing) => {
+            ops.push(`Enter ${newThing.name}`);
+          },
+          onUpdate: (newThing, oldThing) => {
+            ops.push(`Update ${oldThing.name} ${oldThing.value} => ${newThing.value}`);
+          },
+          onExit: (oldThing) => {
+            ops.push(`Exit ${oldThing.name}`);
+          }
+        }
+      );
+
+      expect(ops.join('; ')).to.equal('Enter B; Exit A');
+    });
+
+    it('enter / update / exit', () => {
+      var ops: string[] = [];
+
+      NamedArray.synchronize(
+        [{ name: 'A', value: 1 }, { name: 'B', value: 2 }],
+        [{ name: 'B', value: 3 }, { name: 'C', value: 4 }],
+        {
+          equals: valueEqual,
+          onEnter: (newThing) => {
+            ops.push(`Enter ${newThing.name}`);
+          },
+          onUpdate: (newThing, oldThing) => {
+            ops.push(`Update ${oldThing.name} ${oldThing.value} => ${newThing.value}`);
+          },
+          onExit: (oldThing) => {
+            ops.push(`Exit ${oldThing.name}`);
+          }
+        }
+      );
+
+      expect(ops.join('; ')).to.equal('Update B 2 => 3; Enter C; Exit A');
+    });
+
+  });
+
 });
