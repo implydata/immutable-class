@@ -78,4 +78,14 @@ describe("NamedArray", () => {
     });
   });
 
+  describe("findByNameCI", () => {
+    it('something that exists', () => {
+      expect(NamedArray.findByNameCI(someArray, 'usa')).to.deep.equal({ name: 'USA', score: 2 });
+      expect(NamedArray.findByNameCI([{ name: 'UsA', score: 2 }], 'uSa')).to.deep.equal({ name: 'UsA', score: 2 });
+    });
+
+    it('something that does not exist', () => {
+      expect(NamedArray.findByNameCI(someArray, 'RUsSia')).to.equal(null);
+    });
+  });
 });

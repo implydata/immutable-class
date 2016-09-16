@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+export type CallbackFn<T> = (value: T, index: number, array: T[]) => boolean
+
 export class SimpleArray {
-  static find<T>(array: T[], fn: (value: T, index: number, array: T[]) => boolean): T {
+  static find<T>(array: T[], fn: CallbackFn<T>): T {
     for (let i = 0, n = array.length; i < n; i++) {
       let a = array[i];
       if (fn.call(array, a, i)) return a;
@@ -23,11 +25,21 @@ export class SimpleArray {
     return null;
   }
 
-  static findIndex<T>(array: T[], fn: (value: T, index: number, array: T[]) => boolean): number {
+  static findIndex<T>(array: T[], fn: CallbackFn<T>): number {
     for (let i = 0, n = array.length; i < n; i++) {
       let a = array[i];
       if (fn.call(array, a, i)) return i;
     }
     return -1;
   }
+
+  static delete<T>(array: T[], arg: T | CallbackFn<T>): T[] {
+    return array.filter((a, i, arr) => typeof arg === 'function' ? !((arg as CallbackFn<T>).call(arr, a, i)) : a !== arg);
+  }
+
+  static contains<T>(array: T[], arg: T | CallbackFn<T>): boolean {
+    if (typeof arg !== 'function') return array.indexOf(arg) !== -1;
+    return SimpleArray.findIndex(array, arg as CallbackFn<T>) !== -1;
+  }
+
 }

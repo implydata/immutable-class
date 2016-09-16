@@ -16,9 +16,14 @@
 
 import { isInstanceOf } from '../utils/utils';
 import { generalEqual } from '../equality/equality';
+import { NamedArray } from "../named-array/named-array";
 
 function firstUp(name: string): string {
   return name[0].toUpperCase() + name.substr(1);
+}
+
+function isDefined(v: any) {
+  return Array.isArray(v) ? v.length : v != null;
 }
 
 export interface Validator {
@@ -29,15 +34,22 @@ export interface ImmutableLike {
   fromJS: (js: any) => any;
 }
 
+export type PropertyType = 'date' | 'array';
+export const PropertyType = {
+  DATE: 'date' as PropertyType,
+  ARRAY: 'array' as PropertyType
+};
+
 export interface Property {
   name: string;
   defaultValue?: any;
   possibleValues?: any[];
   validate?: Validator | Validator[];
-  isDate?: boolean;
+  type?: PropertyType;
   immutableClass?: ImmutableLike;
   immutableClassArray?: ImmutableLike;
   equal?: (a: any, b: any) => boolean;
+  toJS?: (v: any) => any; // todo.. stricter js type?
 }
 
 export interface ClassFnType {
@@ -60,7 +72,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
       var propertyName = property.name;
       var pv: any = js[propertyName];
       if (pv != null) {
-        if (property.isDate) {
+        if (property.type === PropertyType.DATE) {
           pv = new Date(pv);
 
         } else if (property.immutableClass) {
@@ -111,9 +123,15 @@ export abstract class BaseImmutable<ValueType, JSType> {
     var properties = this.ownProperties();
     for (var property of properties) {
       var propertyName = property.name;
+      var propertyType = property.hasOwnProperty('isDate') ? PropertyType.DATE : property.type;
       var pv = (value as any)[propertyName];
 
       if (pv == null) {
+        if (propertyType === PropertyType.ARRAY) {
+          (this as any)[propertyName] = [];
+          continue;
+        }
+
         if (!property.hasOwnProperty('defaultValue')) {
           throw new Error(`${(this.constructor as any).name}.${propertyName} must be defined`);
         }
@@ -123,7 +141,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
           throw new Error(`${(this.constructor as any).name}.${propertyName} can not have value '${pv}' must be one of [${possibleValues.join(', ')}]`);
         }
 
-        if (property.isDate) {
+        if (property.type === PropertyType.DATE) {
           if (isNaN(pv)) {
             throw new Error(`${(this.constructor as any).name}.${propertyName} must be a Date`);
           }
@@ -150,7 +168,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
 
   public findOwnProperty(propName: string): Property | null {
     var properties = this.ownProperties();
-    return properties.filter(p => p.name === propName)[0] || null; // ToDo: replace redneck find with real find
+    return NamedArray.findByName(properties, propName);
   }
 
   public valueOf(): ValueType {
@@ -169,8 +187,10 @@ export abstract class BaseImmutable<ValueType, JSType> {
     for (var property of properties) {
       var propertyName = property.name;
       var pv: any = (this as any)[propertyName];
-      if (pv != null) {
-        if (property.immutableClass) {
+      if (isDefined(pv)) {
+        if (typeof property.toJS === 'function') {
+          pv = property.toJS(pv);
+        } else if (property.immutableClass) {
           pv = pv.toJS();
         } else if (property.immutableClassArray) {
           pv = pv.map((v: any) => v.toJS());

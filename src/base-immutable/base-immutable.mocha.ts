@@ -16,7 +16,7 @@
 
 import { expect } from "chai";
 
-import { BaseImmutable, Property } from './base-immutable';
+import {BaseImmutable, Property, PropertyType} from './base-immutable';
 
 
 interface CarValue {
@@ -72,7 +72,7 @@ class Car extends BaseImmutable<CarValue, CarJS> {
     {
       name: 'createdOn',
       defaultValue: null,
-      isDate: true
+      type: PropertyType.DATE
     }
   ];
 
