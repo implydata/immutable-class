@@ -130,9 +130,12 @@ export abstract class BaseImmutable<ValueType, JSType> {
       var pv = (value as any)[propertyName];
 
       if (pv == null) {
-        if (propertyType === PropertyType.ARRAY) {
-          pv = [];
-        } else if (!property.hasOwnProperty('defaultValue')) {
+        if (propertyType === PropertyType.ARRAY || property.immutableClassArray) {
+          (this as any)[propertyName] = [];
+          continue;
+        }
+
+        if (!property.hasOwnProperty('defaultValue')) {
           throw new Error(`${(this.constructor as any).name}.${propertyName} must be defined`);
         }
       } else {
