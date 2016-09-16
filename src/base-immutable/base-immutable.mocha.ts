@@ -100,6 +100,15 @@ class Car extends BaseImmutable<CarValue, CarJS> {
 
   public changeRange: (range: number) => this;
   public getRange: () => number;
+  public getName: () => string;
+  public getRelatedCars: () => Car[];
+
+  public getSubCar() {
+    var { name } = this;
+    if (name === 'ford') return Car.fromJS({ name: 'pinto' });
+    if (name === 'toyota') return Car.fromJS({ name: 'prius' });
+    return null;
+  }
 }
 BaseImmutable.finalize(Car);
 
@@ -127,9 +136,24 @@ describe("BaseImmutable", () => {
       "range": 0
     });
 
+    expect(car.getRelatedCars()).to.deep.equal([]);
     var car2 = Car.fromJS(car.toJS());
     expect(car2.equals(car)).to.equal(true);
     expect(car2.toJS()).to.deep.equal(car.toJS());
+  });
+
+  it("works with defined getter", () => {
+    var ford = Car.fromJS({ name: 'ford', fuel: 'electric' });
+    expect(ford.getSubCar().getName()).to.deep.equal('pinto');
+    var toyota = Car.fromJS({ name: 'toyota', fuel: 'electric' });
+    expect(toyota.getSubCar().getName()).to.deep.equal('prius');
+  });
+
+  it("works with defined change", () => {
+    var ford = Car.fromJS({ name: 'ford', fuel: 'electric' });
+    expect(ford.getSubCar().getName()).to.deep.equal('pinto');
+    var toyota = Car.fromJS({ name: 'toyota', fuel: 'electric' });
+    expect(toyota.getSubCar().getName()).to.deep.equal('prius');
   });
 
   it("works with dates", () => {

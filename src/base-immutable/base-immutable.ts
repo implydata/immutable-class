@@ -91,20 +91,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
   }
 
   static finalize(ClassFn: ClassFnType): void {
-    var proto = (ClassFn as any).prototype;
-    ClassFn.PROPERTIES.forEach((property: Property) => {
-      var propertyName = property.name;
-      var upped = firstUp(property.name);
-      var getUpped = 'get' + upped;
-      var changeUpped = 'change' + upped;
-      // These have to be function and not => so that they do not bind 'this'
-      proto[getUpped] = proto[getUpped] || function() {
-        return (this as any).get(propertyName);
-      };
-      proto[changeUpped] = proto[changeUpped] || function(newValue: any): any {
-        return (this as any).change(propertyName, newValue);
-      };
-    });
+    // i think this can go away?
   }
 
   static ensure = {
@@ -128,11 +115,8 @@ export abstract class BaseImmutable<ValueType, JSType> {
 
       if (pv == null) {
         if (propertyType === PropertyType.ARRAY) {
-          (this as any)[propertyName] = [];
-          continue;
-        }
-
-        if (!property.hasOwnProperty('defaultValue')) {
+          pv = [];
+        } else if (!property.hasOwnProperty('defaultValue')) {
           throw new Error(`${(this.constructor as any).name}.${propertyName} must be defined`);
         }
       } else {
@@ -157,6 +141,15 @@ export abstract class BaseImmutable<ValueType, JSType> {
           }
         }
       }
+
+      var upped = firstUp(propertyName);
+      var getUpped = 'get' + upped;
+      var changeUpped = 'change' + upped;
+
+      (this as any)[changeUpped] = (this as any)[changeUpped] || this.change.bind(this, propertyName);
+      (this as any)[getUpped] = (this as any)[getUpped] || (function(val: any, defaultValue: any) {
+          return val != null ? val : defaultValue;
+        }).bind(this, pv, property.defaultValue);
 
       (this as any)[propertyName] = pv;
     }
@@ -227,13 +220,8 @@ export abstract class BaseImmutable<ValueType, JSType> {
   }
 
   public get(propName: string): any {
-    var properties = this.ownProperties();
-    for (var property of properties) {
-      if (property.name === propName) {
-        var pv = (this as any)[propName];
-        return pv != null ? pv : property.defaultValue;
-      }
-    }
+    var getter = (this as any)['get' + firstUp(propName)];
+    if (getter) return getter.bind(this)();
     throw new Error(`can not find prop ${propName}`);
   }
 
