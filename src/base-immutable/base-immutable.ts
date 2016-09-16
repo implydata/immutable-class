@@ -91,7 +91,23 @@ export abstract class BaseImmutable<ValueType, JSType> {
   }
 
   static finalize(ClassFn: ClassFnType): void {
-    // i think this can go away?
+    var proto = (ClassFn as any).prototype;
+    ClassFn.PROPERTIES.forEach((property: Property) => {
+      var propertyName = property.name;
+      var upped = firstUp(property.name);
+      var getUpped = 'get' + upped;
+      var changeUpped = 'change' + upped;
+      // These have to be function and not => so that they do not bind 'this'
+      (proto as any)[getUpped] = (proto as any)[getUpped] || function() {
+          var pv = (this as any)[propertyName];
+          return pv != null ? pv : property.defaultValue;
+        };
+      proto[changeUpped] = proto[changeUpped] || function(newValue: any): any {
+          var value = this.valueOf();
+          (value as any)[propertyName] = newValue;
+          return new (this.constructor as any)(value);
+        };
+    });
   }
 
   static ensure = {
@@ -141,15 +157,6 @@ export abstract class BaseImmutable<ValueType, JSType> {
           }
         }
       }
-
-      var upped = firstUp(propertyName);
-      var getUpped = 'get' + upped;
-      var changeUpped = 'change' + upped;
-
-      (this as any)[changeUpped] = (this as any)[changeUpped] || this.change.bind(this, propertyName);
-      (this as any)[getUpped] = (this as any)[getUpped] || (function(val: any, defaultValue: any) {
-          return val != null ? val : defaultValue;
-        }).bind(this, pv, property.defaultValue);
 
       (this as any)[propertyName] = pv;
     }
@@ -221,19 +228,13 @@ export abstract class BaseImmutable<ValueType, JSType> {
 
   public get(propName: string): any {
     var getter = (this as any)['get' + firstUp(propName)];
-    if (getter) return getter.bind(this)();
-    throw new Error(`can not find prop ${propName}`);
+    if (!getter) throw new Error(`can not find prop ${propName}`);
+    return getter.bind(this)();
   }
 
   public change(propName: string, newValue: any): this {
-    var value = this.valueOf();
-
-    var property = this.findOwnProperty(propName);
-    if (!property) {
-      throw new Error(`Unknown property: ${propName}`);
-    }
-
-    (value as any)[propName] = newValue;
-    return new (this.constructor as any)(value);
+    var changer = (this as any)['change' + firstUp(propName)];
+    if (!changer) throw new Error(`Unknown property: ${propName}`);
+    return changer.bind(this)(newValue);
   }
 }
