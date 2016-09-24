@@ -16,7 +16,7 @@
 
 import { expect } from "chai";
 
-import {BaseImmutable, Property, PropertyType} from './base-immutable';
+import { BaseImmutable, Property, PropertyType, BackCompat } from './base-immutable';
 
 
 interface CarValue {
@@ -76,12 +76,23 @@ class Car extends BaseImmutable<CarValue, CarJS> {
     }
   ];
 
+  static BACK_COMPATS: BackCompat[] = [
+    {
+      condition: (js: any) => {
+        return js.fuelType;
+      },
+      action: (js: any) => {
+        js.fuel = js.fuelType;
+      }
+    }
+  ];
+
   static isCar(car: Car) {
     return car instanceof Car;
   }
 
   static fromJS(properties: CarJS) {
-    return new Car(BaseImmutable.jsToValue(Car.PROPERTIES, properties));
+    return new Car(BaseImmutable.jsToValue(Car.PROPERTIES, properties, Car.BACK_COMPATS));
   }
 
 
@@ -144,23 +155,23 @@ describe("BaseImmutable", () => {
 
   it("works with errors", () => {
     expect(() => {
-      Car.fromJS({ fuel: 'electric' } as any)
+      Car.fromJS({ fuel: 'electric' } as any);
     }).to.throw('Car.name must be defined');
 
     expect(() => {
-      Car.fromJS({ name: 'Ford', fuel: 'electric' })
+      Car.fromJS({ name: 'Ford', fuel: 'electric' });
     }).to.throw('Car.name must be lowercase');
 
     expect(() => {
-      Car.fromJS({ name: 'ford', fuel: 'farts' })
+      Car.fromJS({ name: 'ford', fuel: 'farts' });
     }).to.throw("Car.fuel can not have value 'farts' must be one of [gas, diesel, electric]");
 
     expect(() => {
-      Car.fromJS({ name: 'ford', fuel: 'electric', range: ('lol' as any) })
+      Car.fromJS({ name: 'ford', fuel: 'electric', range: ('lol' as any) });
     }).to.throw("Car.range must be a number");
 
     expect(() => {
-      Car.fromJS({ name: 'ford', fuel: 'electric', range: -3 })
+      Car.fromJS({ name: 'ford', fuel: 'electric', range: -3 });
     }).to.throw("Car.range must non negative positive");
 
     expect(() => {
@@ -169,7 +180,7 @@ describe("BaseImmutable", () => {
         fuel: 'electric',
         range: 30,
         relatedCars: (123 as any)
-      })
+      });
     }).to.throw("expected relatedCars to be an array");
 
     expect(() => {
@@ -181,7 +192,7 @@ describe("BaseImmutable", () => {
           { name: 'Toyota', fuel: 'electric', range: 31 },
           { name: 'Toyota', fuel: 'electric', range: 32 }
         ]
-      })
+      });
     }).to.throw("Car.name must be lowercase");
 
     expect(() => {
@@ -190,9 +201,19 @@ describe("BaseImmutable", () => {
         fuel: 'electric',
         range: 30,
         createdOn: 'time for laughs'
-      })
+      });
     }).to.throw("Car.createdOn must be a Date");
 
+  });
+
+  it("works with back compat", () => {
+    expect(Car.fromJS({
+      name: 'ford',
+      fuelType: 'electric'
+    } as any).toJS()).to.deep.equal({
+      name: 'ford',
+      fuel: 'electric'
+    });
   });
 
 });

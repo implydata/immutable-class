@@ -58,13 +58,31 @@ export interface ClassFnType {
   new (properties: any): any;
 }
 
+export interface BackCompat {
+  condition: (js: any) => boolean;
+  action: (js: any) => void;
+}
+
 export abstract class BaseImmutable<ValueType, JSType> {
   // This needs to be defined
   //abstract static PROPERTIES: Property[];
 
-  static jsToValue(properties: Property[], js: any): any {
+  static jsToValue(properties: Property[], js: any, backCompats?: BackCompat[]): any {
     if (properties == null) {
       throw new Error(`JS is not defined`);
+    }
+
+    if (Array.isArray(backCompats)) {
+      var jsCopied = false;
+      for (var backCompat of backCompats) {
+        if (backCompat.condition(js)) {
+          if (!jsCopied) {
+            js = JSON.parse(JSON.stringify(js));
+            jsCopied = true;
+          }
+          backCompat.action(js);
+        }
+      }
     }
 
     var value: any = {};
