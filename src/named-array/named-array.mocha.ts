@@ -35,6 +35,15 @@ describe("NamedArray", () => {
     });
   });
 
+  describe("containsByName", () => {
+    it('something that exists', () => {
+      expect(NamedArray.containsByName(someArray, 'USA')).to.equal(true);
+    });
+
+    it('something that does not exist', () => {
+      expect(NamedArray.containsByName(someArray, 'Russia')).to.equal(false);
+    });
+  });
 
   describe("findIndexByName", () => {
     it('something that exists', () => {
