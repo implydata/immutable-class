@@ -26,6 +26,10 @@ function isDefined(v: any) {
   return Array.isArray(v) ? v.length : v != null;
 }
 
+function noop(v: any) {
+  return v;
+}
+
 export interface Validator {
   (x: any): void;
 }
@@ -50,11 +54,12 @@ export interface Property {
   immutableClassArray?: ImmutableLike;
   equal?: (a: any, b: any) => boolean;
   toJS?: (v: any) => any; // todo.. stricter js type?
+  contextTransform?: (context: { [key: string]: any }) => { [key: string]: any };
 }
 
 export interface ClassFnType {
   PROPERTIES: Property[];
-  fromJS(properties: any): any;
+  fromJS(properties: any, context?: any): any;
   new (properties: any): any;
 }
 
@@ -67,7 +72,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
   // This needs to be defined
   //abstract static PROPERTIES: Property[];
 
-  static jsToValue(properties: Property[], js: any, backCompats?: BackCompat[]): any {
+  static jsToValue(properties: Property[], js: any, backCompats?: BackCompat[], context?: { [key: string]: any }): any {
     if (properties == null) {
       throw new Error(`JS is not defined`);
     }
@@ -88,18 +93,19 @@ export abstract class BaseImmutable<ValueType, JSType> {
     var value: any = {};
     for (var property of properties) {
       var propertyName = property.name;
+      var contextTransform = property.contextTransform || noop;
       var pv: any = js[propertyName];
       if (pv != null) {
         if (property.type === PropertyType.DATE) {
           pv = new Date(pv);
 
         } else if (property.immutableClass) {
-          pv = (property.immutableClass as any).fromJS(pv);
+          pv = (property.immutableClass as any).fromJS(pv, contextTransform(context));
 
         } else if (property.immutableClassArray) {
           if (!Array.isArray(pv)) throw new Error(`expected ${propertyName} to be an array`);
           var propertyImmutableClassArray: any = property.immutableClassArray;
-          pv = pv.map((v: any) => propertyImmutableClassArray.fromJS(v));
+          pv = pv.map((v: any) => propertyImmutableClassArray.fromJS(v, contextTransform(context)));
 
         }
       }
@@ -112,15 +118,19 @@ export abstract class BaseImmutable<ValueType, JSType> {
     var proto = (ClassFn as any).prototype;
     ClassFn.PROPERTIES.forEach((property: Property) => {
       var propertyName = property.name;
+      var defaultValue = property.defaultValue;
       var upped = firstUp(property.name);
       var getUpped = 'get' + upped;
       var changeUpped = 'change' + upped;
       // These have to be function and not => so that they do not bind 'this'
       proto[getUpped] = proto[getUpped] || function() {
-        return (this as any).get(propertyName);
+        var pv = (this as any)[propertyName];
+        return pv != null ? pv : defaultValue;
       };
       proto[changeUpped] = proto[changeUpped] || function(newValue: any): any {
-        return (this as any).change(propertyName, newValue);
+        var value = this.valueOf();
+        value[propertyName] = newValue;
+        return new (this.constructor as any)(value);
       };
     });
   }
@@ -245,25 +255,14 @@ export abstract class BaseImmutable<ValueType, JSType> {
   }
 
   public get(propName: string): any {
-    var properties = this.ownProperties();
-    for (var property of properties) {
-      if (property.name === propName) {
-        var pv = (this as any)[propName];
-        return pv != null ? pv : property.defaultValue;
-      }
-    }
-    throw new Error(`can not find prop ${propName}`);
+    const getter = (this as any)['get' + firstUp(propName)];
+    if (!getter) throw new Error(`can not find prop ${propName}`);
+    return getter.call(this);
   }
 
   public change(propName: string, newValue: any): this {
-    var value = this.valueOf();
-
-    var property = this.findOwnProperty(propName);
-    if (!property) {
-      throw new Error(`Unknown property: ${propName}`);
-    }
-
-    (value as any)[propName] = newValue;
-    return new (this.constructor as any)(value);
+    const changer = (this as any)['change' + firstUp(propName)];
+    if (!changer) throw new Error(`can not find prop ${propName}`);
+    return changer.call(this, newValue);
   }
 }
