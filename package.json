@@ -21,6 +21,7 @@
     "build/"
   ],
   "scripts": {
+    "prepublish": "node_modules/.bin/tdi",
     "compile": "./compile",
     "test": "./run-tests"
   },
