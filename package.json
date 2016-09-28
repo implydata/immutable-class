@@ -17,15 +17,19 @@
   },
   "main": "build/index.js",
   "typings": "build/index.d.ts",
+  "files": [
+    "build/"
+  ],
   "scripts": {
     "compile": "./compile",
     "test": "./run-tests"
   },
   "devDependencies": {
-    "@types/chai": "3.4.32",
+    "@types/mocha": "2.2.32",
     "chai": "3.5.0",
-    "immutable-class-tester": "0.5.3",
-    "mocha": "3.0.2",
-    "typescript": "2.0.0"
+    "immutable-class-tester": "0.5.5",
+    "mocha": "3.1.0",
+    "tdi": "0.1.2",
+    "typescript": "2.0.3"
   }
 }

@@ -104,7 +104,7 @@ export class NamedArray {
 
   static synchronize<T>(oldThings: T[], newThings: T[], updatedOptions: SynchronizerOptions<T>): void {
     const key = updatedOptions.key || getName;
-    const equals = updatedOptions.equals || immutableEqual;
+    const equals = updatedOptions.equals || (immutableEqual as any);
     const onEnter = updatedOptions.onEnter || noop;
     const onUpdate = updatedOptions.onUpdate || noop;
     const onExit = updatedOptions.onExit || noop;
