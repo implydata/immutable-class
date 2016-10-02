@@ -17,6 +17,16 @@
 export type CallbackFn<T> = (value: T, index: number, array: T[]) => boolean
 
 export class SimpleArray {
+  static append<T>(array: T[], value: T): T[] {
+    return array.concat([value]);
+  }
+
+  static change<T>(array: T[], index: number, value: T): T[] {
+    array = array.slice();
+    array[index] = value;
+    return array;
+  }
+
   static find<T>(array: T[], fn: CallbackFn<T>): T {
     for (let i = 0, n = array.length; i < n; i++) {
       let a = array[i];
@@ -37,9 +47,26 @@ export class SimpleArray {
     return array.filter((a, i, arr) => typeof arg === 'function' ? !((arg as CallbackFn<T>).call(arr, a, i)) : a !== arg);
   }
 
+  static deleteIndex<T>(array: T[], index: number): T[] {
+    return array.filter((a, i) => i !== index);
+  }
+
   static contains<T>(array: T[], arg: T | CallbackFn<T>): boolean {
     if (typeof arg !== 'function') return array.indexOf(arg) !== -1;
     return SimpleArray.findIndex(array, arg as CallbackFn<T>) !== -1;
+  }
+
+  static moveIndex<T>(list: T[], itemIndex: number, insertIndex: number): T[] {
+    var n = list.length;
+    if (itemIndex < 0 || itemIndex >= n) throw new Error('itemIndex out of range');
+    if (insertIndex < 0 || insertIndex > n) throw new Error('insertIndex out of range');
+    var newArray: T[] = [];
+    list.forEach((value, i) => {
+      if (i === insertIndex) newArray.push(list[itemIndex]);
+      if (i !== itemIndex) newArray.push(value);
+    });
+    if (n === insertIndex) newArray.push(list[itemIndex]);
+    return newArray;
   }
 
 }
