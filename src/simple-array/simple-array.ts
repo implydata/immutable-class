@@ -56,16 +56,22 @@ export class SimpleArray {
     return SimpleArray.findIndex(array, arg as CallbackFn<T>) !== -1;
   }
 
-  static moveIndex<T>(list: T[], itemIndex: number, insertIndex: number): T[] {
-    var n = list.length;
+  static insertIndex<T>(array: T[], index: number, value: T): T[] {
+    array = array.slice();
+    array.splice(index, 0, value);
+    return array;
+  }
+
+  static moveIndex<T>(array: T[], itemIndex: number, insertIndex: number): T[] {
+    var n = array.length;
     if (itemIndex < 0 || itemIndex >= n) throw new Error('itemIndex out of range');
     if (insertIndex < 0 || insertIndex > n) throw new Error('insertIndex out of range');
     var newArray: T[] = [];
-    list.forEach((value, i) => {
-      if (i === insertIndex) newArray.push(list[itemIndex]);
+    array.forEach((value, i) => {
+      if (i === insertIndex) newArray.push(array[itemIndex]);
       if (i !== itemIndex) newArray.push(value);
     });
-    if (n === insertIndex) newArray.push(list[itemIndex]);
+    if (n === insertIndex) newArray.push(array[itemIndex]);
     return newArray;
   }
 
