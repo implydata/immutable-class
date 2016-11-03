@@ -35,7 +35,7 @@ export interface Validator {
 }
 
 export interface ImmutableLike {
-  fromJS: (js: any) => any;
+  fromJS: (js: any, context?: any) => any;
 }
 
 export type PropertyType = 'date' | 'array';

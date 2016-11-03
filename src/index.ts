@@ -35,6 +35,6 @@ export interface Instance<ValueType, JSType> {
  * Interface that the Immutable Class class should conform to (types the class)
  */
 export interface Class<ValueType, JSType> {
-  fromJS(properties: JSType): Instance<ValueType, JSType>;
+  fromJS(properties: JSType, context?: any): Instance<ValueType, JSType>;
   new (properties: ValueType): any;
 }
