@@ -122,7 +122,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
       var upped = firstUp(property.name);
       var getUpped = 'get' + upped;
       var changeUpped = 'change' + upped;
-      // These have to be function and not => so that they do not bind 'this'
+      // These have to be `function` and not `=>` so that they do not bind 'this'
       proto[getUpped] = proto[getUpped] || function() {
         var pv = (this as any)[propertyName];
         return pv != null ? pv : defaultValue;
