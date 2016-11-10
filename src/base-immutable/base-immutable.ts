@@ -242,7 +242,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
   public equals(other: BaseImmutable<ValueType, JSType>): boolean {
     if (!other) return false;
     if (this === other) return true;
-    if (!isInstanceOf(other, this.constructor)) return false;
+    if (!(other instanceof this.constructor)) return false;
 
     var properties = this.ownProperties();
     for (var property of properties) {

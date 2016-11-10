@@ -32,7 +32,7 @@ export function isInstanceOf(thing: any, constructor: any): boolean {
 
 /**
  * Check to see if things are an array of instances of the given constructor
- * Uses isInstanceOf internally
+ * Uses instanceof internally
  * @param things - the array of things to test
  * @param constructor - the constructor class to check against
  * @returns {boolean}

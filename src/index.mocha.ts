@@ -46,7 +46,7 @@ class Person {
   }
 
   static isPerson(candidate: Person) {
-    return isInstanceOf(candidate, Person);
+    return candidate instanceof Person;
   }
 
   public name: string;
@@ -78,61 +78,6 @@ class Person {
 
 
 describe("utils", () => {
-  describe("isInstanceOf", () => {
-    it("edge cases", () => {
-      expect(isInstanceOf(null, Animal)).to.equal(false);
-    });
-
-    it("works within context", () => {
-      var animal = new Animal("Garry");
-      expect(isInstanceOf(animal, Animal)).to.equal(true);
-      expect(isInstanceOf(animal, Koala)).to.equal(false);
-
-      var koala = new Koala("Annie");
-      expect(isInstanceOf(koala, Animal)).to.equal(true);
-      expect(isInstanceOf(koala, Koala)).to.equal(true);
-    });
-
-    it("works with things form other contexts", () => {
-      // Declare new identical classes, pretending that they came form different context.
-      var Animal2: any = (function () {
-        function Animal(name: string): void {
-          this.name = name;
-        }
-        return Animal;
-      })();
-
-      var Koala2: any = (function (_super: any) {
-        myExtend(Koala, _super);
-        function Koala(name: string): void {
-          _super.call(this, name);
-        }
-        Koala.prototype.cutenessLevel = function () {
-          return "TO_THE_MAX";
-        };
-        return Koala;
-      })(Animal2);
-
-      // there to here
-      var animal2 = new Animal2("Garry");
-      expect(isInstanceOf(animal2, Animal)).to.equal(true);
-      expect(isInstanceOf(animal2, Koala)).to.equal(false);
-
-      var koala2 = new Koala2("Annie");
-      expect(isInstanceOf(koala2, Animal)).to.equal(true);
-      expect(isInstanceOf(koala2, Koala)).to.equal(true);
-
-      // here to there
-      var animal = new Animal("Garry");
-      expect(isInstanceOf(animal, Animal2)).to.equal(true);
-      expect(isInstanceOf(animal, Koala2)).to.equal(false);
-
-      var koala = new Koala("Annie");
-      expect(isInstanceOf(koala, Animal2)).to.equal(true);
-      expect(isInstanceOf(koala, Koala2)).to.equal(true);
-    })
-  });
-
   describe("isArrayOf", () => {
     it("works", () => {
       expect(isArrayOf(null, Animal)).to.equal(false);
@@ -149,7 +94,7 @@ describe("utils", () => {
           new Koala("Annie")
         ], Animal)
       ).to.equal(true);
-    })
+    });
   });
 
   describe("isImmutableClass", () => {
