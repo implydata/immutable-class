@@ -87,7 +87,7 @@ describe("SimpleArray", () => {
   describe('insertIndex', () => {
     it('works in simple case 0', () => {
       var list = "ABCD".split('');
-      expect(SimpleArray.insertIndex(list, 0, "Pre").join('')).to.equal('PreABC');
+      expect(SimpleArray.insertIndex(list, 0, "Pre").join('')).to.equal('PreABCD');
     });
 
   });
