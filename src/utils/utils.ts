@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-/**
- * Checks to see if thing is an instance of the given constructor.
- * Works just like the native instanceof method but handles the case when
- * objects are coming from different frames or from different modules.
- * @param thing - the thing to test
- * @param constructor - the constructor class to check against
- * @returns {boolean}
- */
+// Deprecated
 export function isInstanceOf(thing: any, constructor: any): boolean {
+  console.warn(`isInstanceOf is deprecated, use native instanceof instead`);
   if (typeof constructor !== 'function') throw new TypeError("constructor must be a function");
   if (thing instanceof constructor) return true;
   if (thing == null) return false;
@@ -46,7 +40,7 @@ export function isInstanceOf(thing: any, constructor: any): boolean {
 export function isArrayOf(things: any[], constructor: any): boolean {
   if (!Array.isArray(things)) return false;
   for (var i = 0, length = things.length; i < length; i++) {
-    if (!isInstanceOf(things[i], constructor)) return false;
+    if (!(things[i] instanceof constructor)) return false;
   }
   return true;
 }
