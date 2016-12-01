@@ -62,9 +62,9 @@ export function immutableEqual<T extends Equalable>(a: T, b: T): boolean {
 export function generalArraysEqual<T>(arrayA: T[], arrayB: T[]): boolean {
   if (arrayA === arrayB) return true;
   if (!arrayA !== !arrayB) return false;
-  var length = arrayA.length;
+  let length = arrayA.length;
   if (length !== arrayB.length) return false;
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     if (!generalEqual<T>(arrayA[i], arrayB[i])) return false;
   }
   return true;
@@ -79,9 +79,9 @@ export function generalArraysEqual<T>(arrayA: T[], arrayB: T[]): boolean {
 export function immutableArraysEqual<T extends Equalable>(arrayA: T[], arrayB: T[]): boolean {
   if (arrayA === arrayB) return true;
   if (!arrayA !== !arrayB) return false;
-  var length = arrayA.length;
+  let length = arrayA.length;
   if (length !== arrayB.length) return false;
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     if (!immutableEqual(arrayA[i], arrayB[i])) return false;
   }
   return true;
@@ -97,10 +97,10 @@ export function immutableArraysEqual<T extends Equalable>(arrayA: T[], arrayB: T
 export function generalLookupsEqual<T>(lookupA: { [k: string]: T }, lookupB: { [k: string]: T }): boolean {
   if (lookupA === lookupB) return true;
   if (!lookupA !== !lookupB) return false;
-  var keysA = Object.keys(lookupA);
-  var keysB = Object.keys(lookupB);
+  let keysA = Object.keys(lookupA);
+  let keysB = Object.keys(lookupB);
   if (keysA.length !== keysB.length) return false;
-  for (var k of keysA) {
+  for (let k of keysA) {
     if (!generalEqual<T>(lookupA[k], lookupB[k])) return false;
   }
   return true;
@@ -115,10 +115,10 @@ export function generalLookupsEqual<T>(lookupA: { [k: string]: T }, lookupB: { [
 export function immutableLookupsEqual<T extends Equalable>(lookupA: { [k: string]: T }, lookupB: { [k: string]: T }): boolean {
   if (lookupA === lookupB) return true;
   if (!lookupA !== !lookupB) return false;
-  var keysA = Object.keys(lookupA);
-  var keysB = Object.keys(lookupB);
+  let keysA = Object.keys(lookupA);
+  let keysB = Object.keys(lookupB);
   if (keysA.length !== keysB.length) return false;
-  for (var k of keysA) {
+  for (let k of keysA) {
     if (!immutableEqual(lookupA[k], lookupB[k])) return false;
   }
   return true;

@@ -58,9 +58,9 @@ class Person {
 describe("equality", () => {
   describe("generalEqual", () => {
     it("works with basics (strings)", () => {
-      var tom = 'Tom';
-      var bob1 = 'Bob';
-      var bob2 = 'Bob';
+      let tom = 'Tom';
+      let bob1 = 'Bob';
+      let bob2 = 'Bob';
 
       expect(generalEqual(null, null)).to.equal(true);
 
@@ -72,9 +72,9 @@ describe("equality", () => {
     });
 
     it("works with basics (Dates)", () => {
-      var tom = new Date('2016');
-      var bob1 = new Date('2015');
-      var bob2 = new Date('2015');
+      let tom = new Date('2016');
+      let bob1 = new Date('2015');
+      let bob2 = new Date('2015');
 
       expect(generalEqual(null, null)).to.equal(true);
 
@@ -86,9 +86,9 @@ describe("equality", () => {
     });
 
     it("works immutables", () => {
-      var tom = new Person('Tom');
-      var bob1 = new Person('Bob');
-      var bob2 = new Person('Bob');
+      let tom = new Person('Tom');
+      let bob1 = new Person('Bob');
+      let bob2 = new Person('Bob');
 
       expect(generalEqual(null, null)).to.equal(true);
 
@@ -104,9 +104,9 @@ describe("equality", () => {
 
   describe("immutableEqual", () => {
     it("works immutables", () => {
-      var tom = new Person('Tom');
-      var bob1 = new Person('Bob');
-      var bob2 = new Person('Bob');
+      let tom = new Person('Tom');
+      let bob1 = new Person('Bob');
+      let bob2 = new Person('Bob');
 
       expect(immutableEqual(null, null)).to.equal(true);
 
@@ -122,9 +122,9 @@ describe("equality", () => {
 
   describe("immutableArraysEqual", () => {
     it("works", () => {
-      var tom = new Person('Tom');
-      var bob1 = new Person('Bob');
-      var bob2 = new Person('Bob');
+      let tom = new Person('Tom');
+      let bob1 = new Person('Bob');
+      let bob2 = new Person('Bob');
 
       expect(immutableArraysEqual(null, null)).to.equal(true);
 
@@ -147,9 +147,9 @@ describe("equality", () => {
 
   describe("immutableLookupsEqual", () => {
     it("works", () => {
-      var tom = new Person('Tom');
-      var bob1 = new Person('Bob');
-      var bob2 = new Person('Bob');
+      let tom = new Person('Tom');
+      let bob1 = new Person('Bob');
+      let bob2 = new Person('Bob');
 
       expect(immutableLookupsEqual(null, null)).to.equal(true);
 

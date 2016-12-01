@@ -19,7 +19,7 @@ import { expect } from "chai";
 import { NamedArray } from './named-array';
 
 describe("NamedArray", () => {
-  var someArray = [
+  let someArray = [
     { name: 'UK', score: 1 },
     { name: 'USA', score: 2 },
     { name: 'Italy', score: 3 }
@@ -109,7 +109,7 @@ describe("NamedArray", () => {
     }
 
     it('one enter', () => {
-      var ops: string[] = [];
+      let ops: string[] = [];
 
       NamedArray.synchronize(
         [],
@@ -132,7 +132,7 @@ describe("NamedArray", () => {
     });
 
     it('one exit', () => {
-      var ops: string[] = [];
+      let ops: string[] = [];
 
       NamedArray.synchronize(
         [{ name: 'A' }],
@@ -155,7 +155,7 @@ describe("NamedArray", () => {
     });
 
     it('enter / exit', () => {
-      var ops: string[] = [];
+      let ops: string[] = [];
 
       NamedArray.synchronize(
         [{ name: 'A' }],
@@ -178,7 +178,7 @@ describe("NamedArray", () => {
     });
 
     it('enter / update / exit', () => {
-      var ops: string[] = [];
+      let ops: string[] = [];
 
       NamedArray.synchronize(
         [{ name: 'A', value: 1 }, { name: 'B', value: 2 }],

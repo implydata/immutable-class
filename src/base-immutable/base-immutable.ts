@@ -78,8 +78,8 @@ export abstract class BaseImmutable<ValueType, JSType> {
     }
 
     if (Array.isArray(backCompats)) {
-      var jsCopied = false;
-      for (var backCompat of backCompats) {
+      let jsCopied = false;
+      for (let backCompat of backCompats) {
         if (backCompat.condition(js)) {
           if (!jsCopied) {
             js = JSON.parse(JSON.stringify(js));
@@ -90,11 +90,11 @@ export abstract class BaseImmutable<ValueType, JSType> {
       }
     }
 
-    var value: any = {};
-    for (var property of properties) {
-      var propertyName = property.name;
-      var contextTransform = property.contextTransform || noop;
-      var pv: any = js[propertyName];
+    let value: any = {};
+    for (let property of properties) {
+      let propertyName = property.name;
+      let contextTransform = property.contextTransform || noop;
+      let pv: any = js[propertyName];
       if (pv != null) {
         if (property.type === PropertyType.DATE) {
           pv = new Date(pv);
@@ -104,7 +104,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
 
         } else if (property.immutableClassArray) {
           if (!Array.isArray(pv)) throw new Error(`expected ${propertyName} to be an array`);
-          var propertyImmutableClassArray: any = property.immutableClassArray;
+          let propertyImmutableClassArray: any = property.immutableClassArray;
           pv = pv.map((v: any) => propertyImmutableClassArray.fromJS(v, contextTransform(context)));
 
         }
@@ -115,20 +115,20 @@ export abstract class BaseImmutable<ValueType, JSType> {
   }
 
   static finalize(ClassFn: ClassFnType): void {
-    var proto = (ClassFn as any).prototype;
+    let proto = (ClassFn as any).prototype;
     ClassFn.PROPERTIES.forEach((property: Property) => {
-      var propertyName = property.name;
-      var defaultValue = property.defaultValue;
-      var upped = firstUp(property.name);
-      var getUpped = 'get' + upped;
-      var changeUpped = 'change' + upped;
+      let propertyName = property.name;
+      let defaultValue = property.defaultValue;
+      let upped = firstUp(property.name);
+      let getUpped = 'get' + upped;
+      let changeUpped = 'change' + upped;
       // These have to be `function` and not `=>` so that they do not bind 'this'
       proto[getUpped] = proto[getUpped] || function() {
-        var pv = (this as any)[propertyName];
+        let pv = (this as any)[propertyName];
         return pv != null ? pv : defaultValue;
       };
       proto[changeUpped] = proto[changeUpped] || function(newValue: any): any {
-        var value = this.valueOf();
+        let value = this.valueOf();
         value[propertyName] = newValue;
         return new (this.constructor as any)(value);
       };
@@ -148,11 +148,11 @@ export abstract class BaseImmutable<ValueType, JSType> {
   };
 
   constructor(value: ValueType) {
-    var properties = this.ownProperties();
-    for (var property of properties) {
-      var propertyName = property.name;
-      var propertyType = property.hasOwnProperty('isDate') ? PropertyType.DATE : property.type;
-      var pv = (value as any)[propertyName];
+    let properties = this.ownProperties();
+    for (let property of properties) {
+      let propertyName = property.name;
+      let propertyType = property.hasOwnProperty('isDate') ? PropertyType.DATE : property.type;
+      let pv = (value as any)[propertyName];
 
       if (pv == null) {
         if (propertyType === PropertyType.ARRAY) {
@@ -164,7 +164,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
           throw new Error(`${(this.constructor as any).name}.${propertyName} must be defined`);
         }
       } else {
-        var possibleValues = property.possibleValues;
+        let possibleValues = property.possibleValues;
         if (possibleValues && possibleValues.indexOf(pv) === -1) {
           throw new Error(`${(this.constructor as any).name}.${propertyName} can not have value '${pv}' must be one of [${possibleValues.join(', ')}]`);
         }
@@ -175,11 +175,11 @@ export abstract class BaseImmutable<ValueType, JSType> {
           }
         }
 
-        var validate = property.validate;
+        let validate = property.validate;
         if (validate) {
-          var validators: Validator[] = Array.isArray(validate) ? validate : [validate];
+          let validators: Validator[] = Array.isArray(validate) ? validate : [validate];
           try {
-            for (var validator of validators) validator(pv);
+            for (let validator of validators) validator(pv);
           } catch (e) {
             throw new Error(`${(this.constructor as any).name}.${propertyName} ${e.message}`);
           }
@@ -195,26 +195,26 @@ export abstract class BaseImmutable<ValueType, JSType> {
   }
 
   public findOwnProperty(propName: string): Property | null {
-    var properties = this.ownProperties();
+    let properties = this.ownProperties();
     return NamedArray.findByName(properties, propName);
   }
 
   public valueOf(): ValueType {
-    var value: any = {};
-    var properties = this.ownProperties();
-    for (var property of properties) {
-      var propertyName = property.name;
+    let value: any = {};
+    let properties = this.ownProperties();
+    for (let property of properties) {
+      let propertyName = property.name;
       value[propertyName] = (this as any)[propertyName];
     }
     return value;
   }
 
   public toJS(): JSType {
-    var js: any = {};
-    var properties = this.ownProperties();
-    for (var property of properties) {
-      var propertyName = property.name;
-      var pv: any = (this as any)[propertyName];
+    let js: any = {};
+    let properties = this.ownProperties();
+    for (let property of properties) {
+      let propertyName = property.name;
+      let pv: any = (this as any)[propertyName];
       if (isDefined(pv)) {
         if (typeof property.toJS === 'function') {
           pv = property.toJS(pv);
@@ -234,8 +234,8 @@ export abstract class BaseImmutable<ValueType, JSType> {
   }
 
   public toString(): string {
-    var name: any = (this as any).name;
-    var extra = name === 'string' ? `: ${name}` : '';
+    let name: any = (this as any).name;
+    let extra = name === 'string' ? `: ${name}` : '';
     return `[ImmutableClass${extra}]`;
   }
 
@@ -244,10 +244,10 @@ export abstract class BaseImmutable<ValueType, JSType> {
     if (this === other) return true;
     if (!(other instanceof this.constructor)) return false;
 
-    var properties = this.ownProperties();
-    for (var property of properties) {
-      var propertyName = property.name;
-      var equal = property.equal || generalEqual;
+    let properties = this.ownProperties();
+    for (let property of properties) {
+      let propertyName = property.name;
+      let equal = property.equal || generalEqual;
       if (!equal((this as any)[propertyName], (other as any)[propertyName])) return false;
     }
 

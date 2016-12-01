@@ -37,9 +37,9 @@ export interface SynchronizerOptions<T> {
 
 export class NamedArray {
   static isValid<T extends Nameable>(array: T[]): boolean {
-    var seen: { [k: string]: number } = {};
-    for (var a of array) {
-      var name = a.name;
+    let seen: { [k: string]: number } = {};
+    for (let a of array) {
+      let name = a.name;
       if (seen[name]) return false;
       seen[name] = 1;
     }
@@ -47,9 +47,9 @@ export class NamedArray {
   }
 
   static checkValid<T extends Nameable>(array: T[]): void {
-    var seen: { [k: string]: number } = {};
-    for (var a of array) {
-      var name = a.name;
+    let seen: { [k: string]: number } = {};
+    for (let a of array) {
+      let name = a.name;
       if (seen[name]) throw new Error(`duplicate '${name}'`);
       seen[name] = 1;
     }
@@ -64,7 +64,7 @@ export class NamedArray {
   }
 
   static findByNameCI<T extends Nameable>(array: T[], name: string): T {
-    var lowerName = name.toLowerCase();
+    let lowerName = name.toLowerCase();
     return SimpleArray.find(array, (x) => x.name.toLowerCase() === lowerName);
   }
 
@@ -77,8 +77,8 @@ export class NamedArray {
   }
 
   static overrideByName<T extends Nameable>(things: T[], thingOverride: T): T[] {
-    var overrideName = thingOverride.name;
-    var added = false;
+    let overrideName = thingOverride.name;
+    let added = false;
     things = things.map(t => {
       if (t.name === overrideName) {
         added = true;
@@ -92,7 +92,7 @@ export class NamedArray {
   }
 
   static overridesByName<T extends Nameable>(things: T[], thingOverrides: T[]): T[] {
-    for (var thingOverride of thingOverrides) {
+    for (let thingOverride of thingOverrides) {
       things = NamedArray.overrideByName(things, thingOverride);
     }
     return things;
@@ -109,18 +109,18 @@ export class NamedArray {
     const onUpdate = updatedOptions.onUpdate || noop;
     const onExit = updatedOptions.onExit || noop;
 
-    var initialByKey: { [k: string]: T } = Object.create(null);
-    for (var i = 0; i < oldThings.length; i++) {
-      var initialThing = oldThings[i];
-      var initialThingKey = key(initialThing);
+    let initialByKey: { [k: string]: T } = Object.create(null);
+    for (let i = 0; i < oldThings.length; i++) {
+      let initialThing = oldThings[i];
+      let initialThingKey = key(initialThing);
       if (initialByKey[initialThingKey]) throw new Error(`duplicate key '${initialThingKey}'`);
       initialByKey[initialThingKey] = initialThing;
     }
 
-    for (var j = 0; j < newThings.length; j++) {
-      var newThing = newThings[j];
-      var newThingKey = key(newThing);
-      var oldThing = initialByKey[newThingKey];
+    for (let j = 0; j < newThings.length; j++) {
+      let newThing = newThings[j];
+      let newThingKey = key(newThing);
+      let oldThing = initialByKey[newThingKey];
       if (oldThing) {
         if (!equals(newThing, oldThing)) {
           onUpdate(newThing, oldThing);
@@ -131,7 +131,7 @@ export class NamedArray {
       }
     }
 
-    for (var k in initialByKey) {
+    for (let k in initialByKey) {
       if (!initialByKey[k]) continue;
       onExit(initialByKey[k]);
     }

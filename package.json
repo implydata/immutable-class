@@ -26,11 +26,11 @@
     "test": "./run-tests"
   },
   "devDependencies": {
-    "@types/mocha": "2.2.32",
+    "@types/mocha": "2.2.33",
     "chai": "3.5.0",
     "immutable-class-tester": "0.5.8",
-    "mocha": "3.1.2",
-    "tdi": "0.1.6",
-    "typescript": "2.0.8"
+    "mocha": "3.2.0",
+    "tdi": "0.1.7",
+    "typescript": "2.0.10"
   }
 }

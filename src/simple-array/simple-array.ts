@@ -63,10 +63,10 @@ export class SimpleArray {
   }
 
   static moveIndex<T>(array: T[], itemIndex: number, insertIndex: number): T[] {
-    var n = array.length;
+    let n = array.length;
     if (itemIndex < 0 || itemIndex >= n) throw new Error('itemIndex out of range');
     if (insertIndex < 0 || insertIndex > n) throw new Error('insertIndex out of range');
-    var newArray: T[] = [];
+    let newArray: T[] = [];
     array.forEach((value, i) => {
       if (i === insertIndex) newArray.push(array[itemIndex]);
       if (i !== itemIndex) newArray.push(value);

@@ -34,7 +34,7 @@ class Koala extends Animal {
 }
 
 function myExtend(d: any, b: any) {
-  for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+  for (let p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
   function Sup() { this.constructor = d; }
   Sup.prototype = b.prototype;
   d.prototype = new (Sup as any)();
@@ -112,9 +112,9 @@ describe("utils", () => {
 
   describe("generalEqual", () => {
     it("works with basics (strings)", () => {
-      var tom = 'Tom';
-      var bob1 = 'Bob';
-      var bob2 = 'Bob';
+      let tom = 'Tom';
+      let bob1 = 'Bob';
+      let bob2 = 'Bob';
 
       expect(generalEqual(null, null)).to.equal(true);
 
@@ -126,9 +126,9 @@ describe("utils", () => {
     });
 
     it("works with basics (Dates)", () => {
-      var tom = new Date('2016');
-      var bob1 = new Date('2015');
-      var bob2 = new Date('2015');
+      let tom = new Date('2016');
+      let bob1 = new Date('2015');
+      let bob2 = new Date('2015');
 
       expect(generalEqual(null, null)).to.equal(true);
 
@@ -140,9 +140,9 @@ describe("utils", () => {
     });
 
     it("works immutables", () => {
-      var tom = new Person('Tom');
-      var bob1 = new Person('Bob');
-      var bob2 = new Person('Bob');
+      let tom = new Person('Tom');
+      let bob1 = new Person('Bob');
+      let bob2 = new Person('Bob');
 
       expect(generalEqual(null, null)).to.equal(true);
 
@@ -158,9 +158,9 @@ describe("utils", () => {
 
   describe("immutableEqual", () => {
     it("works immutables", () => {
-      var tom = new Person('Tom');
-      var bob1 = new Person('Bob');
-      var bob2 = new Person('Bob');
+      let tom = new Person('Tom');
+      let bob1 = new Person('Bob');
+      let bob2 = new Person('Bob');
 
       expect(immutableEqual(null, null)).to.equal(true);
 
@@ -176,9 +176,9 @@ describe("utils", () => {
 
   describe("immutableArraysEqual", () => {
     it("works", () => {
-      var tom = new Person('Tom');
-      var bob1 = new Person('Bob');
-      var bob2 = new Person('Bob');
+      let tom = new Person('Tom');
+      let bob1 = new Person('Bob');
+      let bob2 = new Person('Bob');
 
       expect(immutableArraysEqual(null, null)).to.equal(true);
 
@@ -201,9 +201,9 @@ describe("utils", () => {
 
   describe("immutableLookupsEqual", () => {
     it("works", () => {
-      var tom = new Person('Tom');
-      var bob1 = new Person('Bob');
-      var bob2 = new Person('Bob');
+      let tom = new Person('Tom');
+      let bob1 = new Person('Bob');
+      let bob2 = new Person('Bob');
 
       expect(immutableLookupsEqual(null, null)).to.equal(true);
 

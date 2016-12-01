@@ -114,15 +114,15 @@ class Car extends BaseImmutable<CarValue, CarJS> {
   public getRelatedCars: () => Car[];
 
   public getSubCar() {
-    var { name } = this;
+    let { name } = this;
     if (name === 'ford') return Car.fromJS({ name: 'pinto', fuel: 'gas' });
     if (name === 'toyota') return Car.fromJS({ name: 'prius' , fuel: 'electric' });
     return null;
   }
 
   public changeRange(n: number) {
-    var value = this.valueOf();
-    var { fuel } = value;
+    let value = this.valueOf();
+    let { fuel } = value;
     if (fuel === 'electric') {
       value.range = n > 400 ? 400 : n;
       return new Car(value);
@@ -142,7 +142,7 @@ BaseImmutable.finalize(Car);
 describe("BaseImmutable", () => {
 
   it("works with basics", () => {
-    var car = Car.fromJS({ name: 'ford', fuel: 'electric' });
+    let car = Car.fromJS({ name: 'ford', fuel: 'electric' });
 
     expect(car.get('name')).to.equal('ford');
     expect(car.get('fuel')).to.equal('electric');
@@ -164,33 +164,33 @@ describe("BaseImmutable", () => {
 
     expect(car.getRelatedCars()).to.deep.equal([]);
 
-    var car2 = Car.fromJS(car.toJS());
+    let car2 = Car.fromJS(car.toJS());
     expect(car2.equals(car)).to.equal(true);
     expect(car2.toJS()).to.deep.equal(car.toJS());
   });
 
   it("calling general getter calls defined getter", () => {
-    var ford = Car.fromJS({ name: 'ford' });
+    let ford = Car.fromJS({ name: 'ford' });
     expect(ford.get('subCar').getName()).to.deep.equal('pinto');
     expect(ford.getSubCar().getName()).to.deep.equal('pinto');
 
-    var toyota = Car.fromJS({ name: 'toyota'});
+    let toyota = Car.fromJS({ name: 'toyota'});
     expect(toyota.get('subCar').getName()).to.deep.equal('prius');
     expect(toyota.getSubCar().getName()).to.deep.equal('prius');
   });
 
   it("calling general changer calls defined changer", () => {
-    var leaf = Car.fromJS({ name: 'leaf', fuel: 'electric' });
+    let leaf = Car.fromJS({ name: 'leaf', fuel: 'electric' });
     expect(leaf.change('range', 900).getRange()).to.equal(400);
     expect(leaf.changeRange(900).getRange()).to.equal(400);
 
-    var truck = Car.fromJS({ name: 'truck', fuel: 'diesel' });
+    let truck = Car.fromJS({ name: 'truck', fuel: 'diesel' });
     expect(truck.change('range', 900).getRange()).to.equal(900);
     expect(truck.changeRange(900).getRange()).to.equal(900);
   });
 
   it("works with dates", () => {
-    var car = Car.fromJS({ name: 'ford', fuel: 'electric', createdOn: '2016-01-01T01:02:03.456Z' });
+    let car = Car.fromJS({ name: 'ford', fuel: 'electric', createdOn: '2016-01-01T01:02:03.456Z' });
 
     expect(car.toJS()).to.deep.equal({
       "name": "ford",

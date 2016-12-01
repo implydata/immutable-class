@@ -20,9 +20,9 @@ export function isInstanceOf(thing: any, constructor: any): boolean {
   if (typeof constructor !== 'function') throw new TypeError("constructor must be a function");
   if (thing instanceof constructor) return true;
   if (thing == null) return false;
-  var constructorName: string = constructor.name;
+  let constructorName: string = constructor.name;
   if (!constructorName) return false;
-  var thingProto: any = thing.__proto__;
+  let thingProto: any = thing.__proto__;
   while (thingProto && thingProto.constructor) {
     if (thingProto.constructor.name === constructorName) return true;
     thingProto = thingProto.__proto__;
@@ -39,7 +39,7 @@ export function isInstanceOf(thing: any, constructor: any): boolean {
  */
 export function isArrayOf(things: any[], constructor: any): boolean {
   if (!Array.isArray(things)) return false;
-  for (var i = 0, length = things.length; i < length; i++) {
+  for (let i = 0, length = things.length; i < length; i++) {
     if (!(things[i] instanceof constructor)) return false;
   }
   return true;
@@ -52,7 +52,7 @@ export function isArrayOf(things: any[], constructor: any): boolean {
  */
 export function isImmutableClass(thing: any): boolean {
   if (!thing || typeof thing !== 'object') return false;
-  var ClassFn = thing.constructor;
+  let ClassFn = thing.constructor;
   return typeof ClassFn.fromJS === 'function' && // Has Class.fromJS
     typeof thing.toJS === 'function' && // Has Class#toJS
     typeof thing.equals === 'function'; // Has Class#equals
