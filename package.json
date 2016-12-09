@@ -25,12 +25,16 @@
     "compile": "./compile",
     "test": "./run-tests"
   },
+  "dependencies": {
+    "has-own-prop": "1.0.0",
+    "tslib": "1.2.0"
+  },
   "devDependencies": {
     "@types/mocha": "2.2.33",
     "chai": "3.5.0",
-    "immutable-class-tester": "0.5.8",
+    "immutable-class-tester": "0.5.10",
     "mocha": "3.2.0",
-    "tdi": "0.1.7",
-    "typescript": "2.0.10"
+    "tdi": "0.2.4",
+    "typescript": "2.1.4"
   }
 }

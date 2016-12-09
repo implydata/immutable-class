@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { isInstanceOf } from '../utils/utils';
+import * as hasOwnProp from 'has-own-prop';
 import { generalEqual } from '../equality/equality';
 import { NamedArray } from "../named-array/named-array";
 
@@ -151,7 +151,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
     let properties = this.ownProperties();
     for (let property of properties) {
       let propertyName = property.name;
-      let propertyType = property.hasOwnProperty('isDate') ? PropertyType.DATE : property.type;
+      let propertyType = hasOwnProp(property, 'isDate') ? PropertyType.DATE : property.type;
       let pv = (value as any)[propertyName];
 
       if (pv == null) {
@@ -160,7 +160,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
           continue;
         }
 
-        if (!property.hasOwnProperty('defaultValue')) {
+        if (!hasOwnProp(property, 'defaultValue')) {
           throw new Error(`${(this.constructor as any).name}.${propertyName} must be defined`);
         }
       } else {

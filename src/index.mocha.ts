@@ -16,8 +16,9 @@
  */
 
 import { expect } from "chai";
+import * as hasOwnProp from 'has-own-prop';
 
-import { isInstanceOf, isArrayOf, isImmutableClass, generalEqual, immutableEqual, immutableArraysEqual, immutableLookupsEqual } from './index';
+import { isArrayOf, isImmutableClass, generalEqual, immutableEqual, immutableArraysEqual, immutableLookupsEqual } from './index';
 
 class Animal {
   public name: string;
@@ -29,12 +30,12 @@ class Animal {
 
 class Koala extends Animal {
   public cutenessLevel() {
-    return "TO_THE_MAX"
+    return "TO_THE_MAX";
   }
 }
 
 function myExtend(d: any, b: any) {
-  for (let p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+  for (let p in b) if (hasOwnProp(b, p)) d[p] = b[p];
   function Sup() { this.constructor = d; }
   Sup.prototype = b.prototype;
   d.prototype = new (Sup as any)();
