@@ -142,4 +142,36 @@ describe("BaseImmutable", () => {
     });
   });
 
+  it("works with deep get", () => {
+    const car = Car.fromJS({
+      fuel: 'electric',
+      name: 'ford',
+      subCar: {
+        name: 'focus',
+        subCar: {
+          name: 'focus2'
+        }
+      }
+
+    } as any);
+    expect(car.deepGet('subCar.subCar.name')).to.equal('focus2');
+  });
+
+  it("works with deep change", () => {
+    const car = Car.fromJS({
+      fuel: 'electric',
+      name: 'ford',
+      subCar: {
+        name: 'focus',
+        subCar: {
+          name: 'focus2'
+        }
+      }
+
+    } as any);
+
+    const newCar = car.deepChange('subCar.subCar', { name: 'anuford' });
+    expect(newCar.deepGet('subCar.subCar.name')).to.equal('anuford');
+  });
+
 });
