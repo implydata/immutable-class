@@ -111,7 +111,8 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
   public getRelatedCars: () => Car[];
 
   public getSubCar() {
-    let { name } = this;
+    let { name, subCar } = this;
+    if (subCar) return subCar;
     if (name === 'ford') return Car.fromJS({ name: 'pinto', fuel: 'gas' });
     if (name === 'toyota') return Car.fromJS({ name: 'prius' , fuel: 'electric' });
     return null;
