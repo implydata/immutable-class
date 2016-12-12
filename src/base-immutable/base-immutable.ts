@@ -265,4 +265,50 @@ export abstract class BaseImmutable<ValueType, JSType> {
     if (!changer) throw new Error(`can not find prop ${propName}`);
     return changer.call(this, newValue);
   }
+
+  public deepChange(propName: string, newValue: any): this {
+    let bits = propName.split('.');
+    let lastObject = newValue;
+    let currentObject: any;
+
+    let getLastObject = () => {
+      let o: any = this;
+
+      for (let i = 0; i < bits.length; i++) {
+        o = o[bits[i]];
+      }
+
+      return o;
+    };
+
+    while (bits.length) {
+      let bit = bits.pop();
+
+      currentObject = getLastObject();
+      if (currentObject.change instanceof Function) {
+        lastObject = currentObject.change(bit, lastObject);
+      } else {
+        let message = 'Can\'t find \`change()\` method on ' + currentObject.constructor.name;
+        console.error(message); // Leaving this console statement because the error might be caught and obfuscated
+        throw new Error(message);
+      }
+    }
+
+    return lastObject;
+  }
+
+  public deepGet(propName: string): any {
+    let value = this as any;
+    let bits = propName.split('.');
+    let bit: string;
+    while (bit = bits.shift()) {
+      let specializedGetterName = `get${firstUp(bit)}`;
+      let specializedGetter = value[specializedGetterName];
+      value = specializedGetter ? specializedGetter.call(value)
+        : value.get ? value.get(bit)
+        : value[bit];
+    }
+
+    return value as any;
+  }
 }
