@@ -19,6 +19,7 @@ export * from './utils/utils';
 export * from './equality/equality';
 export * from './simple-array/simple-array';
 export * from './named-array/named-array';
+export * from './keyed-array/keyed-array';
 export * from './base-immutable/base-immutable';
 
 /**
