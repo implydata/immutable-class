@@ -35,6 +35,44 @@ describe("NamedArray", () => {
     });
   });
 
+
+  describe("isValid", () => {
+    let invalidArr = [
+      { name: 'UK', score: 1 },
+      { name: 'UK', score: 2 },
+      { name: 'Italy', score: 3 }
+    ];
+
+    it('invalid array', () => {
+      expect(NamedArray.isValid(invalidArr)).to.equal(false);
+    });
+
+    it('valid array', () => {
+      expect(NamedArray.isValid(someArray)).to.equal(true);
+    });
+  });
+
+  describe("checkValid", () => {
+    let invalidArr = [
+      { name: 'UK', score: 1 },
+      { name: 'UK', score: 2 },
+      { name: 'Italy', score: 3 }
+    ];
+
+    it('invalid array', () => {
+      expect(
+        () => NamedArray.checkValid(invalidArr)
+      ).to.throw(`duplicate 'UK'`);
+    });
+
+    it('valid array', () => {
+      expect(
+        () => NamedArray.checkValid(someArray)
+      ).to.not.throw();
+    });
+  });
+
+
   describe("containsByName", () => {
     it('something that exists', () => {
       expect(NamedArray.containsByName(someArray, 'USA')).to.equal(true);
@@ -70,6 +108,33 @@ describe("NamedArray", () => {
         { name: 'UK', score: 1 },
         { name: 'USA', score: 2 },
         { name: 'Italy', score: 3 },
+        { name: 'Russia', score: 5 }
+      ]);
+    });
+
+  });
+
+  describe("overridesByName", () => {
+    it('overrides (in order)', () => {
+      expect(NamedArray.overridesByName(someArray, [
+        { name: 'USA', score: 52 },
+        { name: 'Italy', score: 50 }
+        ])).to.deep.equal([
+        { name: 'UK', score: 1 },
+        { name: 'USA', score: 52 },
+        { name: 'Italy', score: 50 }
+      ]);
+    });
+
+    it('overrides appends', () => {
+      expect(NamedArray.overridesByName(someArray, [
+        { name: 'Country', score: 0 },
+        { name: 'Russia', score: 5 }
+        ])).to.deep.equal([
+        { name: 'UK', score: 1 },
+        { name: 'USA', score: 2 },
+        { name: 'Italy', score: 3 },
+        { name: 'Country', score: 0 },
         { name: 'Russia', score: 5 }
       ]);
     });

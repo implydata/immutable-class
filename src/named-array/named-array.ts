@@ -15,6 +15,8 @@
  */
 
 import { SimpleArray } from '../simple-array/simple-array';
+import { KeyedArray } from '../keyed-array/keyed-array';
+
 import { immutableEqual } from '../equality/equality';
 
 export interface Nameable {
@@ -35,28 +37,18 @@ export interface SynchronizerOptions<T> {
   onExit?: (oldThing: T) => void;
 }
 
+const KEYED_ARRAY = KeyedArray.withKey("name");
 export class NamedArray {
   static isValid<T extends Nameable>(array: T[]): boolean {
-    let seen: { [k: string]: number } = {};
-    for (let a of array) {
-      let name = a.name;
-      if (seen[name]) return false;
-      seen[name] = 1;
-    }
-    return true;
+    return KEYED_ARRAY.isValid(array);
   }
 
   static checkValid<T extends Nameable>(array: T[]): void {
-    let seen: { [k: string]: number } = {};
-    for (let a of array) {
-      let name = a.name;
-      if (seen[name]) throw new Error(`duplicate '${name}'`);
-      seen[name] = 1;
-    }
+    return KEYED_ARRAY.checkValid(array);
   }
 
   static get<T extends Nameable>(array: T[], name: string): T {
-    return SimpleArray.find(array, (x) => x.name === name);
+    return KEYED_ARRAY.get(array, name);
   }
 
   static containsByName<T extends Nameable>(array: T[], name: string): boolean {
@@ -77,29 +69,15 @@ export class NamedArray {
   }
 
   static overrideByName<T extends Nameable>(things: T[], thingOverride: T): T[] {
-    let overrideName = thingOverride.name;
-    let added = false;
-    things = things.map(t => {
-      if (t.name === overrideName) {
-        added = true;
-        return thingOverride;
-      } else {
-        return t;
-      }
-    });
-    if (!added) things.push(thingOverride);
-    return things;
+    return KEYED_ARRAY.overrideByKey(things, thingOverride);
   }
 
   static overridesByName<T extends Nameable>(things: T[], thingOverrides: T[]): T[] {
-    for (let thingOverride of thingOverrides) {
-      things = NamedArray.overrideByName(things, thingOverride);
-    }
-    return things;
+    return KEYED_ARRAY.overridesByKey(things, thingOverrides);
   }
 
   static deleteByName<T extends Nameable>(array: T[], name: string): T[] {
-    return array.filter((a) => a.name !== name);
+    return KEYED_ARRAY.deleteByKey(array, name);
   }
 
   static synchronize<T>(oldThings: T[], newThings: T[], updatedOptions: SynchronizerOptions<T>): void {
@@ -136,7 +114,6 @@ export class NamedArray {
       onExit(initialByKey[k]);
     }
   }
-
 }
 
 
