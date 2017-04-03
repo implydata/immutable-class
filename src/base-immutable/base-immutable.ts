@@ -38,6 +38,8 @@ export interface ImmutableLike {
   fromJS: (js: any, context?: any) => any;
 }
 
+export type ImmutableLikeFn = (js: any) => ImmutableLike;
+
 export type PropertyType = 'date' | 'array';
 export const PropertyType = {
   DATE: 'date' as PropertyType,
@@ -51,7 +53,7 @@ export interface Property {
   validate?: Validator | Validator[];
   type?: PropertyType;
   immutableClass?: ImmutableLike;
-  immutableClassArray?: (ImmutableLike | ((js: any) => ImmutableLike));
+  immutableClassArray?: ImmutableLike | ImmutableLikeFn;
   equal?: (a: any, b: any) => boolean;
   toJS?: (v: any) => any; // todo.. stricter js type?
   contextTransform?: (context: { [key: string]: any }) => { [key: string]: any };
@@ -75,13 +77,13 @@ export abstract class BaseImmutable<ValueType, JSType> {
   static immutableClassArrayToValue(property: Property, propertyValue: any): ImmutableLike[] {
     let propertyName = property.name;
     let contextTransform = property.contextTransform || noop;
-    let getClass: (js?: any) => ImmutableLike;
+    let getClass: ImmutableLikeFn;
     const c = property.immutableClassArray;
 
-    if (c instanceof Function) {
-      getClass = c;
-    } else {
+    if (hasOwnProp(c, 'fromJS')) {
       getClass = () => c as ImmutableLike;
+    } else {
+      getClass = c as ImmutableLikeFn;
     }
 
     if (!Array.isArray(propertyValue)) throw new Error(`expected ${propertyName} to be an array`);

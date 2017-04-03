@@ -70,14 +70,11 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
       defaultValue: [],
       immutableClassArray: Car
     },
-    // {
-    //   name: 'travelers',
-    //   defaultValue: [],
-    //   immutableClassArray: (js: any) => {
-    //     console.log(js);
-    //     return js.isDriver ? Driver : Passenger;
-    //   }
-    // },
+    {
+      name: 'travelers',
+      defaultValue: [],
+      immutableClassArray: (js: any) => js.licenseDate !== undefined ? Driver : Passenger // this is ludicrous ^^
+    },
     {
       name: 'createdOn',
       defaultValue: null,

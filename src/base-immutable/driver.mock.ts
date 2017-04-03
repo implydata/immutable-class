@@ -18,16 +18,21 @@ import { BaseImmutable, Property, PropertyType, BackCompat } from './base-immuta
 
 export interface DriverValue {
   name: string;
+  licenseDate: Date;
 }
 
 export interface DriverJS {
   name: string;
+  licenseDate: Date | string;
 }
 
 export class Driver extends BaseImmutable<DriverValue, DriverJS> {
   static PROPERTIES: Property[] = [
+    {name: 'name'},
     {
-      name: 'name'
+      name: 'licenseDate',
+      defaultValue: null,
+      type: PropertyType.DATE
     }
   ];
 
@@ -39,8 +44,8 @@ export class Driver extends BaseImmutable<DriverValue, DriverJS> {
     return new Driver(BaseImmutable.jsToValue(Driver.PROPERTIES, properties));
   }
 
-
   public name: string;
+  public createdOn: Date;
 
   constructor(properties: DriverValue) {
     super(properties);
