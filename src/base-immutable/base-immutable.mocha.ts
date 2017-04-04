@@ -174,4 +174,29 @@ describe("BaseImmutable", () => {
     expect(newCar.deepGet('subCar.subCar.name')).to.equal('anuford');
   });
 
+  it("works with several potential immutable array classes", () => {
+    const car = Car.fromJS({
+      fuel: 'gas',
+      name: 'ford',
+      travelers: [
+        {name: 'Mr White', licenseDate: '2017-04-03T11:55:11.751Z'},
+        {name: 'Mr Pink'},
+        {name: 'Mr Orange'},
+        {name: 'Mr Brown'}
+      ]
+
+    } as any);
+
+    expect(car.toJS()).to.deep.equal({
+      name: 'ford',
+      fuel: 'gas',
+      travelers: [
+        {name: 'Mr White', licenseDate: new Date('2017-04-03T11:55:11.751Z')},
+        {name: 'Mr Pink'},
+        {name: 'Mr Orange'},
+        {name: 'Mr Brown'}
+      ]
+    });
+
+   });
 });

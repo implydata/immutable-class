@@ -15,6 +15,8 @@
  */
 
 import { BaseImmutable, Property, PropertyType, BackCompat } from './base-immutable';
+import { Driver, DriverJS } from './driver.mock';
+import { Passenger, PassengerJS } from './passenger.mock';
 
 export interface CarValue {
   name: string;
@@ -23,6 +25,7 @@ export interface CarValue {
   range?: number;
   relatedCars?: Car[];
   createdOn?: Date;
+  travelers?: (Driver | Passenger)[];
 }
 
 export interface CarJS {
@@ -32,6 +35,7 @@ export interface CarJS {
   range?: number;
   relatedCars?: CarJS[];
   createdOn?: Date | string;
+  travelers?: (DriverJS | PassengerJS)[];
 }
 
 function ensureNonNegative(n: any): void {
@@ -67,6 +71,11 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
       immutableClassArray: Car
     },
     {
+      name: 'travelers',
+      defaultValue: [],
+      immutableClassArray: (js: any) => js.licenseDate !== undefined ? Driver : Passenger // this is ludicrous ^^
+    },
+    {
       name: 'createdOn',
       defaultValue: null,
       type: PropertyType.DATE
@@ -98,6 +107,7 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
   public subCar: Car;
   public range: number;
   public createdOn: Date;
+  public travelers: (Driver | Passenger)[];
 
   constructor(properties: CarValue) {
     super(properties);

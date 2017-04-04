@@ -38,6 +38,8 @@ export interface ImmutableLike {
   fromJS: (js: any, context?: any) => any;
 }
 
+export type ImmutableLikeFn = (js: any) => ImmutableLike;
+
 export type PropertyType = 'date' | 'array';
 export const PropertyType = {
   DATE: 'date' as PropertyType,
@@ -51,7 +53,7 @@ export interface Property {
   validate?: Validator | Validator[];
   type?: PropertyType;
   immutableClass?: ImmutableLike;
-  immutableClassArray?: ImmutableLike;
+  immutableClassArray?: ImmutableLike | ImmutableLikeFn;
   equal?: (a: any, b: any) => boolean;
   toJS?: (v: any) => any; // todo.. stricter js type?
   contextTransform?: (context: { [key: string]: any }) => { [key: string]: any };
@@ -71,6 +73,22 @@ export interface BackCompat {
 export abstract class BaseImmutable<ValueType, JSType> {
   // This needs to be defined
   //abstract static PROPERTIES: Property[];
+
+  static immutableClassArrayToValue(property: Property, propertyValue: any): ImmutableLike[] {
+    let propertyName = property.name;
+    let contextTransform = property.contextTransform || noop;
+    let getClass: ImmutableLikeFn;
+    const c = property.immutableClassArray;
+
+    if (hasOwnProp(c, 'fromJS')) {
+      getClass = () => c as ImmutableLike;
+    } else {
+      getClass = c as ImmutableLikeFn;
+    }
+
+    if (!Array.isArray(propertyValue)) throw new Error(`expected ${propertyName} to be an array`);
+    return propertyValue.map((v: any) => getClass(v).fromJS(v, contextTransform(context)));
+  }
 
   static jsToValue(properties: Property[], js: any, backCompats?: BackCompat[], context?: { [key: string]: any }): any {
     if (properties == null) {
@@ -94,22 +112,20 @@ export abstract class BaseImmutable<ValueType, JSType> {
     for (let property of properties) {
       let propertyName = property.name;
       let contextTransform = property.contextTransform || noop;
-      let pv: any = js[propertyName];
-      if (pv != null) {
+      let propertyValue: any = js[propertyName];
+
+      if (propertyValue != null) {
         if (property.type === PropertyType.DATE) {
-          pv = new Date(pv);
+          propertyValue = new Date(propertyValue);
 
         } else if (property.immutableClass) {
-          pv = (property.immutableClass as any).fromJS(pv, contextTransform(context));
+          propertyValue = (property.immutableClass as any).fromJS(propertyValue, contextTransform(context));
 
         } else if (property.immutableClassArray) {
-          if (!Array.isArray(pv)) throw new Error(`expected ${propertyName} to be an array`);
-          let propertyImmutableClassArray: any = property.immutableClassArray;
-          pv = pv.map((v: any) => propertyImmutableClassArray.fromJS(v, contextTransform(context)));
-
+          propertyValue = BaseImmutable.immutableClassArrayToValue(property, propertyValue);
         }
       }
-      value[propertyName] = pv;
+      value[propertyName] = propertyValue;
     }
     return value;
   }
