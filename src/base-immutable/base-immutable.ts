@@ -55,6 +55,7 @@ export interface Property {
   equal?: (a: any, b: any) => boolean;
   toJS?: (v: any) => any; // todo.. stricter js type?
   contextTransform?: (context: { [key: string]: any }) => { [key: string]: any };
+  preserveUndefined?: boolean;
 }
 
 export interface ClassFnType {
@@ -215,7 +216,7 @@ export abstract class BaseImmutable<ValueType, JSType> {
     for (let property of properties) {
       let propertyName = property.name;
       let pv: any = (this as any)[propertyName];
-      if (isDefined(pv)) {
+      if (isDefined(pv) || property.preserveUndefined) {
         if (typeof property.toJS === 'function') {
           pv = property.toJS(pv);
         } else if (property.immutableClass) {
