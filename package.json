@@ -21,9 +21,11 @@
     "build/"
   ],
   "scripts": {
-    "prepublish": "node_modules/.bin/tdi",
-    "compile": "./compile",
-    "test": "./run-tests"
+    "prepare": "tdi -q",
+    "compile": "tsc",
+    "pretest": "tsc",
+    "test": "./run-tests",
+    "watch": "tsc --watch"
   },
   "dependencies": {
     "has-own-prop": "1.0.0",
