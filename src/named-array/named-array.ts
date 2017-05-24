@@ -16,7 +16,6 @@
 
 import { SimpleArray } from '../simple-array/simple-array';
 import { KeyedArray } from '../keyed-array/keyed-array';
-
 import { immutableEqual } from '../equality/equality';
 
 export interface Nameable {
@@ -37,9 +36,38 @@ export interface SynchronizerOptions<T> {
   onExit?: (oldThing: T) => void;
 }
 
-export interface Diff<T> {
-  before?: T;
-  after?: T;
+export interface DiffJS {
+  before?: any;
+  after?: any;
+}
+
+export class Diff<T> {
+  static inflateFromJS<T>(Class: { fromJS: (js: any) => T }, diffJS: DiffJS): Diff<T> {
+    let before: T | null = null;
+    let after: T | null = null;
+    if (diffJS.before) before = Class.fromJS(diffJS.before);
+    if (diffJS.after) after = Class.fromJS(diffJS.after);
+    return new Diff(before, after);
+  }
+
+  public before?: T;
+  public after?: T;
+
+  constructor(before: T | null, after: T | null) {
+    this.before = before;
+    this.after = after;
+  }
+
+  toJS(): DiffJS {
+    let js: DiffJS = {};
+    if (this.before) js.before = this.before;
+    if (this.after) js.after = this.after;
+    return js;
+  }
+
+  toJSON() {
+    return this.toJS();
+  }
 }
 
 const KEYED_ARRAY = KeyedArray.withKey("name");
@@ -124,13 +152,13 @@ export class NamedArray {
     let dataCubeDiffs: Diff<T>[] = [];
     NamedArray.synchronize(oldThings, newThings, {
       onExit: (oldDataCube) => {
-        dataCubeDiffs.push({ before: oldDataCube });
+        dataCubeDiffs.push(new Diff(oldDataCube, null));
       },
       onUpdate: (newDataCube, oldDataCube) => {
-        dataCubeDiffs.push({ before: oldDataCube, after: newDataCube });
+        dataCubeDiffs.push(new Diff(oldDataCube, newDataCube));
       },
       onEnter: (newDataCube) => {
-        dataCubeDiffs.push({ after: newDataCube });
+        dataCubeDiffs.push(new Diff(null, newDataCube));
       }
     });
     return dataCubeDiffs;
