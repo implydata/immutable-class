@@ -41,8 +41,8 @@ export interface DiffJS {
   after?: any;
 }
 
-export class Diff<T> {
-  static inflateFromJS<T>(Class: { fromJS: (js: any) => T }, diffJS: DiffJS): Diff<T> {
+export class Diff<T extends Nameable> {
+  static inflateFromJS<T extends Nameable>(Class: { fromJS: (js: any) => T }, diffJS: DiffJS): Diff<T> {
     let before: T | null = null;
     let after: T | null = null;
     if (diffJS.before) before = Class.fromJS(diffJS.before);
@@ -50,7 +50,7 @@ export class Diff<T> {
     return new Diff(before, after);
   }
 
-  static inflateFromJSs<T>(Class: { fromJS: (js: any) => T }, diffJSs: DiffJS[]): Diff<T>[] {
+  static inflateFromJSs<T extends Nameable>(Class: { fromJS: (js: any) => T }, diffJSs: DiffJS[]): Diff<T>[] {
     if (!Array.isArray(diffJSs)) throw new Error('diffs must be an array');
     return diffJSs.map(diffJS => Diff.inflateFromJS<T>(Class, diffJS));
   }
@@ -59,6 +59,8 @@ export class Diff<T> {
   public after?: T;
 
   constructor(before: T | null, after: T | null) {
+    if (!before && !after) throw new Error('must have either a before or an after');
+    if (before && after && before.name !== after.name) throw new Error('before and after name must match');
     this.before = before;
     this.after = after;
   }
@@ -72,6 +74,10 @@ export class Diff<T> {
 
   toJSON() {
     return this.toJS();
+  }
+
+  getName(): string {
+    return this.before ? this.before.name : this.after.name;
   }
 }
 
@@ -125,7 +131,7 @@ export class NamedArray {
     const onUpdate = updatedOptions.onUpdate || noop;
     const onExit = updatedOptions.onExit || noop;
 
-    let initialByKey: { [k: string]: T } = Object.create(null);
+    let initialByKey: Record<string, T> = Object.create(null);
     for (let i = 0; i < oldThings.length; i++) {
       let initialThing = oldThings[i];
       let initialThingKey = key(initialThing);
@@ -153,7 +159,7 @@ export class NamedArray {
     }
   }
 
-  static computeDiffs<T>(oldThings: T[], newThings: T[]): Diff<T>[] {
+  static computeDiffs<T extends Nameable>(oldThings: T[], newThings: T[]): Diff<T>[] {
     let dataCubeDiffs: Diff<T>[] = [];
     NamedArray.synchronize(oldThings, newThings, {
       onExit: (oldDataCube) => {
