@@ -50,6 +50,11 @@ export class Diff<T> {
     return new Diff(before, after);
   }
 
+  static inflateFromJSs<T>(Class: { fromJS: (js: any) => T }, diffJSs: DiffJS[]): Diff<T>[] {
+    if (!Array.isArray(diffJSs)) throw new Error('diffs must be an array');
+    return diffJSs.map(diffJS => Diff.inflateFromJS<T>(Class, diffJS));
+  }
+
   public before?: T;
   public after?: T;
 
