@@ -37,6 +37,11 @@ export interface SynchronizerOptions<T> {
   onExit?: (oldThing: T) => void;
 }
 
+export interface Diff<T> {
+  before?: T;
+  after?: T;
+}
+
 const KEYED_ARRAY = KeyedArray.withKey("name");
 export class NamedArray {
   static isValid<T extends Nameable>(array: T[]): boolean {
@@ -113,6 +118,22 @@ export class NamedArray {
       if (!initialByKey[k]) continue;
       onExit(initialByKey[k]);
     }
+  }
+
+  static computeDiffs<T>(oldThings: T[], newThings: T[]): Diff<T>[] {
+    let dataCubeDiffs: Diff<T>[] = [];
+    NamedArray.synchronize(oldThings, newThings, {
+      onExit: (oldDataCube) => {
+        dataCubeDiffs.push({ before: oldDataCube });
+      },
+      onUpdate: (newDataCube, oldDataCube) => {
+        dataCubeDiffs.push({ before: oldDataCube, after: newDataCube });
+      },
+      onEnter: (newDataCube) => {
+        dataCubeDiffs.push({ after: newDataCube });
+      }
+    });
+    return dataCubeDiffs;
   }
 }
 

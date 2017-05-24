@@ -14,22 +14,6 @@
  * limitations under the License.
  */
 
-// Deprecated
-export function isInstanceOf(thing: any, constructor: any): boolean {
-  console.warn(`isInstanceOf is deprecated, use native instanceof instead`);
-  if (typeof constructor !== 'function') throw new TypeError("constructor must be a function");
-  if (thing instanceof constructor) return true;
-  if (thing == null) return false;
-  let constructorName: string = constructor.name;
-  if (!constructorName) return false;
-  let thingProto: any = thing.__proto__;
-  while (thingProto && thingProto.constructor) {
-    if (thingProto.constructor.name === constructorName) return true;
-    thingProto = thingProto.__proto__;
-  }
-  return false;
-}
-
 /**
  * Check to see if things are an array of instances of the given constructor
  * Uses instanceof internally

@@ -290,7 +290,6 @@ export abstract class BaseImmutable<ValueType, JSType> {
         lastObject = currentObject.change(bit, lastObject);
       } else {
         let message = 'Can\'t find \`change()\` method on ' + currentObject.constructor.name;
-        console.error(message); // Leaving this console statement because the error might be caught and obfuscated
         throw new Error(message);
       }
     }
