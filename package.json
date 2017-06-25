@@ -33,10 +33,10 @@
   },
   "devDependencies": {
     "@types/mocha": "2.2.41",
-    "chai": "3.5.0",
+    "chai": "4.0.2",
     "immutable-class-tester": "0.5.10",
     "mocha": "3.4.2",
-    "tdi": "0.3.4",
-    "typescript": "2.3.3"
+    "tdi": "0.3.10",
+    "typescript": "2.3.4"
   }
 }

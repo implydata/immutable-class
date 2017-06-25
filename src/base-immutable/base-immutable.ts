@@ -64,12 +64,20 @@ export interface ClassFnType {
   new (properties: any): any;
 }
 
+export interface ImmutableInstanceType<ValueType, JSType> {
+  valueOf(): ValueType;
+  toJS(): JSType;
+  toJSON(): JSType;
+  toString(): string;
+  equals(other: ImmutableInstanceType<ValueType, JSType>): boolean;
+}
+
 export interface BackCompat {
   condition: (js: any) => boolean;
   action: (js: any) => void;
 }
 
-export abstract class BaseImmutable<ValueType, JSType> {
+export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInstanceType<ValueType, JSType> {
   // This needs to be defined
   //abstract static PROPERTIES: Property[];
 
