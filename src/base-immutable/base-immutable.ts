@@ -208,6 +208,10 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
     return NamedArray.findByName(properties, propName);
   }
 
+  public hasProperty(propName: string): boolean {
+    return this.findOwnProperty(propName) !== null;
+  }
+
   public valueOf(): ValueType {
     let value: any = {};
     let properties = this.ownProperties();
@@ -273,6 +277,20 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
     const changer = (this as any)['change' + firstUp(propName)];
     if (!changer) throw new Error(`can not find prop ${propName}`);
     return changer.call(this, newValue);
+  }
+
+  public changeMany(properties: Record<string, any>): this {
+    if (!properties) throw new TypeError('Invalid properties object');
+
+    let o = this;
+
+    for (let propName in properties) {
+      if (!this.hasProperty(propName)) throw new Error('Unknown property: ' + propName);
+
+      o = o.change(propName, properties[propName]);
+    }
+
+    return o;
   }
 
   public deepChange(propName: string, newValue: any): this {

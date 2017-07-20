@@ -69,6 +69,21 @@ describe("BaseImmutable", () => {
     expect(truck.changeRange(900).getRange()).to.equal(900);
   });
 
+  it("works with changeMany", () => {
+    let leaf = Car.fromJS({ name: 'leaf', fuel: 'electric' });
+
+    leaf = leaf.changeMany({
+      fuel: 'diesel',
+      name: 'ford',
+      range: 900
+    });
+
+    expect(leaf.getFuel()).to.eq('diesel');
+    expect(leaf.getName()).to.eq('ford');
+    expect(leaf.getRange()).to.eq(900);
+  });
+
+
   it("works with dates", () => {
     let car = Car.fromJS({ name: 'ford', fuel: 'electric', createdOn: '2016-01-01T01:02:03.456Z' });
 
