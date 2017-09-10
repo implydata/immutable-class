@@ -34,7 +34,7 @@
   "devDependencies": {
     "@types/mocha": "2.2.43",
     "chai": "4.1.2",
-    "immutable-class-tester": "0.5.11",
+    "immutable-class-tester": "0.5.12",
     "mocha": "3.5.1",
     "tdi": "0.3.14",
     "typescript": "2.5.2"
