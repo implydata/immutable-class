@@ -231,7 +231,8 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
       let pv: any = (this as any)[propertyName];
       if (isDefined(pv, property.emptyArrayIsOk) || property.preserveUndefined) {
         if (typeof property.toJS === 'function') {
-          pv = property.toJS(pv);
+          const toJS = property.toJS;
+          pv = property.immutableClassArray ? pv.map(toJS) : toJS(pv);
         } else if (property.immutableClass) {
           pv = pv.toJS();
         } else if (property.immutableClassArray) {

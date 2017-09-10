@@ -37,7 +37,7 @@
     "immutable-class-tester": "0.5.12",
     "mocha": "3.5.1",
     "tdi": "0.3.14",
-    "ts-node": "^3.3.0",
+    "ts-node": "3.3.0",
     "typescript": "2.5.2"
   }
 }
