@@ -73,6 +73,7 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
     },
     {
       name: 'owners',
+      defaultValue: null,
       emptyArrayIsOk: true
     }
   ];
