@@ -189,4 +189,18 @@ describe("BaseImmutable", () => {
     expect(newCar.deepGet('subCar.subCar.name')).to.equal('anuford');
   });
 
+  it("works with emptyArrayIsOk", () => {
+    const car = Car.fromJS({
+      fuel: 'electric',
+      name: 'ford',
+      owners: []
+    } as any);
+
+    expect(car.toJS()).to.deep.equal({
+      fuel: 'electric',
+      name: 'ford',
+      owners: []
+    });
+  });
+
 });

@@ -70,6 +70,10 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
       name: 'createdOn',
       defaultValue: null,
       type: PropertyType.DATE
+    },
+    {
+      name: 'owners',
+      emptyArrayIsOk: true
     }
   ];
 

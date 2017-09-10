@@ -23,7 +23,7 @@ function firstUp(name: string): string {
 }
 
 function isDefined(v: any, emptyArrayIsOk: boolean) {
-  return Array.isArray(v) ? (v.length && !emptyArrayIsOk) : v != null;
+  return Array.isArray(v) ? (v.length || emptyArrayIsOk) : v != null;
 }
 
 function noop(v: any) {
