@@ -32,11 +32,11 @@
     "tslib": "^1.7.1"
   },
   "devDependencies": {
-    "@types/mocha": "2.2.41",
-    "chai": "4.0.2",
-    "immutable-class-tester": "0.5.10",
-    "mocha": "3.4.2",
-    "tdi": "0.3.10",
-    "typescript": "2.3.4"
+    "@types/mocha": "2.2.43",
+    "chai": "4.1.2",
+    "immutable-class-tester": "0.5.11",
+    "mocha": "3.5.1",
+    "tdi": "0.3.14",
+    "typescript": "2.5.2"
   }
 }

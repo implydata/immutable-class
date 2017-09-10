@@ -22,8 +22,8 @@ function firstUp(name: string): string {
   return name[0].toUpperCase() + name.substr(1);
 }
 
-function isDefined(v: any) {
-  return Array.isArray(v) ? v.length : v != null;
+function isDefined(v: any, emptyArrayIsOk: boolean) {
+  return Array.isArray(v) ? (v.length && !emptyArrayIsOk) : v != null;
 }
 
 function noop(v: any) {
@@ -56,6 +56,7 @@ export interface Property {
   toJS?: (v: any) => any; // todo.. stricter js type?
   contextTransform?: (context: { [key: string]: any }) => { [key: string]: any };
   preserveUndefined?: boolean;
+  emptyArrayIsOk?: boolean;
 }
 
 export interface ClassFnType {
@@ -228,7 +229,7 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
     for (let property of properties) {
       let propertyName = property.name;
       let pv: any = (this as any)[propertyName];
-      if (isDefined(pv) || property.preserveUndefined) {
+      if (isDefined(pv, property.emptyArrayIsOk) || property.preserveUndefined) {
         if (typeof property.toJS === 'function') {
           pv = property.toJS(pv);
         } else if (property.immutableClass) {
