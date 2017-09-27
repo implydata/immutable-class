@@ -14,9 +14,20 @@
  * limitations under the License.
  */
 
-export type CallbackFn<T> = (value: T, index: number, array: T[]) => boolean
+export type MapCallbackFn<T> = (value: T, index: number, array: T[]) => T;
+export type BooleanCallbackFn<T> = (value: T, index: number, array: T[]) => boolean;
 
 export class SimpleArray {
+  static mapImmutable<T>(array: T[], fn: MapCallbackFn<T>): T[] {
+    let changed = false;
+    let newArray = array.map((x, i, xs) => {
+      const newX = fn(x, i, xs);
+      if (newX !== x) changed = true;
+      return newX;
+    });
+    return changed ? newArray : array;
+  }
+
   static append<T>(array: T[], value: T): T[] {
     return array.concat([value]);
   }
@@ -27,7 +38,7 @@ export class SimpleArray {
     return array;
   }
 
-  static find<T>(array: T[], fn: CallbackFn<T>): T {
+  static find<T>(array: T[], fn: BooleanCallbackFn<T>): T {
     for (let i = 0, n = array.length; i < n; i++) {
       let a = array[i];
       if (fn.call(array, a, i)) return a;
@@ -35,7 +46,7 @@ export class SimpleArray {
     return null;
   }
 
-  static findIndex<T>(array: T[], fn: CallbackFn<T>): number {
+  static findIndex<T>(array: T[], fn: BooleanCallbackFn<T>): number {
     for (let i = 0, n = array.length; i < n; i++) {
       let a = array[i];
       if (fn.call(array, a, i)) return i;
@@ -43,17 +54,17 @@ export class SimpleArray {
     return -1;
   }
 
-  static delete<T>(array: T[], arg: T | CallbackFn<T>): T[] {
-    return array.filter((a, i, arr) => typeof arg === 'function' ? !((arg as CallbackFn<T>).call(arr, a, i)) : a !== arg);
+  static delete<T>(array: T[], arg: T | BooleanCallbackFn<T>): T[] {
+    return array.filter((a, i, arr) => typeof arg === 'function' ? !((arg as BooleanCallbackFn<T>).call(arr, a, i)) : a !== arg);
   }
 
   static deleteIndex<T>(array: T[], index: number): T[] {
     return array.filter((a, i) => i !== index);
   }
 
-  static contains<T>(array: T[], arg: T | CallbackFn<T>): boolean {
+  static contains<T>(array: T[], arg: T | BooleanCallbackFn<T>): boolean {
     if (typeof arg !== 'function') return array.indexOf(arg) !== -1;
-    return SimpleArray.findIndex(array, arg as CallbackFn<T>) !== -1;
+    return SimpleArray.findIndex(array, arg as BooleanCallbackFn<T>) !== -1;
   }
 
   static insertIndex<T>(array: T[], index: number, value: T): T[] {

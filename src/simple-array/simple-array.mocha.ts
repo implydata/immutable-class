@@ -25,6 +25,12 @@ describe("SimpleArray", () => {
     'Italy'
   ];
 
+  describe("mapImmutable", () => {
+    it('something that exists', () => {
+      expect(SimpleArray.mapImmutable(someArray, (x) => x) === someArray).to.equal(true);
+    });
+  });
+
   describe("find", () => {
     it('something that exists', () => {
       expect(SimpleArray.find(someArray, (x) => x.length === 3)).to.equal('USA');
