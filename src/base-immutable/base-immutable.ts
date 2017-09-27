@@ -138,6 +138,7 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
         return pv != null ? pv : defaultValue;
       };
       proto[changeUpped] = proto[changeUpped] || function(newValue: any): any {
+        if (this[propertyName] === newValue) return this;
         let value = this.valueOf();
         value[propertyName] = newValue;
         return new (this.constructor as any)(value);
