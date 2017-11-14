@@ -85,7 +85,7 @@ describe("equality", () => {
       expect(generalEqual(bob1, bob2)).to.equal(true);
     });
 
-    it("works immutables", () => {
+    it("works with immutables", () => {
       let tom = new Person('Tom');
       let bob1 = new Person('Bob');
       let bob2 = new Person('Bob');

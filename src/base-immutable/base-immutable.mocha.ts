@@ -83,6 +83,41 @@ describe("BaseImmutable", () => {
     expect(leaf.getRange()).to.eq(900);
   });
 
+  describe('equals', () => {
+    it('works with default values', () => {
+      const car0 = Car.fromJS({name: 'pouet'});
+      const car1 = car0.change('driver', car0.get('driver'));
+
+      expect(car0.equals(car1)).to.be.true;
+    });
+  });
+
+  describe('deepChange', () => {
+    it('works', () => {
+      const car = Car.fromJS({
+        fuel: 'electric',
+        name: 'ford',
+        subCar: {
+          name: 'focus',
+          subCar: {
+            name: 'focus2'
+          }
+        }
+
+      } as any);
+
+      const newCar = car.deepChange('subCar.subCar', { name: 'anuford' });
+      expect(newCar.deepGet('subCar.subCar.name')).to.equal('anuford');
+    });
+
+    it('works with default value for an immutable property', () => {
+      const car = Car.fromJS({fuel: 'electric', name: 'ford'});
+
+      const newCar = car.deepChange('driver.name', 'mlem');
+      expect(newCar.deepGet('driver.name')).to.equal('mlem');
+    });
+  });
+
 
   it("works with dates", () => {
     let car = Car.fromJS({ name: 'ford', fuel: 'electric', createdOn: '2016-01-01T01:02:03.456Z' });
@@ -170,23 +205,6 @@ describe("BaseImmutable", () => {
 
     } as any);
     expect(car.deepGet('subCar.subCar.name')).to.equal('focus2');
-  });
-
-  it("works with deep change", () => {
-    const car = Car.fromJS({
-      fuel: 'electric',
-      name: 'ford',
-      subCar: {
-        name: 'focus',
-        subCar: {
-          name: 'focus2'
-        }
-      }
-
-    } as any);
-
-    const newCar = car.deepChange('subCar.subCar', { name: 'anuford' });
-    expect(newCar.deepGet('subCar.subCar.name')).to.equal('anuford');
   });
 
   it("works with emptyArrayIsOk", () => {

@@ -264,7 +264,8 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
     for (let property of properties) {
       let propertyName = property.name;
       let equal = property.equal || generalEqual;
-      if (!equal((this as any)[propertyName], (other as any)[propertyName])) return false;
+      const getter = 'get' + firstUp(propertyName);
+      if (!equal((this as any)[getter](), (other as any)[getter]())) return false;
     }
 
     return true;
@@ -305,7 +306,7 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
       let o: any = this;
 
       for (let i = 0; i < bits.length; i++) {
-        o = o[bits[i]];
+        o = o['get' + firstUp(bits[i])]();
       }
 
       return o;
@@ -315,6 +316,8 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
       let bit = bits.pop();
 
       currentObject = getLastObject();
+
+
       if (currentObject.change instanceof Function) {
         lastObject = currentObject.change(bit, lastObject);
       } else {

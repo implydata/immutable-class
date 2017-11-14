@@ -16,6 +16,41 @@
 
 import { BaseImmutable, Property, PropertyType, BackCompat } from './base-immutable';
 
+/*
+ * Copyright (c) 2017 Imply Data, Inc. All rights reserved.
+ *
+ * This software is the confidential and proprietary information
+ * of Imply Data, Inc.
+ */
+
+export interface DriverValue {
+  name: string;
+}
+
+export interface DriverJS {
+  name: string;
+}
+
+export class Driver extends BaseImmutable<DriverValue, DriverJS> {
+  static POPE: Driver;
+
+  static PROPERTIES: Property[] = [
+    { name: 'name', defaultValue: null }
+  ];
+
+  static fromJS(params: DriverValue) {
+    return new Driver(BaseImmutable.jsToValue(Driver.PROPERTIES, params));
+  }
+
+
+  constructor(params: DriverValue) {
+    super(params);
+  }
+}
+BaseImmutable.finalize(Driver);
+Driver.POPE = Driver.fromJS({name: 'the pope'});
+
+
 export interface CarValue {
   name: string;
   fuel: string;
@@ -75,6 +110,11 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
       name: 'owners',
       defaultValue: null,
       emptyArrayIsOk: true
+    },
+    {
+      name: 'driver',
+      defaultValue: Driver.POPE,
+      immutableClass: Driver
     }
   ];
 
