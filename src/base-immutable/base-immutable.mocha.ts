@@ -84,11 +84,20 @@ describe("BaseImmutable", () => {
   });
 
   describe('equals', () => {
-    it('works with default values', () => {
+    it('is not equal if new value is explicitly set', () => {
       const car0 = Car.fromJS({name: 'pouet'});
       const car1 = car0.change('driver', car0.get('driver'));
 
-      expect(car0.equals(car1)).to.be.true;
+      expect(car0.equals(car1)).to.be.false;
+    });
+  });
+
+  describe('equivalent', () => {
+    it('is equivalent if new value is explicitly set', () => {
+      const car0 = Car.fromJS({name: 'pouet'});
+      const car1 = car0.change('driver', car0.get('driver'));
+
+      expect(car0.equivalent(car1)).to.be.true;
     });
   });
 

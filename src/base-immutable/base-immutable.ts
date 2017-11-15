@@ -264,8 +264,22 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
     for (let property of properties) {
       let propertyName = property.name;
       let equal = property.equal || generalEqual;
-      const getter = 'get' + firstUp(propertyName);
-      if (!equal((this as any)[getter](), (other as any)[getter]())) return false;
+      if (!equal((this as any)[propertyName], (other as any)[propertyName])) return false;
+    }
+
+    return true;
+  }
+
+  public equivalent(other: BaseImmutable<ValueType, JSType>): boolean {
+    if (!other) return false;
+    if (this === other) return true;
+    if (!(other instanceof this.constructor)) return false;
+
+    let properties = this.ownProperties();
+    for (let property of properties) {
+      let propertyName = property.name;
+      let equal = property.equal || generalEqual;
+      if (!equal(this.get(propertyName), other.get(propertyName))) return false;
     }
 
     return true;
