@@ -18,6 +18,8 @@ import { SimpleArray } from '../simple-array/simple-array';
 import { KeyedArray } from '../keyed-array/keyed-array';
 import { immutableEqual } from '../equality/equality';
 
+export type DiffAction = 'create' | 'update' | 'delete';
+
 export interface Nameable {
   name: string;
 }
@@ -74,6 +76,14 @@ export class Diff<T extends Nameable> {
 
   toJSON() {
     return this.toJS();
+  }
+
+  getAction(): DiffAction {
+    if (this.before) {
+      return this.after ? 'update' : 'delete';
+    } else {
+      return 'create';
+    }
   }
 
   getName(): string {
