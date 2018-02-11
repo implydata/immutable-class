@@ -42,7 +42,7 @@ export class KeyedArray<T> {
     for (let a of array) {
       let key = getKey(a);
       if (seen[key]) {
-        throw new Error(['duplicate', what, `'${key}'`, (where ? 'in' : null), where].join(' '));
+        throw new Error(['duplicate', what, `'${key}'`, (where ? 'in' : null), where].filter(Boolean).join(' '));
       }
       seen[key] = 1;
     }
