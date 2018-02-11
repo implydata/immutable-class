@@ -1,6 +1,6 @@
 {
   "name": "immutable-class",
-  "version": "0.6.42",
+  "version": "0.6.43",
   "description": "A template for creating immutable classes",
   "keywords": [
     "immutable",
