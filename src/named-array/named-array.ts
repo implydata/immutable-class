@@ -97,8 +97,8 @@ export class NamedArray {
     return KEYED_ARRAY.isValid(array);
   }
 
-  static checkValid<T extends Nameable>(array: T[]): void {
-    return KEYED_ARRAY.checkValid(array);
+  static checkValid<T extends Nameable>(array: T[], what?: string, where?: string): void {
+    return KEYED_ARRAY.checkValid(array, what, where);
   }
 
   static get<T extends Nameable>(array: T[], name: string): T {

@@ -35,13 +35,15 @@ export class KeyedArray<T> {
     return SimpleArray.find(array, (x) => getKey(x) === key);
   }
 
-  public checkValid<T>(array: T[]): void {
+  public checkValid<T>(array: T[], what?: string, where?: string): void {
     const { getKey } = this;
 
     let seen: { [k: string]: number } = {};
     for (let a of array) {
       let key = getKey(a);
-      if (seen[key]) throw new Error(`duplicate '${key}'`);
+      if (seen[key]) {
+        throw new Error(['duplicate', what, `'${key}'`, (where ? 'in' : null), where].join(' '));
+      }
       seen[key] = 1;
     }
   }
