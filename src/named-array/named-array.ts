@@ -44,17 +44,17 @@ export interface DiffJS {
 }
 
 export class Diff<T extends Nameable> {
-  static inflateFromJS<T extends Nameable>(Class: { fromJS: (js: any) => T }, diffJS: DiffJS): Diff<T> {
+  static inflateFromJS<T extends Nameable>(Class: { fromJS: (js: any, context?: any) => T }, diffJS: DiffJS, context?: any): Diff<T> {
     let before: T | null = null;
     let after: T | null = null;
-    if (diffJS.before) before = Class.fromJS(diffJS.before);
-    if (diffJS.after) after = Class.fromJS(diffJS.after);
+    if (diffJS.before) before = Class.fromJS(diffJS.before, context);
+    if (diffJS.after) after = Class.fromJS(diffJS.after, context);
     return new Diff(before, after);
   }
 
-  static inflateFromJSs<T extends Nameable>(Class: { fromJS: (js: any) => T }, diffJSs: DiffJS[]): Diff<T>[] {
+  static inflateFromJSs<T extends Nameable>(Class: { fromJS: (js: any, context?: any) => T }, diffJSs: DiffJS[], context?: any): Diff<T>[] {
     if (!Array.isArray(diffJSs)) throw new Error('diffs must be an array');
-    return diffJSs.map(diffJS => Diff.inflateFromJS<T>(Class, diffJS));
+    return diffJSs.map(diffJS => Diff.inflateFromJS<T>(Class, diffJS, context));
   }
 
   public before?: T;
