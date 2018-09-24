@@ -255,26 +255,29 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
     return `[ImmutableClass${extra}]`;
   }
 
-  public getDifference(other: BaseImmutable<ValueType, JSType>, ignore: string[] = []): string {
-    if (!other) return 'No other (!other)';
-    if (this === other) return '';
-    if (!(other instanceof this.constructor)) return 'Different constructors';
+  public getDifference(other: BaseImmutable<ValueType, JSType>, returnOnFirstDifference = false): string[] {
+    if (!other) return ['No other (!other)'];
+    if (this === other) return [];
+    if (!(other instanceof this.constructor)) return ['Different constructors'];
 
+    let differences: string[] = [];
     const properties = this.ownProperties();
     for (let property of properties) {
-      if (ignore.indexOf(property.name) > -1) continue;
-
       const equal = property.equal || generalEqual;
       if (!equal((this as any)[property.name], (other as any)[property.name])) {
-        return 'Different property: ' +  property.name;
+        const difference = 'Different property: ' +  property.name;
+
+        if (returnOnFirstDifference) return [difference];
+
+        differences.push(difference);
       }
     }
 
-    return '';
+    return differences;
   }
 
-  public equals(other: BaseImmutable<ValueType, JSType>, ignore?: string[]): boolean {
-    return !this.getDifference(other, ignore);
+  public equals(other: BaseImmutable<ValueType, JSType>): boolean {
+    return this.getDifference(other, true).length === 0;
   }
 
   public equivalent(other: BaseImmutable<ValueType, JSType>): boolean {
