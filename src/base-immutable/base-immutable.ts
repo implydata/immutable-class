@@ -256,16 +256,16 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
   }
 
   public getDifference(other: BaseImmutable<ValueType, JSType>, returnOnFirstDifference = false): string[] {
-    if (!other) return ['No other (!other)'];
+    if (!other) return ['__no_other__'];
     if (this === other) return [];
-    if (!(other instanceof this.constructor)) return ['Different constructors'];
+    if (!(other instanceof this.constructor)) return ['__different_constructors__'];
 
     let differences: string[] = [];
     const properties = this.ownProperties();
     for (let property of properties) {
       const equal = property.equal || generalEqual;
       if (!equal((this as any)[property.name], (other as any)[property.name])) {
-        const difference = 'Different property: ' +  property.name;
+        const difference = property.name;
 
         if (returnOnFirstDifference) return [difference];
 

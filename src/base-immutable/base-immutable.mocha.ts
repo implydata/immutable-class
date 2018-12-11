@@ -83,6 +83,29 @@ describe("BaseImmutable", () => {
     expect(leaf.getRange()).to.eq(900);
   });
 
+  describe('getDifference', () => {
+    const car0 = Car.fromJS({name: 'poet'});
+
+    it('no other', () => {
+      expect(car0.getDifference(null)).to.deep.equal(['__no_other__']);
+    });
+
+    it('single diff', () => {
+      const car1 = Car.fromJS({name: 'artist'});
+      expect(car0.getDifference(car1)).to.deep.equal(['name']);
+    });
+
+    it('multi diff (multi)', () => {
+      const car1 = Car.fromJS({name: 'artist', fuel: 'electric'});
+      expect(car0.getDifference(car1)).to.deep.equal(['name', 'fuel']);
+    });
+
+    it('multi diff (single)', () => {
+      const car1 = Car.fromJS({name: 'artist', fuel: 'electric'});
+      expect(car0.getDifference(car1, true)).to.deep.equal(['name']);
+    });
+  });
+
   describe('equals', () => {
     it('is not equal if new value is explicitly set', () => {
       const car0 = Car.fromJS({name: 'pouet'});
