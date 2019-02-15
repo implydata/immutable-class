@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Imply Data, Inc.
+ * Copyright 2015-2019 Imply Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as hasOwnProp from 'has-own-prop';
 import { SimpleArray } from '../simple-array/simple-array';
 
 export type KeyGetter = (x: any) => string;
@@ -78,11 +79,24 @@ export class KeyedArray<T> {
   }
 
   public overridesByKey<T>(things: T[], thingOverrides: T[]): T[] {
-    for (let thingOverride of thingOverrides) {
-      things = this.overrideByKey(things, thingOverride);
-    }
-    return things;
+    const { getKey } = this;
 
+    let keyToIndex: Record<string, number> = {};
+    const thingsLength = things.length;
+    for (let i = 0; i < thingsLength; i++) {
+      keyToIndex[getKey(things[i])] = i;
+    }
+
+    let newThings = things.slice();
+    for (let thingOverride of thingOverrides) {
+      const key = getKey(thingOverride);
+      if (hasOwnProp(keyToIndex, key)) {
+        newThings[keyToIndex[key]] = thingOverride;
+      } else {
+        newThings.push(thingOverride);
+      }
+    }
+    return newThings;
   }
 
   public deleteByKey<T>(array: T[], key: string): T[] {

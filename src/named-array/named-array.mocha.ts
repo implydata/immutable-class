@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Imply Data, Inc.
+ * Copyright 2015-2019 Imply Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,6 +137,15 @@ describe("NamedArray", () => {
         { name: 'Country', score: 0 },
         { name: 'Russia', score: 5 }
       ]);
+    });
+
+    it('overrides large', () => {
+      const overrides = [];
+      for (let i = 0; i < 40000; i++) {
+        overrides.push({ name: 'Over' + i, score: i });
+      }
+
+      expect(NamedArray.overridesByName(someArray, overrides).length).to.equal(40003);
     });
 
   });
