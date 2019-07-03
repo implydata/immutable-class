@@ -15,12 +15,12 @@
  */
 
 import * as hasOwnProp from 'has-own-prop';
+
 import { SimpleArray } from '../simple-array/simple-array';
 
 export type KeyGetter = (x: any) => string;
 
 export class KeyedArray<T> {
-
   public getKey: KeyGetter;
 
   constructor(keyGetter: KeyGetter) {
@@ -33,17 +33,19 @@ export class KeyedArray<T> {
 
   public get<T>(array: T[], key: string): T {
     const { getKey } = this;
-    return SimpleArray.find(array, (x) => getKey(x) === key);
+    return SimpleArray.find(array, x => getKey(x) === key);
   }
 
   public checkValid<T>(array: T[], what?: string, where?: string): void {
     const { getKey } = this;
 
-    let seen: { [k: string]: number } = {};
-    for (let a of array) {
-      let key = getKey(a);
+    const seen: { [k: string]: number } = {};
+    for (const a of array) {
+      const key = getKey(a);
       if (seen[key]) {
-        throw new Error(['duplicate', what, `'${key}'`, (where ? 'in' : null), where].filter(Boolean).join(' '));
+        throw new Error(
+          ['duplicate', what, `'${key}'`, where ? 'in' : null, where].filter(Boolean).join(' '),
+        );
       }
       seen[key] = 1;
     }
@@ -52,9 +54,9 @@ export class KeyedArray<T> {
   public isValid<T>(array: T[]): boolean {
     const { getKey } = this;
 
-    let seen: { [k: string]: number } = {};
-    for (let a of array) {
-      let key = getKey(a);
+    const seen: { [k: string]: number } = {};
+    for (const a of array) {
+      const key = getKey(a);
       if (seen[key]) return false;
       seen[key] = 1;
     }
@@ -64,7 +66,7 @@ export class KeyedArray<T> {
   public overrideByKey<T>(things: T[], thingOverride: T): T[] {
     const { getKey } = this;
 
-    let overrideKey = getKey(thingOverride);
+    const overrideKey = getKey(thingOverride);
     let added = false;
     things = things.map(t => {
       if (getKey(t) === overrideKey) {
@@ -81,14 +83,14 @@ export class KeyedArray<T> {
   public overridesByKey<T>(things: T[], thingOverrides: T[]): T[] {
     const { getKey } = this;
 
-    let keyToIndex: Record<string, number> = {};
+    const keyToIndex: Record<string, number> = {};
     const thingsLength = things.length;
     for (let i = 0; i < thingsLength; i++) {
       keyToIndex[getKey(things[i])] = i;
     }
 
-    let newThings = things.slice();
-    for (let thingOverride of thingOverrides) {
+    const newThings = things.slice();
+    for (const thingOverride of thingOverrides) {
       const key = getKey(thingOverride);
       if (hasOwnProp(keyToIndex, key)) {
         newThings[keyToIndex[key]] = thingOverride;
@@ -101,7 +103,6 @@ export class KeyedArray<T> {
 
   public deleteByKey<T>(array: T[], key: string): T[] {
     const { getKey } = this;
-    return array.filter((a) => getKey(a) !== key);
+    return array.filter(a => getKey(a) !== key);
   }
 }
-

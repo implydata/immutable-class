@@ -15,24 +15,23 @@
  */
 
 import * as hasOwnProp from 'has-own-prop';
+
 import { generalEqual } from '../equality/equality';
-import { NamedArray } from "../named-array/named-array";
+import { NamedArray } from '../named-array/named-array';
 
 function firstUp(name: string): string {
   return name[0].toUpperCase() + name.substr(1);
 }
 
 function isDefined(v: any, emptyArrayIsOk: boolean) {
-  return Array.isArray(v) ? (v.length || emptyArrayIsOk) : v != null;
+  return Array.isArray(v) ? v.length || emptyArrayIsOk : v != null;
 }
 
 function noop(v: any) {
   return v;
 }
 
-export interface Validator {
-  (x: any): void;
-}
+export type Validator = (x: any) => void;
 
 export interface ImmutableLike {
   fromJS: (js: any, context?: any) => any;
@@ -41,7 +40,7 @@ export interface ImmutableLike {
 export type PropertyType = 'date' | 'array';
 export const PropertyType = {
   DATE: 'date' as PropertyType,
-  ARRAY: 'array' as PropertyType
+  ARRAY: 'array' as PropertyType,
 };
 
 export interface Property {
@@ -78,18 +77,24 @@ export interface BackCompat {
   action: (js: any) => void;
 }
 
-export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInstanceType<ValueType, JSType> {
+export abstract class BaseImmutable<ValueType, JSType>
+  implements ImmutableInstanceType<ValueType, JSType> {
   // This needs to be defined
-  //abstract static PROPERTIES: Property[];
+  // abstract static PROPERTIES: Property[];
 
-  static jsToValue(properties: Property[], js: any, backCompats?: BackCompat[], context?: { [key: string]: any }): any {
+  static jsToValue(
+    properties: Property[],
+    js: any,
+    backCompats?: BackCompat[],
+    context?: { [key: string]: any },
+  ): any {
     if (properties == null) {
       throw new Error(`JS is not defined`);
     }
 
     if (Array.isArray(backCompats)) {
       let jsCopied = false;
-      for (let backCompat of backCompats) {
+      for (const backCompat of backCompats) {
         if (backCompat.condition(js)) {
           if (!jsCopied) {
             js = JSON.parse(JSON.stringify(js));
@@ -100,23 +105,20 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
       }
     }
 
-    let value: any = {};
-    for (let property of properties) {
-      let propertyName = property.name;
-      let contextTransform = property.contextTransform || noop;
+    const value: any = {};
+    for (const property of properties) {
+      const propertyName = property.name;
+      const contextTransform = property.contextTransform || noop;
       let pv: any = js[propertyName];
       if (pv != null) {
         if (property.type === PropertyType.DATE) {
           pv = new Date(pv);
-
         } else if (property.immutableClass) {
           pv = (property.immutableClass as any).fromJS(pv, contextTransform(context));
-
         } else if (property.immutableClassArray) {
           if (!Array.isArray(pv)) throw new Error(`expected ${propertyName} to be an array`);
-          let propertyImmutableClassArray: any = property.immutableClassArray;
+          const propertyImmutableClassArray: any = property.immutableClassArray;
           pv = pv.map((v: any) => propertyImmutableClassArray.fromJS(v, contextTransform(context)));
-
         }
       }
       value[propertyName] = pv;
@@ -125,24 +127,28 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
   }
 
   static finalize(ClassFn: ClassFnType): void {
-    let proto = (ClassFn as any).prototype;
+    const proto = (ClassFn as any).prototype;
     ClassFn.PROPERTIES.forEach((property: Property) => {
-      let propertyName = property.name;
-      let defaultValue = property.defaultValue;
-      let upped = firstUp(property.name);
-      let getUpped = 'get' + upped;
-      let changeUpped = 'change' + upped;
+      const propertyName = property.name;
+      const defaultValue = property.defaultValue;
+      const upped = firstUp(property.name);
+      const getUpped = 'get' + upped;
+      const changeUpped = 'change' + upped;
       // These have to be `function` and not `=>` so that they do not bind 'this'
-      proto[getUpped] = proto[getUpped] || function() {
-        let pv = (this as any)[propertyName];
-        return pv != null ? pv : defaultValue;
-      };
-      proto[changeUpped] = proto[changeUpped] || function(newValue: any): any {
-        if (this[propertyName] === newValue) return this;
-        let value = this.valueOf();
-        value[propertyName] = newValue;
-        return new (this.constructor as any)(value);
-      };
+      proto[getUpped] =
+        proto[getUpped] ||
+        function() {
+          const pv = (this as any)[propertyName];
+          return pv != null ? pv : defaultValue;
+        };
+      proto[changeUpped] =
+        proto[changeUpped] ||
+        function(newValue: any): any {
+          if (this[propertyName] === newValue) return this;
+          const value = this.valueOf();
+          value[propertyName] = newValue;
+          return new (this.constructor as any)(value);
+        };
     });
   }
 
@@ -155,15 +161,15 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
     },
     nonNegative: (n: any): void => {
       if (n < 0) throw new Error('must be non negative');
-    }
+    },
   };
 
   constructor(value: ValueType) {
-    let properties = this.ownProperties();
-    for (let property of properties) {
-      let propertyName = property.name;
-      let propertyType = hasOwnProp(property, 'isDate') ? PropertyType.DATE : property.type;
-      let pv = (value as any)[propertyName];
+    const properties = this.ownProperties();
+    for (const property of properties) {
+      const propertyName = property.name;
+      const propertyType = hasOwnProp(property, 'isDate') ? PropertyType.DATE : property.type;
+      const pv = (value as any)[propertyName];
 
       if (pv == null) {
         if (propertyType === PropertyType.ARRAY) {
@@ -175,9 +181,15 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
           throw new Error(`${(this.constructor as any).name}.${propertyName} must be defined`);
         }
       } else {
-        let possibleValues = property.possibleValues;
+        const possibleValues = property.possibleValues;
         if (possibleValues && possibleValues.indexOf(pv) === -1) {
-          throw new Error(`${(this.constructor as any).name}.${propertyName} can not have value '${pv}' must be one of [${possibleValues.join(', ')}]`);
+          throw new Error(
+            `${
+              (this.constructor as any).name
+            }.${propertyName} can not have value '${pv}' must be one of [${possibleValues.join(
+              ', ',
+            )}]`,
+          );
         }
 
         if (property.type === PropertyType.DATE) {
@@ -186,11 +198,11 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
           }
         }
 
-        let validate = property.validate;
+        const validate = property.validate;
         if (validate) {
-          let validators: Validator[] = Array.isArray(validate) ? validate : [validate];
+          const validators: Validator[] = Array.isArray(validate) ? validate : [validate];
           try {
-            for (let validator of validators) validator(pv);
+            for (const validator of validators) validator(pv);
           } catch (e) {
             throw new Error(`${(this.constructor as any).name}.${propertyName} ${e.message}`);
           }
@@ -206,7 +218,7 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
   }
 
   public findOwnProperty(propName: string): Property | null {
-    let properties = this.ownProperties();
+    const properties = this.ownProperties();
     return NamedArray.findByName(properties, propName);
   }
 
@@ -215,20 +227,20 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
   }
 
   public valueOf(): ValueType {
-    let value: any = {};
-    let properties = this.ownProperties();
-    for (let property of properties) {
-      let propertyName = property.name;
+    const value: any = {};
+    const properties = this.ownProperties();
+    for (const property of properties) {
+      const propertyName = property.name;
       value[propertyName] = (this as any)[propertyName];
     }
     return value;
   }
 
   public toJS(): JSType {
-    let js: any = {};
-    let properties = this.ownProperties();
-    for (let property of properties) {
-      let propertyName = property.name;
+    const js: any = {};
+    const properties = this.ownProperties();
+    for (const property of properties) {
+      const propertyName = property.name;
       let pv: any = (this as any)[propertyName];
       if (isDefined(pv, property.emptyArrayIsOk) || property.preserveUndefined) {
         if (typeof property.toJS === 'function') {
@@ -250,19 +262,22 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
   }
 
   public toString(): string {
-    let name: any = (this as any).name;
-    let extra = name === 'string' ? `: ${name}` : '';
+    const name: any = (this as any).name;
+    const extra = name === 'string' ? `: ${name}` : '';
     return `[ImmutableClass${extra}]`;
   }
 
-  public getDifference(other: BaseImmutable<ValueType, JSType>, returnOnFirstDifference = false): string[] {
+  public getDifference(
+    other: BaseImmutable<ValueType, JSType>,
+    returnOnFirstDifference = false,
+  ): string[] {
     if (!other) return ['__no_other__'];
     if (this === other) return [];
     if (!(other instanceof this.constructor)) return ['__different_constructors__'];
 
-    let differences: string[] = [];
+    const differences: string[] = [];
     const properties = this.ownProperties();
-    for (let property of properties) {
+    for (const property of properties) {
       const equal = property.equal || generalEqual;
       if (!equal((this as any)[property.name], (other as any)[property.name])) {
         const difference = property.name;
@@ -285,10 +300,10 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
     if (this === other) return true;
     if (!(other instanceof this.constructor)) return false;
 
-    let properties = this.ownProperties();
-    for (let property of properties) {
-      let propertyName = property.name;
-      let equal = property.equal || generalEqual;
+    const properties = this.ownProperties();
+    for (const property of properties) {
+      const propertyName = property.name;
+      const equal = property.equal || generalEqual;
       if (!equal(this.get(propertyName), other.get(propertyName))) return false;
     }
 
@@ -312,7 +327,7 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
 
     let o = this;
 
-    for (let propName in properties) {
+    for (const propName in properties) {
       if (!this.hasProperty(propName)) throw new Error('Unknown property: ' + propName);
 
       o = o.change(propName, properties[propName]);
@@ -322,11 +337,11 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
   }
 
   public deepChange(propName: string, newValue: any): this {
-    let bits = propName.split('.');
+    const bits = propName.split('.');
     let lastObject = newValue;
     let currentObject: any;
 
-    let getLastObject = () => {
+    const getLastObject = () => {
       let o: any = this;
 
       for (let i = 0; i < bits.length; i++) {
@@ -337,15 +352,14 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
     };
 
     while (bits.length) {
-      let bit = bits.pop();
+      const bit = bits.pop();
 
       currentObject = getLastObject();
-
 
       if (currentObject.change instanceof Function) {
         lastObject = currentObject.change(bit, lastObject);
       } else {
-        let message = 'Can\'t find \`change()\` method on ' + currentObject.constructor.name;
+        const message = "Can't find `change()` method on " + currentObject.constructor.name;
         throw new Error(message);
       }
     }
@@ -355,13 +369,16 @@ export abstract class BaseImmutable<ValueType, JSType> implements ImmutableInsta
 
   public deepGet(propName: string): any {
     let value = this as any;
-    let bits = propName.split('.');
-    let bit: string;
-    while (bit = bits.shift()) {
-      let specializedGetterName = `get${firstUp(bit)}`;
-      let specializedGetter = value[specializedGetterName];
-      value = specializedGetter ? specializedGetter.call(value)
-        : value.get ? value.get(bit)
+    const bits = propName.split('.');
+    let bit;
+    /* tslint:disable:no-conditional-assignment */
+    while ((bit = bits.shift())) {
+      const specializedGetterName = `get${firstUp(bit)}`;
+      const specializedGetter = value[specializedGetterName];
+      value = specializedGetter
+        ? specializedGetter.call(value)
+        : value.get
+        ? value.get(bit)
         : value[bit];
     }
 

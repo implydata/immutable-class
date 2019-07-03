@@ -14,61 +14,56 @@
  * limitations under the License.
  */
 
-import { expect } from "chai";
-
 import { KeyedArray } from './keyed-array';
 
-describe("KeyedArray", () => {
-  let someArray = [
+describe('KeyedArray', () => {
+  const someArray = [
     { accountId: 'UK', score: 1 },
     { accountId: 'USA', score: 2 },
-    { accountId: 'Italy', score: 3 }
+    { accountId: 'Italy', score: 3 },
   ];
 
-  const keyedHelper = KeyedArray.withKey("accountId");
+  const keyedHelper = KeyedArray.withKey('accountId');
 
-  describe("get", () => {
+  describe('get', () => {
     it('something that exists', () => {
-      expect(keyedHelper.get(someArray, 'USA')).to.equal(someArray[1]);
+      expect(keyedHelper.get(someArray, 'USA')).toEqual(someArray[1]);
     });
 
     it('something that does not exist', () => {
-      expect(keyedHelper.get(someArray, 'Russia')).to.equal(null);
+      expect(keyedHelper.get(someArray, 'Russia')).toEqual(null);
     });
   });
 
-  describe("overrideByKey", () => {
+  describe('overrideByKey', () => {
     it('overrides (in order)', () => {
-      expect(keyedHelper.overrideByKey(someArray, { accountId: 'USA', score: 5 })).to.deep.equal([
+      expect(keyedHelper.overrideByKey(someArray, { accountId: 'USA', score: 5 })).toEqual([
         { accountId: 'UK', score: 1 },
         { accountId: 'USA', score: 5 },
-        { accountId: 'Italy', score: 3 }
+        { accountId: 'Italy', score: 3 },
       ]);
     });
 
     it('overrides appends', () => {
-      expect(keyedHelper.overrideByKey(someArray, { accountId: 'Russia', score: 5 })).to.deep.equal([
+      expect(keyedHelper.overrideByKey(someArray, { accountId: 'Russia', score: 5 })).toEqual([
         { accountId: 'UK', score: 1 },
         { accountId: 'USA', score: 2 },
         { accountId: 'Italy', score: 3 },
-        { accountId: 'Russia', score: 5 }
+        { accountId: 'Russia', score: 5 },
       ]);
     });
-
   });
 
-
-  describe("deleteByName", () => {
+  describe('deleteByName', () => {
     it('something that exists', () => {
-      expect(keyedHelper.deleteByKey(someArray, 'USA')).to.deep.equal([
+      expect(keyedHelper.deleteByKey(someArray, 'USA')).toEqual([
         { accountId: 'UK', score: 1 },
-        { accountId: 'Italy', score: 3 }
+        { accountId: 'Italy', score: 3 },
       ]);
     });
 
     it('something that does not exist', () => {
-      expect(keyedHelper.deleteByKey(someArray, 'Russia')).to.deep.equal(someArray);
+      expect(keyedHelper.deleteByKey(someArray, 'Russia')).toEqual(someArray);
     });
   });
-
 });

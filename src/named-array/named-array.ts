@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { SimpleArray } from '../simple-array/simple-array';
-import { KeyedArray } from '../keyed-array/keyed-array';
 import { immutableEqual } from '../equality/equality';
+import { KeyedArray } from '../keyed-array/keyed-array';
+import { SimpleArray } from '../simple-array/simple-array';
 
 export type DiffAction = 'create' | 'update' | 'delete';
 
@@ -44,7 +44,11 @@ export interface DiffJS {
 }
 
 export class Diff<T extends Nameable> {
-  static inflateFromJS<T extends Nameable>(Class: { fromJS: (js: any, context?: any) => T }, diffJS: DiffJS, context?: any): Diff<T> {
+  static inflateFromJS<T extends Nameable>(
+    Class: { fromJS: (js: any, context?: any) => T },
+    diffJS: DiffJS,
+    context?: any,
+  ): Diff<T> {
     let before: T | null = null;
     let after: T | null = null;
     if (diffJS.before) before = Class.fromJS(diffJS.before, context);
@@ -52,7 +56,11 @@ export class Diff<T extends Nameable> {
     return new Diff(before, after);
   }
 
-  static inflateFromJSs<T extends Nameable>(Class: { fromJS: (js: any, context?: any) => T }, diffJSs: DiffJS[], context?: any): Diff<T>[] {
+  static inflateFromJSs<T extends Nameable>(
+    Class: { fromJS: (js: any, context?: any) => T },
+    diffJSs: DiffJS[],
+    context?: any,
+  ): Diff<T>[] {
     if (!Array.isArray(diffJSs)) throw new Error('diffs must be an array');
     return diffJSs.map(diffJS => Diff.inflateFromJS<T>(Class, diffJS, context));
   }
@@ -62,13 +70,14 @@ export class Diff<T extends Nameable> {
 
   constructor(before: T | null, after: T | null) {
     if (!before && !after) throw new Error('must have either a before or an after');
-    if (before && after && before.name !== after.name) throw new Error('before and after name must match');
+    if (before && after && before.name !== after.name)
+      throw new Error('before and after name must match');
     this.before = before;
     this.after = after;
   }
 
   toJS(): DiffJS {
-    let js: DiffJS = {};
+    const js: DiffJS = {};
     if (this.before) js.before = this.before;
     if (this.after) js.after = this.after;
     return js;
@@ -91,7 +100,7 @@ export class Diff<T extends Nameable> {
   }
 }
 
-const KEYED_ARRAY = KeyedArray.withKey("name");
+const KEYED_ARRAY = KeyedArray.withKey('name');
 export class NamedArray {
   static isValid<T extends Nameable>(array: T[]): boolean {
     return KEYED_ARRAY.isValid(array);
@@ -106,12 +115,12 @@ export class NamedArray {
   }
 
   static containsByName<T extends Nameable>(array: T[], name: string): boolean {
-    return SimpleArray.contains(array, (x) => x.name === name);
+    return SimpleArray.contains(array, x => x.name === name);
   }
 
   static findByNameCI<T extends Nameable>(array: T[], name: string): T {
-    let lowerName = name.toLowerCase();
-    return SimpleArray.find(array, (x) => x.name.toLowerCase() === lowerName);
+    const lowerName = name.toLowerCase();
+    return SimpleArray.find(array, x => x.name.toLowerCase() === lowerName);
   }
 
   static findByName<T extends Nameable>(array: T[], name: string): T {
@@ -119,7 +128,7 @@ export class NamedArray {
   }
 
   static findIndexByName<T extends Nameable>(array: T[], name: string): number {
-    return SimpleArray.findIndex(array, (x) => x.name === name);
+    return SimpleArray.findIndex(array, x => x.name === name);
   }
 
   static overrideByName<T extends Nameable>(things: T[], thingOverride: T): T[] {
@@ -134,25 +143,29 @@ export class NamedArray {
     return KEYED_ARRAY.deleteByKey(array, name);
   }
 
-  static synchronize<T>(oldThings: T[], newThings: T[], updatedOptions: SynchronizerOptions<T>): void {
+  static synchronize<T>(
+    oldThings: T[],
+    newThings: T[],
+    updatedOptions: SynchronizerOptions<T>,
+  ): void {
     const key = updatedOptions.key || getName;
     const equals = updatedOptions.equals || (immutableEqual as any);
     const onEnter = updatedOptions.onEnter || noop;
     const onUpdate = updatedOptions.onUpdate || noop;
     const onExit = updatedOptions.onExit || noop;
 
-    let initialByKey: Record<string, T> = Object.create(null);
+    const initialByKey: Record<string, T> = Object.create(null);
     for (let i = 0; i < oldThings.length; i++) {
-      let initialThing = oldThings[i];
-      let initialThingKey = key(initialThing);
+      const initialThing = oldThings[i];
+      const initialThingKey = key(initialThing);
       if (initialByKey[initialThingKey]) throw new Error(`duplicate key '${initialThingKey}'`);
       initialByKey[initialThingKey] = initialThing;
     }
 
     for (let j = 0; j < newThings.length; j++) {
-      let newThing = newThings[j];
-      let newThingKey = key(newThing);
-      let oldThing = initialByKey[newThingKey];
+      const newThing = newThings[j];
+      const newThingKey = key(newThing);
+      const oldThing = initialByKey[newThingKey];
       if (oldThing) {
         if (!equals(newThing, oldThing)) {
           onUpdate(newThing, oldThing);
@@ -163,27 +176,25 @@ export class NamedArray {
       }
     }
 
-    for (let k in initialByKey) {
+    for (const k in initialByKey) {
       if (!initialByKey[k]) continue;
       onExit(initialByKey[k]);
     }
   }
 
   static computeDiffs<T extends Nameable>(oldThings: T[], newThings: T[]): Diff<T>[] {
-    let dataCubeDiffs: Diff<T>[] = [];
+    const dataCubeDiffs: Diff<T>[] = [];
     NamedArray.synchronize(oldThings, newThings, {
-      onExit: (oldDataCube) => {
+      onExit: oldDataCube => {
         dataCubeDiffs.push(new Diff(oldDataCube, null));
       },
       onUpdate: (newDataCube, oldDataCube) => {
         dataCubeDiffs.push(new Diff(oldDataCube, newDataCube));
       },
-      onEnter: (newDataCube) => {
+      onEnter: newDataCube => {
         dataCubeDiffs.push(new Diff(null, newDataCube));
-      }
+      },
     });
     return dataCubeDiffs;
   }
 }
-
-

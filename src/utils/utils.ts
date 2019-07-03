@@ -36,8 +36,10 @@ export function isArrayOf(things: any[], constructor: any): boolean {
  */
 export function isImmutableClass(thing: any): boolean {
   if (!thing || typeof thing !== 'object') return false;
-  let ClassFn = thing.constructor;
-  return typeof ClassFn.fromJS === 'function' && // Has Class.fromJS
+  const ClassFn = thing.constructor;
+  return (
+    typeof ClassFn.fromJS === 'function' && // Has Class.fromJS
     typeof thing.toJS === 'function' && // Has Class#toJS
-    typeof thing.equals === 'function'; // Has Class#equals
+    typeof thing.equals === 'function'
+  ); // Has Class#equals
 }

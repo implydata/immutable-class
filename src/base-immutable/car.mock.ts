@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 
-import { BaseImmutable, Property, PropertyType, BackCompat } from './base-immutable';
-
-/*
- * Copyright (c) 2017 Imply Data, Inc. All rights reserved.
- *
- * This software is the confidential and proprietary information
- * of Imply Data, Inc.
- */
+import { BackCompat, BaseImmutable, Property, PropertyType } from './base-immutable';
 
 export interface DriverValue {
   name: string;
@@ -34,22 +27,18 @@ export interface DriverJS {
 export class Driver extends BaseImmutable<DriverValue, DriverJS> {
   static POPE: Driver;
 
-  static PROPERTIES: Property[] = [
-    { name: 'name', defaultValue: null }
-  ];
+  static PROPERTIES: Property[] = [{ name: 'name', defaultValue: null }];
 
   static fromJS(params: DriverValue) {
     return new Driver(BaseImmutable.jsToValue(Driver.PROPERTIES, params));
   }
-
 
   constructor(params: DriverValue) {
     super(params);
   }
 }
 BaseImmutable.finalize(Driver);
-Driver.POPE = Driver.fromJS({name: 'the pope'});
-
+Driver.POPE = Driver.fromJS({ name: 'the pope' });
 
 export interface CarValue {
   name: string;
@@ -79,43 +68,43 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
       name: 'name',
       validate: (n: string) => {
         if (n.toLowerCase() !== n) throw new Error('must be lowercase');
-      }
+      },
     },
     {
       name: 'fuel',
       defaultValue: 'electric',
-      possibleValues: ['gas', 'diesel', 'electric']
+      possibleValues: ['gas', 'diesel', 'electric'],
     },
     {
       name: 'subCar',
       defaultValue: null,
-      immutableClass: Car
+      immutableClass: Car,
     },
     {
       name: 'range',
       defaultValue: 100,
-      validate: [BaseImmutable.ensure.number, ensureNonNegative]
+      validate: [BaseImmutable.ensure.number, ensureNonNegative],
     },
     {
       name: 'relatedCars',
       defaultValue: [],
-      immutableClassArray: Car
+      immutableClassArray: Car,
     },
     {
       name: 'createdOn',
       defaultValue: null,
-      type: PropertyType.DATE
+      type: PropertyType.DATE,
     },
     {
       name: 'owners',
       defaultValue: null,
-      emptyArrayIsOk: true
+      emptyArrayIsOk: true,
     },
     {
       name: 'driver',
       defaultValue: Driver.POPE,
-      immutableClass: Driver
-    }
+      immutableClass: Driver,
+    },
   ];
 
   static BACK_COMPATS: BackCompat[] = [
@@ -125,8 +114,8 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
       },
       action: (js: any) => {
         js.fuel = js.fuelType;
-      }
-    }
+      },
+    },
   ];
 
   static isCar(car: Car) {
@@ -136,7 +125,6 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
   static fromJS(properties: CarJS) {
     return new Car(BaseImmutable.jsToValue(Car.PROPERTIES, properties, Car.BACK_COMPATS));
   }
-
 
   public name: string;
   public fuel: string;
@@ -156,16 +144,16 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
   public getRelatedCars: () => Car[];
 
   public getSubCar() {
-    let { name, subCar } = this;
+    const { name, subCar } = this;
     if (subCar) return subCar;
     if (name === 'ford') return Car.fromJS({ name: 'pinto', fuel: 'gas' });
-    if (name === 'toyota') return Car.fromJS({ name: 'prius' , fuel: 'electric' });
+    if (name === 'toyota') return Car.fromJS({ name: 'prius', fuel: 'electric' });
     return null;
   }
 
   public changeRange(n: number) {
-    let value = this.valueOf();
-    let { fuel } = value;
+    const value = this.valueOf();
+    const { fuel } = value;
     if (fuel === 'electric') {
       value.range = n > 400 ? 400 : n;
       return new Car(value);
