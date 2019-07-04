@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as hasOwnProp from 'has-own-prop';
+import hasOwnProp from 'has-own-prop';
 
 import { generalEqual } from '../equality/equality';
 import { NamedArray } from '../named-array/named-array';

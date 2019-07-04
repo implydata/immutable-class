@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-import * as hasOwnProp from 'has-own-prop';
-
 import {
   generalEqual,
   immutableArraysEqual,
