@@ -31,7 +31,7 @@ describe('KeyedArray', () => {
     });
 
     it('something that does not exist', () => {
-      expect(keyedHelper.get(someArray, 'Russia')).toEqual(null);
+      expect(keyedHelper.get(someArray, 'Russia')).toEqual(undefined);
     });
   });
 

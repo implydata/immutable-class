@@ -49,8 +49,8 @@ export class Diff<T extends Nameable> {
     diffJS: DiffJS,
     context?: any,
   ): Diff<T> {
-    let before: T | null = null;
-    let after: T | null = null;
+    let before: T | undefined;
+    let after: T | undefined;
     if (diffJS.before) before = Class.fromJS(diffJS.before, context);
     if (diffJS.after) after = Class.fromJS(diffJS.after, context);
     return new Diff(before, after);
@@ -68,7 +68,7 @@ export class Diff<T extends Nameable> {
   public before?: T;
   public after?: T;
 
-  constructor(before: T | null, after: T | null) {
+  constructor(before: T | undefined, after: T | undefined) {
     if (!before && !after) throw new Error('must have either a before or an after');
     if (before && after && before.name !== after.name)
       throw new Error('before and after name must match');
@@ -96,7 +96,10 @@ export class Diff<T extends Nameable> {
   }
 
   getName(): string {
-    return this.before ? this.before.name : this.after.name;
+    const { before, after } = this;
+    if (before) return before.name;
+    if (after) return after.name;
+    throw new Error(`Invalid diff, no before or after`);
   }
 }
 
@@ -118,12 +121,12 @@ export class NamedArray {
     return SimpleArray.contains(array, x => x.name === name);
   }
 
-  static findByNameCI<T extends Nameable>(array: T[], name: string): T {
+  static findByNameCI<T extends Nameable>(array: T[], name: string): T | undefined {
     const lowerName = name.toLowerCase();
     return SimpleArray.find(array, x => x.name.toLowerCase() === lowerName);
   }
 
-  static findByName<T extends Nameable>(array: T[], name: string): T {
+  static findByName<T extends Nameable>(array: T[], name: string): T | undefined {
     return NamedArray.get(array, name);
   }
 
@@ -186,13 +189,13 @@ export class NamedArray {
     const dataCubeDiffs: Diff<T>[] = [];
     NamedArray.synchronize(oldThings, newThings, {
       onExit: oldDataCube => {
-        dataCubeDiffs.push(new Diff(oldDataCube, null));
+        dataCubeDiffs.push(new Diff<T>(oldDataCube, undefined));
       },
       onUpdate: (newDataCube, oldDataCube) => {
-        dataCubeDiffs.push(new Diff(oldDataCube, newDataCube));
+        dataCubeDiffs.push(new Diff<T>(oldDataCube, newDataCube));
       },
       onEnter: newDataCube => {
-        dataCubeDiffs.push(new Diff(null, newDataCube));
+        dataCubeDiffs.push(new Diff<T>(undefined, newDataCube));
       },
     });
     return dataCubeDiffs;

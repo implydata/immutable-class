@@ -24,14 +24,14 @@ export interface Equalable {
  * @param b - thing to compare
  * @returns {boolean}
  */
-export function generalEqual<T>(a: T, b: T): boolean {
+export function generalEqual<T>(a: T | undefined, b: T | undefined): boolean {
   if (a === b) return true;
   if (a && b) {
     if (
       typeof (a as any).toISOString === 'function' &&
       typeof (b as any).toISOString === 'function'
     ) {
-      return a.valueOf() === b.valueOf();
+      return (a as any).valueOf() === (b as any).valueOf();
     }
     if (Array.isArray(a) && Array.isArray(b)) {
       return generalArraysEqual(a as any, b as any);
@@ -49,9 +49,10 @@ export function generalEqual<T>(a: T, b: T): boolean {
  * @param b - thing to compare
  * @returns {boolean}
  */
-export function immutableEqual<T extends Equalable>(a: T, b: T): boolean {
+export function immutableEqual<T extends Equalable>(a: T | undefined, b: T | undefined): boolean {
   if (a === b) return true;
-  return Boolean(a) && a.equals(b);
+  if (!a) return false;
+  return a.equals(b);
 }
 
 /**
@@ -60,9 +61,9 @@ export function immutableEqual<T extends Equalable>(a: T, b: T): boolean {
  * @param arrayB - array to compare
  * @returns {boolean}
  */
-export function generalArraysEqual<T>(arrayA: T[], arrayB: T[]): boolean {
+export function generalArraysEqual<T>(arrayA: T[] | undefined, arrayB: T[] | undefined): boolean {
   if (arrayA === arrayB) return true;
-  if (!arrayA !== !arrayB) return false;
+  if (!arrayA || !arrayB) return false;
   const length = arrayA.length;
   if (length !== arrayB.length) return false;
   for (let i = 0; i < length; i++) {
@@ -77,9 +78,12 @@ export function generalArraysEqual<T>(arrayA: T[], arrayB: T[]): boolean {
  * @param arrayB - array to compare
  * @returns {boolean}
  */
-export function immutableArraysEqual<T extends Equalable>(arrayA: T[], arrayB: T[]): boolean {
+export function immutableArraysEqual<T extends Equalable>(
+  arrayA: T[] | undefined,
+  arrayB: T[] | undefined,
+): boolean {
   if (arrayA === arrayB) return true;
-  if (!arrayA !== !arrayB) return false;
+  if (!arrayA || !arrayB) return false;
   const length = arrayA.length;
   if (length !== arrayB.length) return false;
   for (let i = 0; i < length; i++) {
@@ -95,11 +99,11 @@ export function immutableArraysEqual<T extends Equalable>(arrayA: T[], arrayB: T
  * @returns {boolean}
  */
 export function generalLookupsEqual<T>(
-  lookupA: Record<string, T>,
-  lookupB: Record<string, T>,
+  lookupA: Record<string, T> | undefined,
+  lookupB: Record<string, T> | undefined,
 ): boolean {
   if (lookupA === lookupB) return true;
-  if (!lookupA !== !lookupB) return false;
+  if (!lookupA || !lookupB) return false;
   const keysA = Object.keys(lookupA);
   const keysB = Object.keys(lookupB);
   if (keysA.length !== keysB.length) return false;
@@ -116,11 +120,11 @@ export function generalLookupsEqual<T>(
  * @returns {boolean}
  */
 export function immutableLookupsEqual<T extends Equalable>(
-  lookupA: { [k: string]: T },
-  lookupB: { [k: string]: T },
+  lookupA: Record<string, T> | undefined,
+  lookupB: Record<string, T> | undefined,
 ): boolean {
   if (lookupA === lookupB) return true;
-  if (!lookupA !== !lookupB) return false;
+  if (!lookupA || !lookupB) return false;
   const keysA = Object.keys(lookupA);
   const keysB = Object.keys(lookupB);
   if (keysA.length !== keysB.length) return false;

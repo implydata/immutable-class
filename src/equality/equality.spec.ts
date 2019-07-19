@@ -108,10 +108,10 @@ describe('equality', () => {
       const bob1 = new Person('Bob');
       const bob2 = new Person('Bob');
 
-      expect(immutableEqual(null, null)).toEqual(true);
+      expect(immutableEqual(undefined, undefined)).toEqual(true);
 
-      expect(immutableEqual(tom, null)).toEqual(false);
-      expect(immutableEqual(null, tom)).toEqual(false);
+      expect(immutableEqual(tom, undefined)).toEqual(false);
+      expect(immutableEqual(undefined, tom)).toEqual(false);
       expect(immutableEqual(tom, bob1)).toEqual(false);
 
       expect(immutableEqual(bob1, bob2)).toEqual(true);
@@ -124,16 +124,14 @@ describe('equality', () => {
       const bob1 = new Person('Bob');
       const bob2 = new Person('Bob');
 
-      expect(immutableArraysEqual(null, null)).toEqual(true);
+      expect(immutableArraysEqual(undefined, undefined)).toEqual(true);
 
-      expect(immutableArraysEqual([], null)).toEqual(false);
-      expect(immutableArraysEqual([tom], null)).toEqual(false);
-      expect(immutableArraysEqual(null, [])).toEqual(false);
-      expect(immutableArraysEqual(null, [tom])).toEqual(false);
+      expect(immutableArraysEqual([], undefined)).toEqual(false);
+      expect(immutableArraysEqual([tom], undefined)).toEqual(false);
+      expect(immutableArraysEqual(undefined, [])).toEqual(false);
+      expect(immutableArraysEqual(undefined, [tom])).toEqual(false);
       expect(immutableArraysEqual([tom], [])).toEqual(false);
       expect(immutableArraysEqual([tom], [bob1])).toEqual(false);
-      expect(immutableArraysEqual([bob1, null], [bob1, tom])).toEqual(false);
-      expect(immutableArraysEqual([bob1, tom], [bob1, null])).toEqual(false);
 
       expect(immutableArraysEqual([], [])).toEqual(true);
       expect(immutableArraysEqual([bob1], [bob2])).toEqual(true);
@@ -147,16 +145,14 @@ describe('equality', () => {
       const bob1 = new Person('Bob');
       const bob2 = new Person('Bob');
 
-      expect(immutableLookupsEqual(null, null)).toEqual(true);
+      expect(immutableLookupsEqual(undefined, undefined)).toEqual(true);
 
-      expect(immutableLookupsEqual({}, null)).toEqual(false);
-      expect(immutableLookupsEqual({ a: tom }, null)).toEqual(false);
-      expect(immutableLookupsEqual(null, {})).toEqual(false);
-      expect(immutableLookupsEqual(null, { a: tom })).toEqual(false);
+      expect(immutableLookupsEqual({}, undefined)).toEqual(false);
+      expect(immutableLookupsEqual({ a: tom }, undefined)).toEqual(false);
+      expect(immutableLookupsEqual(undefined, {})).toEqual(false);
+      expect(immutableLookupsEqual(undefined, { a: tom })).toEqual(false);
       expect(immutableLookupsEqual({ a: tom }, {})).toEqual(false);
       expect(immutableLookupsEqual({ a: tom }, { a: bob1 })).toEqual(false);
-      expect(immutableLookupsEqual({ a: bob1, b: null }, { a: bob1, b: tom })).toEqual(false);
-      expect(immutableLookupsEqual({ a: bob1, b: tom }, { a: bob1, b: null })).toEqual(false);
 
       expect(immutableLookupsEqual({}, {})).toEqual(true);
       expect(immutableLookupsEqual({ a: bob1 }, { a: bob2 })).toEqual(true);

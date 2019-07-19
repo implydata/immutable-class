@@ -31,12 +31,12 @@ export class KeyedArray<T> {
     return new KeyedArray((x: any) => x[key]);
   }
 
-  public get<T>(array: T[], key: string): T {
+  public get(array: T[], key: string): T | undefined {
     const { getKey } = this;
     return SimpleArray.find(array, x => getKey(x) === key);
   }
 
-  public checkValid<T>(array: T[], what?: string, where?: string): void {
+  public checkValid(array: T[], what?: string, where?: string): void {
     const { getKey } = this;
 
     const seen: { [k: string]: number } = {};
@@ -51,7 +51,7 @@ export class KeyedArray<T> {
     }
   }
 
-  public isValid<T>(array: T[]): boolean {
+  public isValid(array: T[]): boolean {
     const { getKey } = this;
 
     const seen: { [k: string]: number } = {};
@@ -63,7 +63,7 @@ export class KeyedArray<T> {
     return true;
   }
 
-  public overrideByKey<T>(things: T[], thingOverride: T): T[] {
+  public overrideByKey(things: T[], thingOverride: T): T[] {
     const { getKey } = this;
 
     const overrideKey = getKey(thingOverride);
@@ -80,7 +80,7 @@ export class KeyedArray<T> {
     return things;
   }
 
-  public overridesByKey<T>(things: T[], thingOverrides: T[]): T[] {
+  public overridesByKey(things: T[], thingOverrides: T[]): T[] {
     const { getKey } = this;
 
     const keyToIndex: Record<string, number> = {};
@@ -101,7 +101,7 @@ export class KeyedArray<T> {
     return newThings;
   }
 
-  public deleteByKey<T>(array: T[], key: string): T[] {
+  public deleteByKey(array: T[], key: string): T[] {
     const { getKey } = this;
     return array.filter(a => getKey(a) !== key);
   }

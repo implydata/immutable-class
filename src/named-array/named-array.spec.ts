@@ -29,7 +29,7 @@ describe('NamedArray', () => {
     });
 
     it('something that does not exist', () => {
-      expect(NamedArray.get(someArray, 'Russia')).toEqual(null);
+      expect(NamedArray.get(someArray, 'Russia')).toEqual(undefined);
     });
   });
 
@@ -166,7 +166,7 @@ describe('NamedArray', () => {
     });
 
     it('something that does not exist', () => {
-      expect(NamedArray.findByNameCI(someArray, 'RUsSia')).toEqual(null);
+      expect(NamedArray.findByNameCI(someArray, 'RUsSia')).toEqual(undefined);
     });
   });
 
@@ -183,8 +183,8 @@ describe('NamedArray', () => {
         onEnter: newThing => {
           ops.push(`Enter ${newThing.name}`);
         },
-        onUpdate: (newThing, oldThing) => {
-          ops.push(`Update ${oldThing.name} ${oldThing.value} => ${newThing.value}`);
+        onUpdate: (_newThing, oldThing) => {
+          ops.push(`Update ${oldThing.name}`);
         },
         onExit: oldThing => {
           ops.push(`Exit ${oldThing.name}`);
@@ -202,8 +202,8 @@ describe('NamedArray', () => {
         onEnter: newThing => {
           ops.push(`Enter ${newThing.name}`);
         },
-        onUpdate: (newThing, oldThing) => {
-          ops.push(`Update ${oldThing.name} ${oldThing.value} => ${newThing.value}`);
+        onUpdate: (_newThing, oldThing) => {
+          ops.push(`Update ${oldThing.name}`);
         },
         onExit: oldThing => {
           ops.push(`Exit ${oldThing.name}`);
@@ -221,8 +221,8 @@ describe('NamedArray', () => {
         onEnter: newThing => {
           ops.push(`Enter ${newThing.name}`);
         },
-        onUpdate: (newThing, oldThing) => {
-          ops.push(`Update ${oldThing.name} ${oldThing.value} => ${newThing.value}`);
+        onUpdate: (_newThing, oldThing) => {
+          ops.push(`Update ${oldThing.name}`);
         },
         onExit: oldThing => {
           ops.push(`Exit ${oldThing.name}`);

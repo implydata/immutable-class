@@ -27,30 +27,35 @@
     "build/"
   ],
   "scripts": {
-    "prepare": "tdi -q",
     "compile": "tsc",
     "pretest": "tsc",
-    "test": "./run-tests",
+    "test": "npm run tslint && jest --silent 2>&1",
     "watch": "tsc --watch",
     "tslint": "./node_modules/.bin/tslint -c tslint.json --project tsconfig.json --formatters-dir ./node_modules/awesome-code-style/formatter 'src/**/*.ts?(x)'",
     "tslint-fix": "npm run tslint -- --fix",
-    "tslint-changed-only": "git diff --cached --diff-filter=ACMR --name-only | grep -E \\.tsx\\?$ | xargs ./node_modules/.bin/tslint -c tslint.json --project tsconfig.json --formatters-dir ./node_modules/awesome-code-style/formatter",
+    "tslint-changed-only": "git diff --diff-filter=ACMR --name-only | grep -E \\.tsx\\?$ | xargs ./node_modules/.bin/tslint -c tslint.json --project tsconfig.json --formatters-dir ./node_modules/awesome-code-style/formatter",
     "tslint-fix-changed-only": "npm run tslint-changed-only -- --fix"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "printWidth": 100,
+    "endOfLine": "lf"
   },
   "dependencies": {
     "has-own-prop": "~2.0.0",
+    "npm-check-updates": "^3.1.20",
     "tslib": "~1.10.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.15",
     "awesome-code-style": "^1.4.2",
-    "chai": "4.2.0",
     "immutable-class-tester": "0.6.0",
     "jest": "^24.8.0",
-    "mocha": "6.1.4",
-    "tdi": "0.7.7",
     "ts-jest": "^24.0.2",
     "ts-node": "8.3.0",
-    "typescript": "3.5.2"
+    "typescript": "3.5.3"
   }
 }

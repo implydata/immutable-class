@@ -21,7 +21,7 @@
  * @param constructor - the constructor class to check against
  * @returns {boolean}
  */
-export function isArrayOf(things: any[], constructor: any): boolean {
+export function isArrayOf(things: any, constructor: any): boolean {
   if (!Array.isArray(things)) return false;
   for (let i = 0, length = things.length; i < length; i++) {
     if (!(things[i] instanceof constructor)) return false;

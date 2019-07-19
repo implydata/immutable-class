@@ -23,7 +23,7 @@ function firstUp(name: string): string {
   return name[0].toUpperCase() + name.substr(1);
 }
 
-function isDefined(v: any, emptyArrayIsOk: boolean) {
+function isDefined(v: any, emptyArrayIsOk: boolean | undefined) {
   return Array.isArray(v) ? v.length || emptyArrayIsOk : v != null;
 }
 
@@ -86,7 +86,7 @@ export abstract class BaseImmutable<ValueType, JSType>
     properties: Property[],
     js: any,
     backCompats?: BackCompat[],
-    context?: { [key: string]: any },
+    context?: Record<string, any>,
   ): any {
     if (properties == null) {
       throw new Error(`JS is not defined`);
@@ -114,11 +114,16 @@ export abstract class BaseImmutable<ValueType, JSType>
         if (property.type === PropertyType.DATE) {
           pv = new Date(pv);
         } else if (property.immutableClass) {
-          pv = (property.immutableClass as any).fromJS(pv, contextTransform(context));
+          pv = (property.immutableClass as any).fromJS(
+            pv,
+            context ? contextTransform(context) : undefined,
+          );
         } else if (property.immutableClassArray) {
           if (!Array.isArray(pv)) throw new Error(`expected ${propertyName} to be an array`);
           const propertyImmutableClassArray: any = property.immutableClassArray;
-          pv = pv.map((v: any) => propertyImmutableClassArray.fromJS(v, contextTransform(context)));
+          pv = pv.map((v: any) =>
+            propertyImmutableClassArray.fromJS(v, context ? contextTransform(context) : undefined),
+          );
         }
       }
       value[propertyName] = pv;
@@ -138,15 +143,19 @@ export abstract class BaseImmutable<ValueType, JSType>
       proto[getUpped] =
         proto[getUpped] ||
         function() {
-          const pv = (this as any)[propertyName];
+          // @ts-ignore
+          const pv = this[propertyName];
           return pv != null ? pv : defaultValue;
         };
       proto[changeUpped] =
         proto[changeUpped] ||
         function(newValue: any): any {
+          // @ts-ignore
           if (this[propertyName] === newValue) return this;
+          // @ts-ignore
           const value = this.valueOf();
           value[propertyName] = newValue;
+          // @ts-ignore
           return new (this.constructor as any)(value);
         };
     });
@@ -217,7 +226,7 @@ export abstract class BaseImmutable<ValueType, JSType>
     return (this.constructor as any).PROPERTIES;
   }
 
-  public findOwnProperty(propName: string): Property | null {
+  public findOwnProperty(propName: string): Property | undefined {
     const properties = this.ownProperties();
     return NamedArray.findByName(properties, propName);
   }
@@ -268,7 +277,7 @@ export abstract class BaseImmutable<ValueType, JSType>
   }
 
   public getDifference(
-    other: BaseImmutable<ValueType, JSType>,
+    other: BaseImmutable<ValueType, JSType> | undefined,
     returnOnFirstDifference = false,
   ): string[] {
     if (!other) return ['__no_other__'];

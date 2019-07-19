@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-export type MapCallbackFn<T> = (value: T, index: number, array: T[]) => T;
-export type BooleanCallbackFn<T> = (value: T, index: number, array: T[]) => boolean;
+export type MapCallbackFn<T> = (value: T, index: number) => T;
+export type BooleanCallbackFn<T> = (value: T, index: number) => boolean;
 
 export class SimpleArray {
   static mapImmutable<T>(array: T[], fn: MapCallbackFn<T>): T[] {
     let changed = false;
-    const newArray = array.map((x, i, xs) => {
-      const newX = fn(x, i, xs);
+    const newArray = array.map((x, i) => {
+      const newX = fn(x, i);
       if (newX !== x) changed = true;
       return newX;
     });
@@ -38,12 +38,12 @@ export class SimpleArray {
     return array;
   }
 
-  static find<T>(array: T[], fn: BooleanCallbackFn<T>): T {
+  static find<T>(array: T[], fn: BooleanCallbackFn<T>): T | undefined {
     for (let i = 0, n = array.length; i < n; i++) {
       const a = array[i];
       if (fn.call(array, a, i)) return a;
     }
-    return null;
+    return;
   }
 
   static findIndex<T>(array: T[], fn: BooleanCallbackFn<T>): number {
@@ -55,13 +55,13 @@ export class SimpleArray {
   }
 
   static delete<T>(array: T[], arg: T | BooleanCallbackFn<T>): T[] {
-    return array.filter((a, i, arr) =>
-      typeof arg === 'function' ? !(arg as BooleanCallbackFn<T>).call(arr, a, i) : a !== arg,
+    return array.filter((a, i) =>
+      typeof arg === 'function' ? !(arg as BooleanCallbackFn<T>)(a, i) : a !== arg,
     );
   }
 
   static deleteIndex<T>(array: T[], index: number): T[] {
-    return array.filter((a, i) => i !== index);
+    return array.filter((_a, i) => i !== index);
   }
 
   static contains<T>(array: T[], arg: T | BooleanCallbackFn<T>): boolean {

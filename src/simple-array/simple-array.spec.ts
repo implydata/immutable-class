@@ -31,7 +31,7 @@ describe('SimpleArray', () => {
     });
 
     it('something that does not exist', () => {
-      expect(SimpleArray.find(someArray, x => x.length === 7)).toEqual(null);
+      expect(SimpleArray.find(someArray, x => x.length === 7)).toEqual(undefined);
     });
   });
 

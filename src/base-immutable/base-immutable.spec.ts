@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { BaseImmutable } from './base-immutable';
 import { Car } from './car.mock';
 
 describe('BaseImmutable', () => {
@@ -49,11 +48,11 @@ describe('BaseImmutable', () => {
   it('calling general getter calls defined getter', () => {
     const ford = Car.fromJS({ name: 'ford' });
     expect(ford.get('subCar').getName()).toEqual('pinto');
-    expect(ford.getSubCar().getName()).toEqual('pinto');
+    expect(ford.getSubCar()!.getName()).toEqual('pinto');
 
     const toyota = Car.fromJS({ name: 'toyota' });
     expect(toyota.get('subCar').getName()).toEqual('prius');
-    expect(toyota.getSubCar().getName()).toEqual('prius');
+    expect(toyota.getSubCar()!.getName()).toEqual('prius');
   });
 
   it('calling general changer calls defined changer', () => {
@@ -84,7 +83,7 @@ describe('BaseImmutable', () => {
     const car0 = Car.fromJS({ name: 'poet' });
 
     it('no other', () => {
-      expect(car0.getDifference(null)).toEqual(['__no_other__']);
+      expect(car0.getDifference(undefined)).toEqual(['__no_other__']);
     });
 
     it('single diff', () => {
