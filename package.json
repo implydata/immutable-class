@@ -45,17 +45,15 @@
     "endOfLine": "lf"
   },
   "dependencies": {
-    "has-own-prop": "~2.0.0",
-    "npm-check-updates": "^3.1.20",
-    "tslib": "~1.10.0"
+    "has-own-prop": "^2.0.0",
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.15",
     "awesome-code-style": "^1.4.2",
-    "immutable-class-tester": "0.6.0",
+    "immutable-class-tester": "^0.7.0",
     "jest": "^24.8.0",
     "ts-jest": "^24.0.2",
-    "ts-node": "8.3.0",
-    "typescript": "3.5.3"
+    "typescript": "^3.5.3"
   }
 }
