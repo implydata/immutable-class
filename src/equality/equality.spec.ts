@@ -26,10 +26,6 @@ class Person {
     return new Person(name);
   }
 
-  static isPerson(candidate: Person) {
-    return candidate instanceof Person;
-  }
-
   public name: string;
 
   constructor(name: string) {
@@ -52,8 +48,8 @@ class Person {
     return this.name;
   }
 
-  public equals(other: Person) {
-    return Person.isPerson(other) && this.name === other.name;
+  public equals(other: Person | undefined) {
+    return other instanceof Person && this.name === other.name;
   }
 }
 

@@ -69,7 +69,7 @@ export interface ImmutableInstanceType<ValueType, JSType> {
   toJS(): JSType;
   toJSON(): JSType;
   toString(): string;
-  equals(other: ImmutableInstanceType<ValueType, JSType>): boolean;
+  equals(other: ImmutableInstanceType<ValueType, JSType> | undefined): boolean;
 }
 
 export interface BackCompat {

@@ -29,7 +29,7 @@ export interface Instance<ValueType, JSType> {
   valueOf(): ValueType;
   toJS(): JSType;
   toJSON(): JSType;
-  equals(other: Instance<ValueType, JSType>): boolean;
+  equals(other: Instance<ValueType, JSType> | undefined): boolean;
 }
 
 /**
