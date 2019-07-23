@@ -300,7 +300,7 @@ export abstract class BaseImmutable<ValueType, JSType>
     return differences;
   }
 
-  public equals(other: BaseImmutable<ValueType, JSType>): boolean {
+  public equals(other: BaseImmutable<ValueType, JSType> | undefined): boolean {
     return this.getDifference(other, true).length === 0;
   }
 
