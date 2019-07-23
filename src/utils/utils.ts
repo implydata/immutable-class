@@ -43,3 +43,9 @@ export function isImmutableClass(thing: any): boolean {
     typeof thing.equals === 'function'
   ); // Has Class#equals
 }
+
+/**
+ * Does a nothing but a simple typecheck assertion
+ * @param thing - the thing to typecheck
+ */
+export function typeCheck<T>(_x: T): void {}
