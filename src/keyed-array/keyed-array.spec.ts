@@ -54,7 +54,13 @@ describe('KeyedArray', () => {
     });
   });
 
-  describe('deleteByName', () => {
+  describe('dedupe', () => {
+    it('works', () => {
+      expect(keyedHelper.dedupe(someArray.concat(someArray))).toEqual(someArray);
+    });
+  });
+
+  describe('deleteByKey', () => {
     it('something that exists', () => {
       expect(keyedHelper.deleteByKey(someArray, 'USA')).toEqual([
         { accountId: 'UK', score: 1 },

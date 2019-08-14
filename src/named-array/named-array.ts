@@ -142,6 +142,10 @@ export class NamedArray {
     return KEYED_ARRAY.overridesByKey(things, thingOverrides);
   }
 
+  static dedupe<T extends Nameable>(things: T[]): T[] {
+    return KEYED_ARRAY.dedupe(things);
+  }
+
   static deleteByName<T extends Nameable>(array: T[], name: string): T[] {
     return KEYED_ARRAY.deleteByKey(array, name);
   }

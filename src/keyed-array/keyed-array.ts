@@ -44,7 +44,9 @@ export class KeyedArray<T> {
       const key = getKey(a);
       if (seen[key]) {
         throw new Error(
-          ['duplicate', what, `'${key}'`, where ? 'in' : null, where].filter(Boolean).join(' '),
+          ['duplicate', what, `'${key}'`, where ? 'in' : undefined, where]
+            .filter(Boolean)
+            .join(' '),
         );
       }
       seen[key] = 1;
@@ -99,6 +101,20 @@ export class KeyedArray<T> {
       }
     }
     return newThings;
+  }
+
+  public dedupe(array: T[]): T[] {
+    const { getKey } = this;
+    const seen: Record<string, boolean> = {};
+    return array.filter(a => {
+      const key = getKey(a);
+      if (seen[key]) {
+        return false;
+      } else {
+        seen[key] = true;
+        return true;
+      }
+    });
   }
 
   public deleteByKey(array: T[], key: string): T[] {

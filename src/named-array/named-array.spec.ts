@@ -143,6 +143,12 @@ describe('NamedArray', () => {
     });
   });
 
+  describe('dedupe', () => {
+    it('works', () => {
+      expect(NamedArray.dedupe(someArray.concat(someArray))).toEqual(someArray);
+    });
+  });
+
   describe('deleteByName', () => {
     it('something that exists', () => {
       expect(NamedArray.deleteByName(someArray, 'USA')).toEqual([
