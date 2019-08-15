@@ -36,6 +36,18 @@ export class KeyedArray<T> {
     return SimpleArray.find(array, x => getKey(x) === key);
   }
 
+  public toMap(array: T[]): Record<string, T> {
+    const { getKey } = this;
+    const myMap: { [k: string]: T } = {};
+    for (const a of array) {
+      const key = getKey(a);
+      if (myMap[key]) continue;
+      myMap[key] = a;
+    }
+
+    return myMap;
+  }
+
   public checkValid(array: T[], what?: string, where?: string): void {
     const { getKey } = this;
 

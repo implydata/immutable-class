@@ -176,6 +176,25 @@ describe('NamedArray', () => {
     });
   });
 
+  describe('#toMap', () => {
+    it('works', () => {
+      expect(NamedArray.toMap(someArray)).toEqual({
+        Italy: {
+          name: 'Italy',
+          score: 3,
+        },
+        UK: {
+          name: 'UK',
+          score: 1,
+        },
+        USA: {
+          name: 'USA',
+          score: 2,
+        },
+      });
+    });
+  });
+
   describe('synchronize', () => {
     function valueEqual(a: any, b: any) {
       return a.value === b.value;

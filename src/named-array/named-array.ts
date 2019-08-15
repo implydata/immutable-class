@@ -117,6 +117,10 @@ export class NamedArray {
     return KEYED_ARRAY.get(array, name);
   }
 
+  static toMap<T extends NamedArray>(array: T[]): Record<string, T> {
+    return KEYED_ARRAY.toMap(array);
+  }
+
   static containsByName<T extends Nameable>(array: T[], name: string): boolean {
     return SimpleArray.contains(array, x => x.name === name);
   }

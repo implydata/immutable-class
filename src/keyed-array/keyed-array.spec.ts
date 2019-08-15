@@ -72,4 +72,23 @@ describe('KeyedArray', () => {
       expect(keyedHelper.deleteByKey(someArray, 'Russia')).toEqual(someArray);
     });
   });
+
+  describe('toMap', () => {
+    it('works', () => {
+      expect(keyedHelper.toMap(someArray)).toEqual({
+        Italy: {
+          accountId: 'Italy',
+          score: 3,
+        },
+        UK: {
+          accountId: 'UK',
+          score: 1,
+        },
+        USA: {
+          accountId: 'USA',
+          score: 2,
+        },
+      });
+    });
+  });
 });
