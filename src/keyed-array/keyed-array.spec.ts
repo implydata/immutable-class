@@ -75,7 +75,7 @@ describe('KeyedArray', () => {
 
   describe('toMap', () => {
     it('works', () => {
-      expect(keyedHelper.toMap(someArray)).toEqual({
+      expect(keyedHelper.toRecord(someArray)).toEqual({
         Italy: {
           accountId: 'Italy',
           score: 3,

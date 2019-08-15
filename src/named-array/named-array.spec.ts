@@ -178,7 +178,7 @@ describe('NamedArray', () => {
 
   describe('#toMap', () => {
     it('works', () => {
-      expect(NamedArray.toMap(someArray)).toEqual({
+      expect(NamedArray.toRecord(someArray)).toEqual({
         Italy: {
           name: 'Italy',
           score: 3,
