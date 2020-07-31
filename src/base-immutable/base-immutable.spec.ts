@@ -131,7 +131,7 @@ describe('BaseImmutable', () => {
             name: 'focus2',
           },
         },
-      } as any);
+      });
 
       const newCar = car.deepChange('subCar.subCar', { name: 'anuford' });
       expect(newCar.deepGet('subCar.subCar.name')).toEqual('anuford');
@@ -233,7 +233,7 @@ describe('BaseImmutable', () => {
           name: 'focus2',
         },
       },
-    } as any);
+    });
     expect(car.deepGet('subCar.subCar.name')).toEqual('focus2');
   });
 
@@ -242,12 +242,25 @@ describe('BaseImmutable', () => {
       fuel: 'electric',
       name: 'ford',
       owners: [],
-    } as any);
+    });
 
     expect(car.toJS()).toEqual({
       fuel: 'electric',
       name: 'ford',
       owners: [],
     });
+  });
+
+  it('works with types', () => {
+    const car = Car.fromJS({
+      fuel: 'electric',
+      name: 'ford',
+    });
+
+    // should pass TS transpilation
+    car.change('owners', ['foo']);
+
+    // should NOT pass TS transpilation
+    // car.change('some unknown prop', ['hello']);
   });
 });

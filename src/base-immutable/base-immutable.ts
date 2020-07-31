@@ -43,8 +43,8 @@ export const PropertyType = {
   ARRAY: 'array' as PropertyType,
 };
 
-export interface Property {
-  name: string;
+export interface Property<T = string> {
+  name: T;
   defaultValue?: any;
   possibleValues?: any[];
   validate?: Validator | Validator[];
@@ -77,13 +77,13 @@ export interface BackCompat {
   action: (js: any) => void;
 }
 
-export abstract class BaseImmutable<ValueType, JSType>
+export abstract class BaseImmutable<ValueType, JSType, T extends string = keyof ValueType>
   implements ImmutableInstanceType<ValueType, JSType> {
   // This needs to be defined
   // abstract static PROPERTIES: Property[];
 
-  static jsToValue(
-    properties: Property[],
+  static jsToValue<T = string>(
+    properties: Property<T>[],
     js: any,
     backCompats?: BackCompat[],
     context?: Record<string, any>,
@@ -222,16 +222,16 @@ export abstract class BaseImmutable<ValueType, JSType>
     }
   }
 
-  public ownProperties(): Property[] {
+  public ownProperties(): Property<T>[] {
     return (this.constructor as any).PROPERTIES;
   }
 
-  public findOwnProperty(propName: string): Property | undefined {
+  public findOwnProperty(propName: T): Property | undefined {
     const properties = this.ownProperties();
     return NamedArray.findByName(properties, propName);
   }
 
-  public hasProperty(propName: string): boolean {
+  public hasProperty(propName: T): boolean {
     return this.findOwnProperty(propName) !== null;
   }
 
@@ -277,7 +277,7 @@ export abstract class BaseImmutable<ValueType, JSType>
   }
 
   public getDifference(
-    other: BaseImmutable<ValueType, JSType> | undefined,
+    other: BaseImmutable<ValueType, JSType, T> | undefined,
     returnOnFirstDifference = false,
   ): string[] {
     if (!other) return ['__no_other__'];
@@ -300,11 +300,11 @@ export abstract class BaseImmutable<ValueType, JSType>
     return differences;
   }
 
-  public equals(other: BaseImmutable<ValueType, JSType> | undefined): boolean {
+  public equals(other: BaseImmutable<ValueType, JSType, T> | undefined): boolean {
     return this.getDifference(other, true).length === 0;
   }
 
-  public equivalent(other: BaseImmutable<ValueType, JSType>): boolean {
+  public equivalent(other: BaseImmutable<ValueType, JSType, T>): boolean {
     if (!other) return false;
     if (this === other) return true;
     if (!(other instanceof this.constructor)) return false;
@@ -319,19 +319,19 @@ export abstract class BaseImmutable<ValueType, JSType>
     return true;
   }
 
-  public get(propName: string): any {
+  public get(propName: T): any {
     const getter = (this as any)['get' + firstUp(propName)];
     if (!getter) throw new Error(`can not find prop ${propName}`);
     return getter.call(this);
   }
 
-  public change(propName: string, newValue: any): this {
+  public change(propName: T, newValue: any): this {
     const changer = (this as any)['change' + firstUp(propName)];
     if (!changer) throw new Error(`can not find prop ${propName}`);
     return changer.call(this, newValue);
   }
 
-  public changeMany(properties: Record<string, any>): this {
+  public changeMany(properties: Partial<Record<T, any>>): this {
     if (!properties) throw new TypeError('Invalid properties object');
 
     let o = this;
