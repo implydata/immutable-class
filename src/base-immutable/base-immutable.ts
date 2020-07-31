@@ -77,7 +77,7 @@ export interface BackCompat {
   action: (js: any) => void;
 }
 
-export abstract class BaseImmutable<ValueType, JSType, T extends string = keyof ValueType>
+export abstract class BaseImmutable<ValueType, JSType>
   implements ImmutableInstanceType<ValueType, JSType> {
   // This needs to be defined
   // abstract static PROPERTIES: Property[];
@@ -222,16 +222,16 @@ export abstract class BaseImmutable<ValueType, JSType, T extends string = keyof 
     }
   }
 
-  public ownProperties(): Property<T>[] {
+  public ownProperties(): Property<keyof ValueType>[] {
     return (this.constructor as any).PROPERTIES;
   }
 
-  public findOwnProperty(propName: T): Property | undefined {
+  public findOwnProperty(propName: keyof ValueType): Property | undefined {
     const properties = this.ownProperties();
     return NamedArray.findByName(properties, propName);
   }
 
-  public hasProperty(propName: T): boolean {
+  public hasProperty(propName: keyof ValueType): boolean {
     return this.findOwnProperty(propName) !== null;
   }
 
@@ -277,7 +277,7 @@ export abstract class BaseImmutable<ValueType, JSType, T extends string = keyof 
   }
 
   public getDifference(
-    other: BaseImmutable<ValueType, JSType, T> | undefined,
+    other: BaseImmutable<ValueType, JSType> | undefined,
     returnOnFirstDifference = false,
   ): string[] {
     if (!other) return ['__no_other__'];
@@ -300,11 +300,11 @@ export abstract class BaseImmutable<ValueType, JSType, T extends string = keyof 
     return differences;
   }
 
-  public equals(other: BaseImmutable<ValueType, JSType, T> | undefined): boolean {
+  public equals(other: BaseImmutable<ValueType, JSType> | undefined): boolean {
     return this.getDifference(other, true).length === 0;
   }
 
-  public equivalent(other: BaseImmutable<ValueType, JSType, T>): boolean {
+  public equivalent(other: BaseImmutable<ValueType, JSType>): boolean {
     if (!other) return false;
     if (this === other) return true;
     if (!(other instanceof this.constructor)) return false;
@@ -319,19 +319,19 @@ export abstract class BaseImmutable<ValueType, JSType, T extends string = keyof 
     return true;
   }
 
-  public get(propName: T): any {
+  public get<T extends keyof ValueType>(propName: T): ValueType[T] {
     const getter = (this as any)['get' + firstUp(propName)];
     if (!getter) throw new Error(`can not find prop ${propName}`);
     return getter.call(this);
   }
 
-  public change(propName: T, newValue: any): this {
+  public change<T extends keyof ValueType>(propName: T, newValue: ValueType[T]): this {
     const changer = (this as any)['change' + firstUp(propName)];
     if (!changer) throw new Error(`can not find prop ${propName}`);
     return changer.call(this, newValue);
   }
 
-  public changeMany(properties: Partial<Record<T, any>>): this {
+  public changeMany(properties: Partial<ValueType>): this {
     if (!properties) throw new TypeError('Invalid properties object');
 
     let o = this;
@@ -339,7 +339,10 @@ export abstract class BaseImmutable<ValueType, JSType, T extends string = keyof 
     for (const propName in properties) {
       if (!this.hasProperty(propName)) throw new Error('Unknown property: ' + propName);
 
-      o = o.change(propName, properties[propName]);
+      // Added ! because TypeScript thinks a Partial can have undefined properties
+      // (which they can and it's cool)
+      // https://github.com/Microsoft/TypeScript/issues/13195
+      o = o.change(propName, properties[propName]!);
     }
 
     return o;

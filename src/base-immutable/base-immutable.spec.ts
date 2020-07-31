@@ -261,6 +261,7 @@ describe('BaseImmutable', () => {
     car.change('owners', ['foo']);
 
     // should NOT pass TS transpilation
+    // car.change('owners', 'foo');
     // car.change('some unknown prop', ['hello']);
   });
 });
