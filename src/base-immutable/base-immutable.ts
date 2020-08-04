@@ -43,8 +43,8 @@ export const PropertyType = {
   ARRAY: 'array' as PropertyType,
 };
 
-export interface Property<T = string> {
-  name: T;
+export interface Property<T extends { [key: string]: any } = any> {
+  name: keyof T;
   defaultValue?: any;
   possibleValues?: any[];
   validate?: Validator | Validator[];
@@ -82,7 +82,7 @@ export abstract class BaseImmutable<ValueType, JSType>
   // This needs to be defined
   // abstract static PROPERTIES: Property[];
 
-  static jsToValue<T = string>(
+  static jsToValue<T = any>(
     properties: Property<T>[],
     js: any,
     backCompats?: BackCompat[],
@@ -222,7 +222,7 @@ export abstract class BaseImmutable<ValueType, JSType>
     }
   }
 
-  public ownProperties(): Property<keyof ValueType>[] {
+  public ownProperties(): Property<ValueType>[] {
     return (this.constructor as any).PROPERTIES;
   }
 

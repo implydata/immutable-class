@@ -67,7 +67,7 @@ function ensureNonNegative(n: any): void {
 }
 
 export class Car extends BaseImmutable<CarValue, CarJS> {
-  static PROPERTIES: Property[] = [
+  static PROPERTIES: Property<CarValue>[] = [
     {
       name: 'name',
       validate: (n: string) => {
