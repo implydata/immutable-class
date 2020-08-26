@@ -43,8 +43,8 @@ export const PropertyType = {
   ARRAY: 'array' as PropertyType,
 };
 
-export interface Property {
-  name: string;
+export interface Property<T extends { [key: string]: any } = any> {
+  name: keyof T;
   defaultValue?: any;
   possibleValues?: any[];
   validate?: Validator | Validator[];
@@ -82,8 +82,8 @@ export abstract class BaseImmutable<ValueType, JSType>
   // This needs to be defined
   // abstract static PROPERTIES: Property[];
 
-  static jsToValue(
-    properties: Property[],
+  static jsToValue<T = any>(
+    properties: Property<T>[],
     js: any,
     backCompats?: BackCompat[],
     context?: Record<string, any>,
@@ -222,16 +222,16 @@ export abstract class BaseImmutable<ValueType, JSType>
     }
   }
 
-  public ownProperties(): Property[] {
+  public ownProperties(): Property<ValueType>[] {
     return (this.constructor as any).PROPERTIES;
   }
 
-  public findOwnProperty(propName: string): Property | undefined {
+  public findOwnProperty(propName: keyof ValueType): Property | undefined {
     const properties = this.ownProperties();
     return NamedArray.findByName(properties, propName);
   }
 
-  public hasProperty(propName: string): boolean {
+  public hasProperty(propName: keyof ValueType): boolean {
     return this.findOwnProperty(propName) !== null;
   }
 
@@ -319,19 +319,19 @@ export abstract class BaseImmutable<ValueType, JSType>
     return true;
   }
 
-  public get(propName: string): any {
+  public get<T extends keyof ValueType>(propName: T): ValueType[T] {
     const getter = (this as any)['get' + firstUp(propName)];
     if (!getter) throw new Error(`can not find prop ${propName}`);
     return getter.call(this);
   }
 
-  public change(propName: string, newValue: any): this {
+  public change<T extends keyof ValueType>(propName: T, newValue: ValueType[T]): this {
     const changer = (this as any)['change' + firstUp(propName)];
     if (!changer) throw new Error(`can not find prop ${propName}`);
     return changer.call(this, newValue);
   }
 
-  public changeMany(properties: Record<string, any>): this {
+  public changeMany(properties: Partial<ValueType>): this {
     if (!properties) throw new TypeError('Invalid properties object');
 
     let o = this;
@@ -339,7 +339,10 @@ export abstract class BaseImmutable<ValueType, JSType>
     for (const propName in properties) {
       if (!this.hasProperty(propName)) throw new Error('Unknown property: ' + propName);
 
-      o = o.change(propName, properties[propName]);
+      // Added ! because TypeScript thinks a Partial can have undefined properties
+      // (which they can and it's cool)
+      // https://github.com/Microsoft/TypeScript/issues/13195
+      o = o.change(propName, properties[propName]!);
     }
 
     return o;

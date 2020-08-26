@@ -47,6 +47,8 @@ export interface CarValue {
   range?: number;
   relatedCars?: Car[];
   createdOn?: Date;
+  owners?: string[];
+  driver?: Driver;
 }
 
 export interface CarJS {
@@ -56,6 +58,8 @@ export interface CarJS {
   range?: number;
   relatedCars?: CarJS[];
   createdOn?: Date | string;
+  owners?: string[];
+  driver?: DriverJS;
 }
 
 function ensureNonNegative(n: any): void {
@@ -63,7 +67,7 @@ function ensureNonNegative(n: any): void {
 }
 
 export class Car extends BaseImmutable<CarValue, CarJS> {
-  static PROPERTIES: Property[] = [
+  static PROPERTIES: Property<CarValue>[] = [
     {
       name: 'name',
       validate: (n: string) => {
