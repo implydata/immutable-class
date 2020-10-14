@@ -46,7 +46,7 @@ export const PropertyType = {
 export interface Property<T extends { [key: string]: any } = any> {
   name: keyof T;
   defaultValue?: any;
-  possibleValues?: any[];
+  possibleValues?: readonly any[];
   validate?: Validator | Validator[];
   type?: PropertyType;
   immutableClass?: ImmutableLike;
