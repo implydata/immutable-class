@@ -264,4 +264,24 @@ describe('BaseImmutable', () => {
     // car.change('owners', 'foo');
     // car.change('some unknown prop', ['hello']);
   });
+
+  it('should validate array values when PropertyType is set', () => {
+    expect(() =>
+      Car.fromJS({
+        fuel: 'electric',
+        name: 'ford',
+        // @ts-ignore like the compiled code will
+        passengers: 'badString',
+      }),
+    ).toThrow('Car.passengers must be an Array');
+  });
+
+  it('should set PropertyType.ARRAY to empty array if not defined', () => {
+    expect(
+      Car.fromJS({
+        fuel: 'electric',
+        name: 'ford',
+      }),
+    ).toEqual({ fuel: 'electric', name: 'ford', passengers: [] });
+  });
 });

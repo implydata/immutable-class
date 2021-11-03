@@ -49,6 +49,7 @@ export interface CarValue {
   createdOn?: Date;
   owners?: string[];
   driver?: Driver;
+  passengers?: string[];
 }
 
 export interface CarJS {
@@ -60,6 +61,7 @@ export interface CarJS {
   createdOn?: Date | string;
   owners?: string[];
   driver?: DriverJS;
+  passengers?: string[];
 }
 
 function ensureNonNegative(n: any): void {
@@ -108,6 +110,10 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
       name: 'driver',
       defaultValue: Driver.POPE,
       immutableClass: Driver,
+    },
+    {
+      name: 'passengers',
+      type: PropertyType.ARRAY,
     },
   ];
 

@@ -207,6 +207,12 @@ export abstract class BaseImmutable<ValueType, JSType>
           }
         }
 
+        if (property.type === PropertyType.ARRAY) {
+          if (!Array.isArray(pv)) {
+            throw new Error(`${(this.constructor as any).name}.${propertyName} must be an Array`);
+          }
+        }
+
         const validate = property.validate;
         if (validate) {
           const validators: Validator[] = Array.isArray(validate) ? validate : [validate];

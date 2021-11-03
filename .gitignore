@@ -2,6 +2,9 @@
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/watcherTasks.xml
+.idea/dataSources.local.xml
+.idea/prettier.xml
+.idea/runConfigurations.xml
 node_modules/
 build/
 test/*.js
