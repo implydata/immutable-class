@@ -142,14 +142,14 @@ export abstract class BaseImmutable<ValueType, JSType>
       // These have to be `function` and not `=>` so that they do not bind 'this'
       proto[getUpped] =
         proto[getUpped] ||
-        function() {
+        function () {
           // @ts-ignore
           const pv = this[propertyName];
           return pv != null ? pv : defaultValue;
         };
       proto[changeUpped] =
         proto[changeUpped] ||
-        function(newValue: any): any {
+        function (newValue: any): any {
           // @ts-ignore
           if (this[propertyName] === newValue) return this;
           // @ts-ignore
@@ -219,7 +219,9 @@ export abstract class BaseImmutable<ValueType, JSType>
           try {
             for (const validator of validators) validator(pv);
           } catch (e) {
-            throw new Error(`${(this.constructor as any).name}.${propertyName} ${e.message}`);
+            throw new Error(
+              `${(this.constructor as any).name}.${propertyName} ${(e as Error).message}`,
+            );
           }
         }
       }
