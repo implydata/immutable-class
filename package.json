@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "has-own-prop": "^2.0.0",
-    "tslib": "^1.10.0"
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
