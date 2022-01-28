@@ -65,7 +65,7 @@ export class SimpleArray {
   }
 
   static contains<T>(array: T[], arg: T | BooleanCallbackFn<T>): boolean {
-    if (typeof arg !== 'function') return array.indexOf(arg) !== -1;
+    if (typeof arg !== 'function') return array.includes(arg);
     return SimpleArray.findIndex(array, arg as BooleanCallbackFn<T>) !== -1;
   }
 

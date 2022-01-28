@@ -1,0 +1,10 @@
+{
+  "extends": "@awesome-code-style",
+  "parserOptions": {
+    "project": "tsconfig.json"
+  },
+  "rules": {
+    "header/header": [2, "block", { "pattern": "Copyright [0-9-]+ Imply Data, Inc\\." }, 2],
+    "max-classes-per-file": [0]
+  }
+}

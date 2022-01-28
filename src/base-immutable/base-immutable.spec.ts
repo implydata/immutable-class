@@ -270,7 +270,7 @@ describe('BaseImmutable', () => {
       Car.fromJS({
         fuel: 'electric',
         name: 'ford',
-        // @ts-ignore like the compiled code will
+        // @ts-expect-error -- like the compiled code will
         passengers: 'badString',
       }),
     ).toThrow('Car.passengers must be an Array');

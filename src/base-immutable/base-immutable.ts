@@ -78,7 +78,8 @@ export interface BackCompat {
 }
 
 export abstract class BaseImmutable<ValueType, JSType>
-  implements ImmutableInstanceType<ValueType, JSType> {
+  implements ImmutableInstanceType<ValueType, JSType>
+{
   // This needs to be defined
   // abstract static PROPERTIES: Property[];
 
@@ -142,21 +143,17 @@ export abstract class BaseImmutable<ValueType, JSType>
       // These have to be `function` and not `=>` so that they do not bind 'this'
       proto[getUpped] =
         proto[getUpped] ||
-        function () {
-          // @ts-ignore
+        function (this: any) {
           const pv = this[propertyName];
           return pv != null ? pv : defaultValue;
         };
       proto[changeUpped] =
         proto[changeUpped] ||
-        function (newValue: any): any {
-          // @ts-ignore
+        function (this: any, newValue: any): any {
           if (this[propertyName] === newValue) return this;
-          // @ts-ignore
           const value = this.valueOf();
           value[propertyName] = newValue;
-          // @ts-ignore
-          return new (this.constructor as any)(value);
+          return new this.constructor(value);
         };
     });
   }
@@ -191,7 +188,7 @@ export abstract class BaseImmutable<ValueType, JSType>
         }
       } else {
         const possibleValues = property.possibleValues;
-        if (possibleValues && possibleValues.indexOf(pv) === -1) {
+        if (possibleValues && !possibleValues.includes(pv)) {
           throw new Error(
             `${
               (this.constructor as any).name
@@ -391,7 +388,6 @@ export abstract class BaseImmutable<ValueType, JSType>
     let value = this as any;
     const bits = propName.split('.');
     let bit;
-    /* tslint:disable:no-conditional-assignment */
     while ((bit = bits.shift())) {
       const specializedGetterName = `get${firstUp(bit)}`;
       const specializedGetter = value[specializedGetterName];
@@ -402,6 +398,6 @@ export abstract class BaseImmutable<ValueType, JSType>
         : value[bit];
     }
 
-    return value as any;
+    return value;
   }
 }
