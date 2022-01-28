@@ -184,14 +184,14 @@ export abstract class BaseImmutable<ValueType, JSType>
         }
 
         if (!hasOwnProp(property, 'defaultValue')) {
-          throw new Error(`${(this.constructor as any).name}.${propertyName} must be defined`);
+          throw new Error(`${this.constructor.name}.${propertyName} must be defined`);
         }
       } else {
         const possibleValues = property.possibleValues;
         if (possibleValues && !possibleValues.includes(pv)) {
           throw new Error(
             `${
-              (this.constructor as any).name
+              this.constructor.name
             }.${propertyName} can not have value '${pv}' must be one of [${possibleValues.join(
               ', ',
             )}]`,
@@ -200,13 +200,13 @@ export abstract class BaseImmutable<ValueType, JSType>
 
         if (property.type === PropertyType.DATE) {
           if (isNaN(pv)) {
-            throw new Error(`${(this.constructor as any).name}.${propertyName} must be a Date`);
+            throw new Error(`${this.constructor.name}.${propertyName} must be a Date`);
           }
         }
 
         if (property.type === PropertyType.ARRAY) {
           if (!Array.isArray(pv)) {
-            throw new Error(`${(this.constructor as any).name}.${propertyName} must be an Array`);
+            throw new Error(`${this.constructor.name}.${propertyName} must be an Array`);
           }
         }
 
@@ -216,9 +216,7 @@ export abstract class BaseImmutable<ValueType, JSType>
           try {
             for (const validator of validators) validator(pv);
           } catch (e) {
-            throw new Error(
-              `${(this.constructor as any).name}.${propertyName} ${(e as Error).message}`,
-            );
+            throw new Error(`${this.constructor.name}.${propertyName} ${(e as Error).message}`);
           }
         }
       }
