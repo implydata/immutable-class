@@ -20,7 +20,7 @@ import { generalEqual } from '../equality/equality';
 import { NamedArray } from '../named-array/named-array';
 
 function firstUp(name: string): string {
-  return name[0].toUpperCase() + name.substr(1);
+  return name[0].toUpperCase() + name.slice(1);
 }
 
 function isDefined(v: any, emptyArrayIsOk: boolean | undefined) {
