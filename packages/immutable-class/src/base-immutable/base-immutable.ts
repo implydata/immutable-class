@@ -31,6 +31,9 @@ function noop(v: any) {
   return v;
 }
 
+const EXPLAIN_UDFCF =
+  'This might indicate that you are using "useDefineForClassFields" and forgot to use "declare" on an auto-generated getter property.';
+
 export type Validator = (x: any) => void;
 
 export interface ImmutableLike {
@@ -221,7 +224,12 @@ export abstract class BaseImmutable<ValueType, JSType>
         }
       }
 
-      (this as any)[propertyName] = pv;
+      Object.defineProperty(this, propertyName, {
+        value: pv,
+        configurable: false,
+        enumerable: true,
+        writable: false,
+      });
     }
   }
 
@@ -324,13 +332,27 @@ export abstract class BaseImmutable<ValueType, JSType>
 
   public get<T extends keyof ValueType>(propName: T): ValueType[T] {
     const getter = (this as any)['get' + firstUp(propName)];
-    if (!getter) throw new Error(`can not find prop ${propName}`);
+    if (!getter) {
+      const msg = `No getter was found for "${propName}"`;
+      if (Object.getOwnPropertyDescriptor(this, 'get' + firstUp(propName))) {
+        throw new Error(msg + ' but it is defined as a property. ' + EXPLAIN_UDFCF);
+      } else {
+        throw new Error(msg + '.');
+      }
+    }
     return getter.call(this);
   }
 
   public change<T extends keyof ValueType>(propName: T, newValue: ValueType[T]): this {
     const changer = (this as any)['change' + firstUp(propName)];
-    if (!changer) throw new Error(`can not find prop ${propName}`);
+    if (!changer) {
+      const msg = `No changer was found for "${propName}"`;
+      if (Object.getOwnPropertyDescriptor(this, 'change' + firstUp(propName))) {
+        throw new Error(msg + ' but it is defined as a property. ' + EXPLAIN_UDFCF);
+      } else {
+        throw new Error(msg + '.');
+      }
+    }
     return changer.call(this, newValue);
   }
 
