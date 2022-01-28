@@ -260,9 +260,13 @@ describe('BaseImmutable', () => {
     // should pass TS transpilation
     car.change('owners', ['foo']);
 
-    // should NOT pass TS transpilation
-    // car.change('owners', 'foo');
-    // car.change('some unknown prop', ['hello']);
+    // @ts-expect-error -- should NOT pass TS transpilation
+    car.change('owners', 'foo');
+
+    expect(() => {
+      // @ts-expect-error -- should NOT pass TS transpilation
+      car.change('some unknown prop', ['hello']);
+    }).toThrowError();
   });
 
   it('should validate array values when PropertyType is set', () => {
