@@ -1,21 +1,21 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "noEmitOnError": true,
-    "noUnusedParameters": true,
-    "noUnusedLocals": true,
     "declaration": true,
-    "removeComments": true,
+    "esModuleInterop": true,
+    "importHelpers": true,
+    "keyofStringsOnly": true,
+    "lib": ["es2016"],
+    "moduleResolution": "node",
+    "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "strict": true,
-    "importHelpers": true,
-    "lib": ["es2016"],
-    "target": "es5",
-    "rootDir": "src",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "outDir": "build",
-    "moduleResolution": "node",
-    "keyofStringsOnly": true
+    "removeComments": true,
+    "rootDir": "src",
+    "strict": true,
+    "target": "es5"
   },
   "include": ["src/**/*.ts"]
 }
