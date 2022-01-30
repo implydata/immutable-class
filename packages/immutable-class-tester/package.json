@@ -1,10 +1,11 @@
 {
-  "name": "immutable-class",
-  "version": "0.10.0",
-  "description": "A template for creating immutable classes",
+  "name": "immutable-class-tester",
+  "version": "0.7.2",
+  "description": "A helper for testing immutable classes",
   "keywords": [
     "immutable",
-    "class"
+    "class",
+    "tester"
   ],
   "author": {
     "name": "Vadim Ogievetsky",
@@ -13,14 +14,8 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "http://github.com/implydata/immutable-class.git",
-    "directory": "packages/immutable-class"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testMatch": [
-      "**/?(*.)+(spec).ts?(x)"
-    ]
+    "url": "http://github.com/implydata/immutable-class-tester.git",
+    "directory": "packages/immutable-class-tester"
   },
   "main": "build/index.js",
   "module": "lib/index.js",
@@ -30,13 +25,19 @@
     "test": "npm run eslint && jest --silent 2>&1",
     "watch": "tsc --watch"
   },
+  "jest": {
+    "preset": "ts-jest",
+    "testMatch": [
+      "**/?(*.)+(spec).ts?(x)"
+    ]
+  },
   "dependencies": {
-    "has-own-prop": "^2.0.0",
-    "tslib": "^2.3.1"
+    "@types/deep-equal": "^1.0.1",
+    "deep-equal": "^1.0.1",
+    "has-own-prop": "^2.0.0"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
-    "immutable-class-tester": "^0.7.0",
     "jest": "^27.4.7",
     "ts-jest": "^27.1.3",
     "typescript": "^4.5.5"
