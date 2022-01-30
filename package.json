@@ -1,5 +1,7 @@
 {
   "private": true,
+  "name": "immutable-class-repo",
+  "version": "0.0.0",
   "description": "Monorepo for immutable-class and related projects",
   "keywords": [
     "immutable",
