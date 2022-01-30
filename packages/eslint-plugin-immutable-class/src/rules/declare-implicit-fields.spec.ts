@@ -141,10 +141,10 @@ ruleTester.run('declare-implicit-fields', declareImplicitFields, {
           public fleep!: string = 'fleep';
         }`,
       errors: [
-        { messageId: 'useDeclareForField', line: 3, column: 11 },
-        { messageId: 'useDeclareForField', line: 4, column: 11 },
-        { messageId: 'useDeclareForMethod', line: 5, column: 11 },
-        { messageId: 'useDeclareForMethod', line: 6, column: 11 },
+        { messageId: 'useDeclareForProperty', line: 3, column: 11 },
+        { messageId: 'useDeclareForProperty', line: 4, column: 11 },
+        { messageId: 'useDeclareForAccessor', line: 5, column: 11 },
+        { messageId: 'useDeclareForAccessor', line: 6, column: 11 },
       ],
       output: `
         class MyClass extends BaseImmutable<MyClassValue, MyClassJS> {
@@ -164,8 +164,8 @@ ruleTester.run('declare-implicit-fields', declareImplicitFields, {
           public bar: string;
         }`,
       errors: [
-        { messageId: 'useDeclareForField', line: 3, column: 11 },
-        { messageId: 'useDeclareForField', line: 4, column: 11 },
+        { messageId: 'useDeclareForProperty', line: 3, column: 11 },
+        { messageId: 'useDeclareForProperty', line: 4, column: 11 },
       ],
       output: `
         class MyClass extends BaseImmutable<MyClassValue, MyClassJS> {
@@ -180,8 +180,8 @@ ruleTester.run('declare-implicit-fields', declareImplicitFields, {
           bar: string;
         }`,
       errors: [
-        { messageId: 'useDeclareForField', line: 3, column: 11 },
-        { messageId: 'useDeclareForField', line: 4, column: 11 },
+        { messageId: 'useDeclareForProperty', line: 3, column: 11 },
+        { messageId: 'useDeclareForProperty', line: 4, column: 11 },
       ],
       output: `
         class MyClass extends BaseImmutable<MyClassValue, MyClassJS> {
@@ -196,8 +196,8 @@ ruleTester.run('declare-implicit-fields', declareImplicitFields, {
           private bar: string;
         }`,
       errors: [
-        { messageId: 'useDeclareForField', line: 3, column: 11 },
-        { messageId: 'useDeclareForField', line: 4, column: 11 },
+        { messageId: 'useDeclareForProperty', line: 3, column: 11 },
+        { messageId: 'useDeclareForProperty', line: 4, column: 11 },
       ],
       output: `
         class MyClass extends BaseImmutable<MyClassValue, MyClassJS> {
@@ -212,8 +212,8 @@ ruleTester.run('declare-implicit-fields', declareImplicitFields, {
           public getBar: () => string;
         }`,
       errors: [
-        { messageId: 'useDeclareForMethod', line: 3, column: 11 },
-        { messageId: 'useDeclareForMethod', line: 4, column: 11 },
+        { messageId: 'useDeclareForAccessor', line: 3, column: 11 },
+        { messageId: 'useDeclareForAccessor', line: 4, column: 11 },
       ],
       output: `
         class MyClass extends BaseImmutable<MyClassValue, MyClassJS> {
@@ -228,8 +228,8 @@ ruleTester.run('declare-implicit-fields', declareImplicitFields, {
           getBar: () => string;
         }`,
       errors: [
-        { messageId: 'useDeclareForMethod', line: 3, column: 11 },
-        { messageId: 'useDeclareForMethod', line: 4, column: 11 },
+        { messageId: 'useDeclareForAccessor', line: 3, column: 11 },
+        { messageId: 'useDeclareForAccessor', line: 4, column: 11 },
       ],
       output: `
         class MyClass extends BaseImmutable<MyClassValue, MyClassJS> {
@@ -244,8 +244,8 @@ ruleTester.run('declare-implicit-fields', declareImplicitFields, {
           private getBar: () => string;
         }`,
       errors: [
-        { messageId: 'useDeclareForMethod', line: 3, column: 11 },
-        { messageId: 'useDeclareForMethod', line: 4, column: 11 },
+        { messageId: 'useDeclareForAccessor', line: 3, column: 11 },
+        { messageId: 'useDeclareForAccessor', line: 4, column: 11 },
       ],
       output: `
         class MyClass extends BaseImmutable<MyClassValue, MyClassJS> {
@@ -260,8 +260,8 @@ ruleTester.run('declare-implicit-fields', declareImplicitFields, {
           public changeBar: (bar: string) => MyClass;
         }`,
       errors: [
-        { messageId: 'useDeclareForMethod', line: 3, column: 11 },
-        { messageId: 'useDeclareForMethod', line: 4, column: 11 },
+        { messageId: 'useDeclareForAccessor', line: 3, column: 11 },
+        { messageId: 'useDeclareForAccessor', line: 4, column: 11 },
       ],
       output: `
         class MyClass extends BaseImmutable<MyClassValue, MyClassJS> {
@@ -280,8 +280,8 @@ ruleTester.run('declare-implicit-fields', declareImplicitFields, {
             : string;
         }`,
       errors: [
-        { messageId: 'useDeclareForField', line: 3, column: 11 },
-        { messageId: 'useDeclareForField', line: 4, column: 11 },
+        { messageId: 'useDeclareForProperty', line: 3, column: 11 },
+        { messageId: 'useDeclareForProperty', line: 4, column: 11 },
       ],
       output: `
         class MyClass extends BaseImmutable<MyClassValue, MyClassJS> {

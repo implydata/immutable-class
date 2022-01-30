@@ -17,7 +17,8 @@
 import { AST_NODE_TYPES, AST_TOKEN_TYPES, ESLintUtils } from '@typescript-eslint/utils';
 
 const createRule = ESLintUtils.RuleCreator(
-  name => `https://github.com/implydata/immutable-class/blob/master/src/rules/${name}.md`,
+  name =>
+    `https://github.com/implydata/immutable-class/blob/master/packages/eslint-plugin-immutable-class/src/rules/${name}.md`,
 );
 
 export const declareImplicitFields = createRule({
@@ -45,8 +46,8 @@ export const declareImplicitFields = createRule({
         if (invalid) {
           const messageId =
             node.typeAnnotation?.typeAnnotation?.type === AST_NODE_TYPES.TSFunctionType
-              ? 'useDeclareForMethod'
-              : 'useDeclareForField';
+              ? 'useDeclareForAccessor'
+              : 'useDeclareForProperty';
 
           context.report({
             messageId,
@@ -78,8 +79,8 @@ export const declareImplicitFields = createRule({
       recommended: 'error',
     },
     messages: {
-      useDeclareForField: 'Use "declare" for immutable class properties',
-      useDeclareForMethod: 'Use "declare" for implicit immutable class getters/changers',
+      useDeclareForProperty: 'Use "declare" for immutable class properties',
+      useDeclareForAccessor: 'Use "declare" for implicit immutable class accessors',
     },
     fixable: 'code',
     type: 'problem',
