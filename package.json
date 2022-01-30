@@ -1,7 +1,6 @@
 {
-  "name": "immutable-class",
-  "version": "0.10.0",
-  "description": "A template for creating immutable classes",
+  "private": true,
+  "description": "Monorepo for immutable-class and related projects",
   "keywords": [
     "immutable",
     "class"
@@ -15,42 +14,27 @@
     "type": "git",
     "url": "http://github.com/implydata/immutable-class.git"
   },
-  "jest": {
-    "preset": "ts-jest",
-    "testMatch": [
-      "**/?(*.)+(spec).ts?(x)"
-    ]
-  },
-  "main": "build/index.js",
-  "typings": "build/index.d.ts",
-  "files": [
-    "build/"
-  ],
+  "prettier": "@awesome-code-style/prettier-config",
   "scripts": {
-    "compile": "tsc",
-    "pretest": "tsc",
-    "test": "npm run eslint && jest --silent 2>&1",
-    "watch": "tsc --watch",
+    "compile": "npm run --ws --if-present compile",
+    "test": "npm run --ws --if-present test",
     "autofix": "npm run eslint-fix && npm run prettify",
-    "eslint": "eslint 'src/**/*.ts?(x)'",
-    "eslint-fix": "npm run eslint -- --fix --report-unused-disable-directives",
+    "eslint": "npm exec --ws -- eslint 'src/**/*.ts?(x)'",
+    "eslint-fix": "npm exec --ws -- eslint --fix --report-unused-disable-directives",
     "eslint-changed-only": "git diff --diff-filter=ACMR --cached --name-only | grep -E \\.tsx\\?$ | xargs ./node_modules/.bin/eslint",
     "eslint-fix-changed-only": "npm run eslint-changed-only -- --fix",
-    "prettify": "prettier --write 'src/**/*.{ts,tsx,scss}' './*.js'",
-    "prettify-check": "prettier --check 'src/**/*.{ts,tsx,scss}' './*.js'"
+    "prettify": "npm exec --ws -- prettier --write 'src/**/*.{ts,tsx,scss}' './*.js'",
+    "prettify-check": "npm exec --ws -- prettier --check 'src/**/*.{ts,tsx,scss}' './*.js'"
   },
   "volta": {
     "node": "16.13.2"
   },
-  "prettier": "@awesome-code-style/prettier-config",
-  "dependencies": {
-    "has-own-prop": "^2.0.0",
-    "tslib": "^2.3.1"
-  },
+  "workspaces": [
+    "./packages/*"
+  ],
   "devDependencies": {
     "@awesome-code-style/eslint-config": "^4.0.0",
     "@awesome-code-style/prettier-config": "^4.0.0",
-    "@types/jest": "^27.4.0",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-header": "^3.1.1",
@@ -59,10 +43,6 @@
     "eslint-plugin-unicorn": "^38.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "eslint": "^8.7.0",
-    "immutable-class-tester": "^0.7.0",
-    "jest": "^27.4.7",
-    "prettier": "^2.5.1",
-    "ts-jest": "^27.1.3",
-    "typescript": "^4.5.5"
+    "prettier": "^2.5.1"
   }
 }
