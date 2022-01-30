@@ -17,7 +17,7 @@
   "prettier": "@awesome-code-style/prettier-config",
   "scripts": {
     "compile": "npm run --ws --if-present compile",
-    "test": "npm run --ws --if-present test",
+    "test": "npm run eslint && npm run --ws --if-present test",
     "autofix": "npm run eslint-fix && npm run prettify",
     "eslint": "npm exec --ws -- eslint 'src/**/*.ts?(x)'",
     "eslint-fix": "npm exec --ws -- eslint --fix --report-unused-disable-directives",

@@ -27,7 +27,8 @@
   "typings": "types/index.d.ts",
   "scripts": {
     "compile": "tsc --module commonjs && tsc --module esnext --outDir lib/",
-    "test": "npm run eslint && jest --silent 2>&1",
+    "prepublishOnly": "npm run compile",
+    "test": "jest --silent 2>&1",
     "watch": "tsc --watch"
   },
   "dependencies": {
