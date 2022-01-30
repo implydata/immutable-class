@@ -1,0 +1,47 @@
+{
+  "name": "eslint-plugin-immutable-class",
+  "version": "1.0.0",
+  "description": "ESLint plugin for immutable-class",
+  "keywords": [
+    "immutable",
+    "class",
+    "eslint",
+    "eslintplugin"
+  ],
+  "author": {
+    "name": "John Gozde",
+    "url": "https://github.com/jgoz/"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/implydata/immutable-class.git",
+    "directory": "packages/eslint-plugin-immutable-class"
+  },
+  "main": "build/index.js",
+  "scripts": {
+    "compile": "tsc",
+    "prepublishOnly": "npm run compile",
+    "test": "jest --silent 2>&1",
+    "watch": "tsc --watch"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testMatch": [
+      "**/?(*.)+(spec).ts?(x)"
+    ]
+  },
+  "dependencies": {
+    "@typescript-eslint/utils": "^5.10.1"
+  },
+  "peerDependencies": {
+    "eslint": ">=0.8.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.0",
+    "eslint": "^8.8.0",
+    "jest": "^27.4.7",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.5.5"
+  }
+}
