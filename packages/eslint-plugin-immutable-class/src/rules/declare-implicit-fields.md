@@ -88,7 +88,7 @@ class MyClass extends BaseImmutable {
 BaseImmutable.finalize(MyClass);
 ```
 
-Since neither `propOne` nor `changePropOne` have assigned values during construction, they are simply omitted from the runtime JS for the class. This is how the TypeScript team [thought class fields would work](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#the-usedefineforclassfields-flag-and-the-declare-property-modifier) when they first implemented classes, but public class fields will most likely be standardized differently in ES2022.
+Since neither `propOne` nor `changePropOne` have assigned values during construction, they are simply omitted from the runtime JS for the class. This is how the TypeScript team [thought class fields would work](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#the-usedefineforclassfields-flag-and-the-declare-property-modifier) when they first implemented classes, but public class fields have been standardized differently in ES2022.
 
 When the TS target is `ES2022` or with `"useDefineForClassFields": true`, this is how the JS is emitted:
 
@@ -126,7 +126,7 @@ This presents a problem for immtuable-class because the implicit properties (`pr
 
 This means that any implicit property or accessor will be undefined at runtime, simply by telling TypeScript that they exist.
 
-The solution to this, [recommended by the TS team](https://www.typescriptlang.org/docs/handbook/2/classes.html#type-only-field-declarations) is to use `declare` for type-only field declarations.
+The [recommended solution](https://www.typescriptlang.org/docs/handbook/2/classes.html#type-only-field-declarations) is to use `declare` for type-only field declarations.
 
 `useDefineForClassFields: true`:
 
