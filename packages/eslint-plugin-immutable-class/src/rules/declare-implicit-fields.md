@@ -1,4 +1,4 @@
-# Ensure that implicit ImmutableClass properties and accessors are defined with `declare` (`explicit-module-boundary-types`)
+# Ensure that implicit ImmutableClass properties and accessors are defined with `declare` (`declare-implicit-fields`)
 
 ## Rule details
 
