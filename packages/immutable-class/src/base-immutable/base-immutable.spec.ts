@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Bicycle, Rider } from './bicycle.mock';
 import { Car } from './car.mock';
 
 describe('BaseImmutable', () => {
@@ -287,5 +288,28 @@ describe('BaseImmutable', () => {
         name: 'ford',
       }),
     ).toEqual({ fuel: 'electric', name: 'ford', passengers: [] });
+  });
+
+  it('should fail to construct if property defined without "delcare"', () => {
+    expect(() =>
+      Bicycle.fromJS({
+        fuel: 'potato',
+        name: 'riva',
+      }),
+    ).toThrow('Cannot redefine property: name');
+  });
+
+  it('should fail on get() if getter defined without "delcare"', () => {
+    const pope = Rider.fromJS({ name: 'pope' });
+    expect(() => pope.get('name')).toThrowErrorMatchingInlineSnapshot(
+      `"No getter was found for \\"name\\" but it is defined as a property. This might indicate that you are using \\"useDefineForClassFields\\" and forgot to use \\"declare\\" on an auto-generated getter property."`,
+    );
+  });
+
+  it('should fail on change() if changer defined without "delcare"', () => {
+    const pope = Rider.fromJS({ name: 'pope' });
+    expect(() => pope.change('name', 'papa')).toThrowErrorMatchingInlineSnapshot(
+      `"No changer was found for \\"name\\" but it is defined as a property. This might indicate that you are using \\"useDefineForClassFields\\" and forgot to use \\"declare\\" on an auto-generated getter property."`,
+    );
   });
 });

@@ -136,22 +136,22 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
     return new Car(BaseImmutable.jsToValue(Car.PROPERTIES, properties, Car.BACK_COMPATS));
   }
 
-  public name!: string;
-  public fuel!: string;
-  public subCar!: Car;
-  public range!: number;
-  public createdOn!: Date;
+  public declare name: string;
+  public declare fuel: string;
+  public declare subCar: Car;
+  public declare range: number;
+  public declare createdOn: Date;
 
   constructor(properties: CarValue) {
     super(properties);
   }
 
-  public changeFuel!: (fuel: string) => this;
-  public getFuel!: () => string;
+  public declare changeFuel: (fuel: string) => this;
+  public declare getFuel: () => string;
 
-  public getRange!: () => number;
-  public getName!: () => string;
-  public getRelatedCars!: () => Car[];
+  public declare getRange: () => number;
+  public declare getName: () => string;
+  public declare getRelatedCars: () => Car[];
 
   public getSubCar() {
     const { name, subCar } = this;
