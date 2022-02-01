@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-export * from './utils/utils';
-export * from './equality/equality';
-export * from './simple-array/simple-array';
-export * from './named-array/named-array';
-export * from './keyed-array/keyed-array';
 export * from './base-immutable/base-immutable';
+export * from './equality/equality';
+export * from './keyed-array/keyed-array';
+export * from './named-array/named-array';
+export * from './simple-array/simple-array';
+export * from './utils/utils';
 
 /**
  * Interface that the Immutable Class class should extend (types the instance)

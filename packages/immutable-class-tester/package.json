@@ -1,0 +1,46 @@
+{
+  "name": "immutable-class-tester",
+  "version": "0.7.2",
+  "description": "A helper for testing immutable classes",
+  "keywords": [
+    "immutable",
+    "class",
+    "tester"
+  ],
+  "author": {
+    "name": "Vadim Ogievetsky",
+    "url": "http://vadim.ogievetsky.com"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/implydata/immutable-class-tester.git",
+    "directory": "packages/immutable-class-tester"
+  },
+  "main": "build/index.js",
+  "module": "lib/index.js",
+  "typings": "types/index.d.ts",
+  "scripts": {
+    "compile": "tsc --module commonjs && tsc --module esnext --outDir lib/",
+    "prepublishOnly": "npm run compile",
+    "test": "jest --silent 2>&1",
+    "watch": "tsc --watch"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testMatch": [
+      "**/?(*.)+(spec).ts?(x)"
+    ]
+  },
+  "dependencies": {
+    "@types/deep-equal": "^1.0.1",
+    "deep-equal": "^1.0.1",
+    "has-own-prop": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.0",
+    "jest": "^27.4.7",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.5.5"
+  }
+}

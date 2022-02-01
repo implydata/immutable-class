@@ -15,4 +15,4 @@ fi
 echo "Trying to publish..."
 
 script/version-bump
-npm publish
+npm publish --ws
