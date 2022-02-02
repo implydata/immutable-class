@@ -83,6 +83,11 @@ ruleTester.run('declare-implicit-fields', declareImplicitFields, {
       public changeFoo! = (foo: string) => this;
       private changeFoo! = (foo: string) => this;
     }`,
+    `class MyClass extends BaseImmutable<MyClassValue, MyClassJS> {
+      declare readonly foo: string;
+      public declare readonly foo: string;
+      private declare readonly foo: string;
+    }`,
 
     // Invalid cases but not inside of BaseImmutable inheritors
     `class MyClass extends NotImmutable {
