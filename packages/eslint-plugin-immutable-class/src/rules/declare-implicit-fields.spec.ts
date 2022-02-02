@@ -274,6 +274,22 @@ ruleTester.run('declare-implicit-fields', declareImplicitFields, {
           public declare changeBar: (bar: string) => MyClass;
         }`,
     },
+    {
+      code: `
+        class MyClass extends BaseImmutable<MyClassValue, MyClassJS> {
+          public readonly foo!: string;
+          public readonly bar?: number;
+        }`,
+      errors: [
+        { messageId: 'useDeclareForProperty', line: 3, column: 11 },
+        { messageId: 'useDeclareForProperty', line: 4, column: 11 },
+      ],
+      output: `
+        class MyClass extends BaseImmutable<MyClassValue, MyClassJS> {
+          public declare readonly foo: string;
+          public declare readonly bar?: number;
+        }`,
+    },
 
     // Weird spacing
     {
