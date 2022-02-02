@@ -16,6 +16,7 @@
  */
 
 import { declareImplicitFields } from './rules/declare-implicit-fields';
+import { readonlyImplicitFields } from './rules/readonly-implicit-fields';
 
 module.exports = {
   configs: {
@@ -23,10 +24,12 @@ module.exports = {
       plugins: ['immutable-class'],
       rules: {
         'immutable-class/declare-implicit-fields': 'error',
+        'immutable-class/readonly-implicit-fields': 'error',
       },
     },
   },
   rules: {
     'declare-implicit-fields': declareImplicitFields,
+    'readonly-implicit-fields': readonlyImplicitFields,
   },
 };
