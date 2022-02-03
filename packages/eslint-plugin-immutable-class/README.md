@@ -22,6 +22,7 @@ $ npm i -D eslint-plugin-immutable-class @typescript-eslint/parser
 
 **Key**: :white_check_mark: = recommended, :wrench: = fixable
 
-| Rule                                                                                | Description                                                                | :white_check_mark: | :wrench: |
-| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------ | -------- |
-| [`immutable-class/declare-implicit-fields`](./src/rules/declare-implicit-fields.md) | Ensure that implicit Immutable Class properties are defined with `declare` | :white_check_mark: | :wrench: |
+| Rule                                                                                  | Description                                                                | :white_check_mark: | :wrench: |
+| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------ | -------- |
+| [`immutable-class/declare-implicit-fields`](./src/rules/declare-implicit-fields.md)   | Ensure that implicit Immutable Class properties are defined with `declare` | :white_check_mark: | :wrench: |
+| [`immutable-class/readonly-implicit-fields`](./src/rules/readonly-implicit-fields.md) | Ensure that implicit Immutable Class properties use `readonly`             | :white_check_mark: | :wrench: |
