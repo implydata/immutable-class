@@ -40,8 +40,8 @@ export const declareImplicitFields = createRule({
         const invalid =
           !node.value && // Does not have a value assignment (implicit field)
           !node.declare && // Not already using 'declare'
-          !node.readonly && // Not readonly (otherwise it would have to be assigned in the constructor)
-          !node.static; // Not static
+          !node.static && // Not static
+          (!node.readonly || node.definite || node.optional); // If readonly, must be definite or optional
 
         if (invalid) {
           const messageId =
@@ -64,7 +64,17 @@ export const declareImplicitFields = createRule({
               }
 
               // Insert 'declare'
-              yield fixer.insertTextBefore(node.key, 'declare ');
+              if (node.readonly) {
+                // Insert it before the 'readonly' token if it's present
+                const source = context.getSourceCode();
+                const readonly = source
+                  .getTokens(node)
+                  .find(t => t.type === AST_TOKEN_TYPES.Identifier && t.value === 'readonly');
+                if (readonly) yield fixer.insertTextBefore(readonly, 'declare ');
+              } else {
+                // Otherwise, insert it before the property name
+                yield fixer.insertTextBefore(node.key, 'declare ');
+              }
             },
           });
         }
