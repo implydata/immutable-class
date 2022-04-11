@@ -290,26 +290,35 @@ describe('BaseImmutable', () => {
     ).toEqual({ fuel: 'electric', name: 'ford', passengers: [] });
   });
 
-  it('should fail to construct if property defined without "delcare"', () => {
-    expect(() =>
-      Bicycle.fromJS({
-        fuel: 'potato',
-        name: 'riva',
-      }),
-    ).toThrow('Cannot redefine property: name');
+  it('should not fail to construct if property defined without "declare"', () => {
+    expect(() => Bicycle.fromJS({ fuel: 'potato', name: 'riva' })).not.toThrow();
+    expect(() => Bicycle.fromJS({ fuel: 'potato', name: 'RIVA' })).toThrow(
+      'Bicycle.name must be lowercase',
+    );
   });
 
-  it('should fail on get() if getter defined without "delcare"', () => {
+  it('should fail on get() if getter defined without "declare"', () => {
     const pope = Rider.fromJS({ name: 'pope' });
     expect(() => pope.get('name')).toThrowErrorMatchingInlineSnapshot(
       `"No getter was found for \\"name\\" but it is defined as a property. This might indicate that you are using \\"useDefineForClassFields\\" and forgot to use \\"declare\\" on an auto-generated getter property."`,
     );
   });
 
-  it('should fail on change() if changer defined without "delcare"', () => {
+  it('should fail on change() if changer defined without "declare"', () => {
     const pope = Rider.fromJS({ name: 'pope' });
     expect(() => pope.change('name', 'papa')).toThrowErrorMatchingInlineSnapshot(
       `"No changer was found for \\"name\\" but it is defined as a property. This might indicate that you are using \\"useDefineForClassFields\\" and forgot to use \\"declare\\" on an auto-generated getter property."`,
     );
+  });
+
+  it('allows values to be set in the constructor', () => {
+    let car = Car.fromJS({ name: 'ford', fuel: 'electric', range: 150 });
+
+    expect(car.get('name')).toEqual('ford');
+    expect(car.get('fuel')).toEqual('electric');
+    expect(car.getRange()).toEqual(200);
+
+    car = car.changeRange(0);
+    expect(car.getRange()).toEqual(0);
   });
 });
