@@ -118,10 +118,7 @@ export abstract class BaseImmutable<ValueType, JSType>
         if (property.type === PropertyType.DATE) {
           pv = new Date(pv);
         } else if (property.immutableClass) {
-          pv = (property.immutableClass as any).fromJS(
-            pv,
-            context ? contextTransform(context) : undefined,
-          );
+          pv = property.immutableClass.fromJS(pv, context ? contextTransform(context) : undefined);
         } else if (property.immutableClassArray) {
           if (!Array.isArray(pv)) throw new Error(`expected ${propertyName} to be an array`);
           const propertyImmutableClassArray: any = property.immutableClassArray;
@@ -178,7 +175,7 @@ export abstract class BaseImmutable<ValueType, JSType>
     for (const property of properties) {
       const propertyName = property.name;
       const propertyType = hasOwnProp(property, 'isDate') ? PropertyType.DATE : property.type;
-      const pv = (value as any)[propertyName];
+      const pv = value[propertyName];
 
       if (pv == null) {
         if (propertyType === PropertyType.ARRAY) {
@@ -202,7 +199,7 @@ export abstract class BaseImmutable<ValueType, JSType>
         }
 
         if (property.type === PropertyType.DATE) {
-          if (isNaN(pv)) {
+          if (isNaN(pv as any)) {
             throw new Error(`${this.constructor.name}.${propertyName} must be a Date`);
           }
         }
@@ -226,7 +223,7 @@ export abstract class BaseImmutable<ValueType, JSType>
 
       Object.defineProperty(this, propertyName, {
         value: pv,
-        configurable: false,
+        configurable: true,
         enumerable: true,
         writable: false,
       });

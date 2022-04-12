@@ -139,11 +139,16 @@ export class Car extends BaseImmutable<CarValue, CarJS> {
   public declare name: string;
   public declare fuel: string;
   public declare subCar: Car;
-  public declare range: number;
+  public readonly range: number | undefined;
   public declare createdOn: Date;
 
   constructor(properties: CarValue) {
     super(properties);
+
+    if (properties.range != null) this.range = properties.range;
+    if (this.fuel === 'electric' && this.range && this.range < 200) {
+      this.range = 200;
+    }
   }
 
   public declare changeFuel: (fuel: string) => this;

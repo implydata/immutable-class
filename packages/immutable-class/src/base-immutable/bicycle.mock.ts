@@ -72,9 +72,10 @@ export class Bicycle extends BaseImmutable<BicycleValue, BicycleJS> {
 
   constructor(params: BicycleValue) {
     super(params);
+    this.name = params.name;
   }
 
-  public name!: string; // This will cause a constructor error
+  public readonly name: string;
   public declare fuel: string;
 }
 BaseImmutable.finalize(Bicycle);
