@@ -300,14 +300,14 @@ describe('BaseImmutable', () => {
   it('should fail on get() if getter defined without "declare"', () => {
     const pope = Rider.fromJS({ name: 'pope' });
     expect(() => pope.get('name')).toThrowErrorMatchingInlineSnapshot(
-      `"No getter was found for \\"name\\" but it is defined as a property. This might indicate that you are using \\"useDefineForClassFields\\" and forgot to use \\"declare\\" on an auto-generated getter property."`,
+      `"No getter was found for "name" but it is defined as a property. This might indicate that you are using "useDefineForClassFields" and forgot to use "declare" on an auto-generated getter property."`,
     );
   });
 
   it('should fail on change() if changer defined without "declare"', () => {
     const pope = Rider.fromJS({ name: 'pope' });
     expect(() => pope.change('name', 'papa')).toThrowErrorMatchingInlineSnapshot(
-      `"No changer was found for \\"name\\" but it is defined as a property. This might indicate that you are using \\"useDefineForClassFields\\" and forgot to use \\"declare\\" on an auto-generated getter property."`,
+      `"No changer was found for "name" but it is defined as a property. This might indicate that you are using "useDefineForClassFields" and forgot to use "declare" on an auto-generated getter property."`,
     );
   });
 

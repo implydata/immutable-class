@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { BaseImmutable, Property } from './base-immutable';
+import type { Property } from './base-immutable';
+import { BaseImmutable } from './base-immutable';
 
 export interface RiderValue {
   name: string;

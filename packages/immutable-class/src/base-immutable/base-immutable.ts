@@ -80,13 +80,13 @@ export interface BackCompat {
   action: (js: any) => void;
 }
 
-export abstract class BaseImmutable<ValueType, JSType>
+export abstract class BaseImmutable<ValueType extends Record<string, any>, JSType>
   implements ImmutableInstanceType<ValueType, JSType>
 {
   // This needs to be defined
   // abstract static PROPERTIES: Property[];
 
-  static jsToValue<T = any>(
+  static jsToValue<T extends Record<string, any> = any>(
     properties: Property<T>[],
     js: any,
     backCompats?: BackCompat[],

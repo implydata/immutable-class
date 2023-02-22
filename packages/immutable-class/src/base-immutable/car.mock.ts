@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { BackCompat, BaseImmutable, Property, PropertyType } from './base-immutable';
+import type { BackCompat, Property } from './base-immutable';
+import { BaseImmutable, PropertyType } from './base-immutable';
 
 export interface DriverValue {
   name: string;
