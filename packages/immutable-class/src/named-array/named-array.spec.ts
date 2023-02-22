@@ -261,8 +261,14 @@ describe('NamedArray', () => {
       const ops: string[] = [];
 
       NamedArray.synchronize(
-        [{ name: 'A', value: 1 }, { name: 'B', value: 2 }],
-        [{ name: 'B', value: 3 }, { name: 'C', value: 4 }],
+        [
+          { name: 'A', value: 1 },
+          { name: 'B', value: 2 },
+        ],
+        [
+          { name: 'B', value: 3 },
+          { name: 'C', value: 4 },
+        ],
         {
           equals: valueEqual,
           onEnter: newThing => {
