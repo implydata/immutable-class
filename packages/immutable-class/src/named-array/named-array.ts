@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+
 import { immutableEqual } from '../equality/equality';
 import { KeyedArray } from '../keyed-array/keyed-array';
 import { SimpleArray } from '../simple-array/simple-array';
@@ -166,6 +168,7 @@ export class NamedArray {
     const onExit = updatedOptions.onExit || noop;
 
     const initialByKey: Record<string, T> = Object.create(null);
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < oldThings.length; i++) {
       const initialThing = oldThings[i];
       const initialThingKey = key(initialThing);
@@ -173,6 +176,7 @@ export class NamedArray {
       initialByKey[initialThingKey] = initialThing;
     }
 
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let j = 0; j < newThings.length; j++) {
       const newThing = newThings[j];
       const newThingKey = key(newThing);

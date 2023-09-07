@@ -29,7 +29,7 @@ export const readonlyImplicitFields = createRule({
         // Look for the containing class declaration
         let cls = node.parent;
         while (cls && cls.type !== AST_NODE_TYPES.ClassDeclaration) {
-          cls = cls.parent;
+          cls = cls.parent!;
         }
 
         // Ensure the class is an Immutable class (derived from BaseImmutable)
@@ -64,7 +64,7 @@ export const readonlyImplicitFields = createRule({
   meta: {
     docs: {
       description: 'Ensure that implicit ImmutableClass properties and methods are readonly',
-      recommended: 'error',
+      recommended: 'recommended',
     },
     messages: {
       useReadonlyForProperty: 'Immutable class properties should be readonly',

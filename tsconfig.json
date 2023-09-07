@@ -4,7 +4,6 @@
     "declarationMap": true,
     "esModuleInterop": true,
     "importHelpers": true,
-    "keyofStringsOnly": true,
     "lib": ["es2016"],
     "moduleResolution": "node",
     "noEmitOnError": true,

@@ -29,7 +29,7 @@ export const declareImplicitFields = createRule({
         // Look for the containing class declaration
         let cls = node.parent;
         while (cls && cls.type !== AST_NODE_TYPES.ClassDeclaration) {
-          cls = cls.parent;
+          cls = cls.parent!;
         }
 
         // Ensure the class is an Immutable class (derived from BaseImmutable)
@@ -86,7 +86,7 @@ export const declareImplicitFields = createRule({
     docs: {
       description:
         'Ensure that implicit ImmutableClass properties and methods are defined with "declare"',
-      recommended: 'error',
+      recommended: 'recommended',
     },
     messages: {
       useDeclareForProperty: 'Use "declare" for immutable class properties',

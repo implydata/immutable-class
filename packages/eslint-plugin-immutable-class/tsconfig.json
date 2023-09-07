@@ -3,9 +3,10 @@
   "compilerOptions": {
     "declaration": false,
     "declarationMap": false,
-    "module": "commonjs",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "outDir": "build",
     "rootDir": "src"
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src"]
 }

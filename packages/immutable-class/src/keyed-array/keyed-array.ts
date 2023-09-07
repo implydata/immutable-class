@@ -38,7 +38,7 @@ export class KeyedArray<T> {
 
   public toRecord(array: T[]): Record<string, T> {
     const { getKey } = this;
-    const myRecord: { [k: string]: T } = {};
+    const myRecord: Record<string, T> = {};
     for (const a of array) {
       const key = getKey(a);
       if (myRecord[key]) continue;
@@ -51,7 +51,7 @@ export class KeyedArray<T> {
   public checkValid(array: T[], what?: string, where?: string): void {
     const { getKey } = this;
 
-    const seen: { [k: string]: number } = {};
+    const seen: Record<string, number> = {};
     for (const a of array) {
       const key = getKey(a);
       if (seen[key]) {
@@ -68,7 +68,7 @@ export class KeyedArray<T> {
   public isValid(array: T[]): boolean {
     const { getKey } = this;
 
-    const seen: { [k: string]: number } = {};
+    const seen: Record<string, number> = {};
     for (const a of array) {
       const key = getKey(a);
       if (seen[key]) return false;

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+
 import hasOwnProp from 'has-own-prop';
 
 import { generalEqual } from '../equality/equality';
@@ -46,8 +48,8 @@ export const PropertyType = {
   ARRAY: 'array' as PropertyType,
 };
 
-export interface Property<T extends { [key: string]: any } = any> {
-  name: keyof T;
+export interface Property<T extends Record<string, any> = any> {
+  name: keyof T & string;
   defaultValue?: any;
   possibleValues?: readonly any[];
   validate?: Validator | Validator[];
@@ -56,7 +58,7 @@ export interface Property<T extends { [key: string]: any } = any> {
   immutableClassArray?: ImmutableLike;
   equal?: (a: any, b: any) => boolean;
   toJS?: (v: any) => any; // todo.. stricter js type?
-  contextTransform?: (context: { [key: string]: any }) => { [key: string]: any };
+  contextTransform?: (context: Record<string, any>) => Record<string, any>;
   preserveUndefined?: boolean;
   emptyArrayIsOk?: boolean;
 }
@@ -112,6 +114,8 @@ export abstract class BaseImmutable<ValueType extends Record<string, any>, JSTyp
     const value: any = {};
     for (const property of properties) {
       const propertyName = property.name;
+      if (typeof propertyName !== 'string') continue;
+
       const contextTransform = property.contextTransform || noop;
       let pv: any = js[propertyName];
       if (pv != null) {
@@ -136,8 +140,10 @@ export abstract class BaseImmutable<ValueType extends Record<string, any>, JSTyp
     const proto = (ClassFn as any).prototype;
     ClassFn.PROPERTIES.forEach((property: Property) => {
       const propertyName = property.name;
+      if (typeof propertyName !== 'string') return;
+
       const defaultValue = property.defaultValue;
-      const upped = firstUp(property.name);
+      const upped = firstUp(propertyName);
       const getUpped = 'get' + upped;
       const changeUpped = 'change' + upped;
       // These have to be `function` and not `=>` so that they do not bind 'this'
@@ -174,6 +180,8 @@ export abstract class BaseImmutable<ValueType extends Record<string, any>, JSTyp
     const properties = this.ownProperties();
     for (const property of properties) {
       const propertyName = property.name;
+      if (typeof propertyName !== 'string') continue;
+
       const propertyType = hasOwnProp(property, 'isDate') ? PropertyType.DATE : property.type;
       const pv = value[propertyName];
 
@@ -199,7 +207,7 @@ export abstract class BaseImmutable<ValueType extends Record<string, any>, JSTyp
         }
 
         if (property.type === PropertyType.DATE) {
-          if (isNaN(pv as any)) {
+          if (isNaN(pv)) {
             throw new Error(`${this.constructor.name}.${propertyName} must be a Date`);
           }
         }
@@ -234,12 +242,12 @@ export abstract class BaseImmutable<ValueType extends Record<string, any>, JSTyp
     return (this.constructor as any).PROPERTIES;
   }
 
-  public findOwnProperty(propName: keyof ValueType): Property | undefined {
+  public findOwnProperty(propName: keyof ValueType & string): Property | undefined {
     const properties = this.ownProperties();
     return NamedArray.findByName(properties, propName);
   }
 
-  public hasProperty(propName: keyof ValueType): boolean {
+  public hasProperty(propName: keyof ValueType & string): boolean {
     return this.findOwnProperty(propName) !== null;
   }
 
@@ -327,7 +335,7 @@ export abstract class BaseImmutable<ValueType extends Record<string, any>, JSTyp
     return true;
   }
 
-  public get<T extends keyof ValueType>(propName: T): ValueType[T] {
+  public get<T extends keyof ValueType & string>(propName: T): ValueType[T] {
     const getter = (this as any)['get' + firstUp(propName)];
     if (!getter) {
       const msg = `No getter was found for "${propName}"`;
@@ -340,7 +348,7 @@ export abstract class BaseImmutable<ValueType extends Record<string, any>, JSTyp
     return getter.call(this);
   }
 
-  public change<T extends keyof ValueType>(propName: T, newValue: ValueType[T]): this {
+  public change<T extends keyof ValueType & string>(propName: T, newValue: ValueType[T]): this {
     const changer = (this as any)['change' + firstUp(propName)];
     if (!changer) {
       const msg = `No changer was found for "${propName}"`;
@@ -378,6 +386,7 @@ export abstract class BaseImmutable<ValueType extends Record<string, any>, JSTyp
     const getLastObject = () => {
       let o: any = this;
 
+      // eslint-disable-next-line @typescript-eslint/prefer-for-of
       for (let i = 0; i < bits.length; i++) {
         o = o['get' + firstUp(bits[i])]();
       }
