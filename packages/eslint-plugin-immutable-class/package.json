@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-immutable-class",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "ESLint plugin for immutable-class",
   "keywords": [
     "immutable",

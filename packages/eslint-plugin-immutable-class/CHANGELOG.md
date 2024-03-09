@@ -1,5 +1,11 @@
 # eslint-plugin-immutable-class
 
+## 1.1.1
+
+### Patch Changes
+
+- [`42072f0`](https://github.com/implydata/immutable-class/commit/42072f02916035b164c3a11dc07f2d1864fadedd) Thanks [@jgoz](https://github.com/jgoz)! - Bump @typescript-eslint version
+
 ## 1.1.0
 
 ### Minor Changes
