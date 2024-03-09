@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-
 import hasOwnProp from 'has-own-prop';
 
 import { generalEqual } from '../equality/equality';
@@ -372,6 +370,7 @@ export abstract class BaseImmutable<ValueType extends Record<string, any>, JSTyp
       // Added ! because TypeScript thinks a Partial can have undefined properties
       // (which they can and it's cool)
       // https://github.com/Microsoft/TypeScript/issues/13195
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       o = o.change(propName, properties[propName]!);
     }
 
@@ -386,7 +385,6 @@ export abstract class BaseImmutable<ValueType extends Record<string, any>, JSTyp
     const getLastObject = () => {
       let o: any = this;
 
-      // eslint-disable-next-line @typescript-eslint/prefer-for-of
       for (let i = 0; i < bits.length; i++) {
         o = o['get' + firstUp(bits[i])]();
       }
@@ -420,8 +418,8 @@ export abstract class BaseImmutable<ValueType extends Record<string, any>, JSTyp
       value = specializedGetter
         ? specializedGetter.call(value)
         : value.get
-        ? value.get(bit)
-        : value[bit];
+          ? value.get(bit)
+          : value[bit];
     }
 
     return value;
