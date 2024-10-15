@@ -1,5 +1,13 @@
 # eslint-plugin-immutable-class
 
+## 2.0.1
+
+### Patch Changes
+
+- [`d93e849`](https://github.com/implydata/immutable-class/commit/d93e849951b03ce18888102357074fd3c5a37136) Thanks [@jgoz](https://github.com/jgoz)! - Fix recommended config
+
+- [`c7995b8`](https://github.com/implydata/immutable-class/commit/c7995b818c1dd6b3a08a9dec8b407e6a1ae6f891) Thanks [@jgoz](https://github.com/jgoz)! - Fix recommended rules (x2)
+
 ## 2.0.0
 
 ### Major Changes
