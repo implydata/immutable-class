@@ -43,8 +43,8 @@ const recommended = {
     'immutable-class': plugin,
   },
   rules: {
-    'declare-implicit-fields': 'error',
-    'readonly-implicit-fields': 'error',
+    'immutable-class/declare-implicit-fields': 'error',
+    'immutable-class/readonly-implicit-fields': 'error',
   },
 };
 
