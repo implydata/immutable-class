@@ -1,5 +1,11 @@
 # eslint-plugin-immutable-class
 
+## 2.0.0
+
+### Major Changes
+
+- [`0005fe6`](https://github.com/implydata/immutable-class/commit/0005fe63cdefe468379851e301aa46fb971a3f8f) Thanks [@jgoz](https://github.com/jgoz)! - Switch to eslint flat config
+
 ## 1.1.1
 
 ### Patch Changes
