@@ -42,7 +42,10 @@ const recommended = {
   plugins: {
     'immutable-class': plugin,
   },
-  rules,
+  rules: {
+    'declare-implicit-fields': 'error',
+    'readonly-implicit-fields': 'error',
+  },
 };
 
 export = plugin;
