@@ -18,9 +18,7 @@ import { RuleTester } from '@typescript-eslint/rule-tester';
 
 import { declareImplicitFields } from './declare-implicit-fields';
 
-const ruleTester = new RuleTester({
-  parser: '@typescript-eslint/parser',
-});
+const ruleTester = new RuleTester();
 
 ruleTester.run('declare-implicit-fields', declareImplicitFields, {
   valid: [

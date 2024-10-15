@@ -14,12 +14,24 @@
  * limitations under the License.
  */
 
-import { AST_NODE_TYPES, AST_TOKEN_TYPES, ESLintUtils } from '@typescript-eslint/utils';
+import { ASTUtils, ESLintUtils, TSESTree } from '@typescript-eslint/utils';
 
 const createRule = ESLintUtils.RuleCreator(
   name =>
     `https://github.com/implydata/immutable-class/blob/master/packages/eslint-plugin-immutable-class/src/rules/${name}.md`,
 );
+
+const isClassBody = ASTUtils.isNodeOfType(TSESTree.AST_NODE_TYPES.ClassBody);
+const isClassExpression = ASTUtils.isNodeOfType(TSESTree.AST_NODE_TYPES.ClassExpression);
+const isIdentifier = ASTUtils.isNodeOfType(TSESTree.AST_NODE_TYPES.Identifier);
+const isTSFunctionType = ASTUtils.isNodeOfType(TSESTree.AST_NODE_TYPES.TSFunctionType);
+
+const isDefinite = ASTUtils.isTokenOfTypeWithConditions(TSESTree.AST_TOKEN_TYPES.Punctuator, {
+  value: '!',
+});
+const isReadonly = ASTUtils.isTokenOfTypeWithConditions(TSESTree.AST_TOKEN_TYPES.Identifier, {
+  value: 'readonly',
+});
 
 export const declareImplicitFields = createRule({
   name: 'declare-implicit-fields',
@@ -27,14 +39,16 @@ export const declareImplicitFields = createRule({
     return {
       PropertyDefinition(node) {
         // Look for the containing class declaration
-        let cls = node.parent;
-        while (cls && cls.type !== AST_NODE_TYPES.ClassDeclaration) {
-          cls = cls.parent!;
+        const body = isClassBody(node.parent) ? node.parent : null;
+
+        let cls = body?.parent;
+        while (cls && isClassExpression(cls.parent)) {
+          cls = cls.parent;
         }
 
         // Ensure the class is an Immutable class (derived from BaseImmutable)
         if (!cls?.superClass) return;
-        if (cls.superClass.type !== AST_NODE_TYPES.Identifier) return;
+        if (!isIdentifier(cls.superClass)) return;
         if (cls.superClass.name !== 'BaseImmutable') return;
 
         const invalid =
@@ -44,32 +58,27 @@ export const declareImplicitFields = createRule({
           (!node.readonly || node.definite || node.optional); // If readonly, must be definite or optional
 
         if (invalid) {
-          const messageId =
-            node.typeAnnotation?.typeAnnotation?.type === AST_NODE_TYPES.TSFunctionType
-              ? 'useDeclareForAccessor'
-              : 'useDeclareForProperty';
+          const messageId = isTSFunctionType(node.typeAnnotation?.typeAnnotation)
+            ? 'useDeclareForAccessor'
+            : 'useDeclareForProperty';
 
           context.report({
             messageId,
             node,
             *fix(fixer) {
               if (node.definite) {
-                const source = context.getSourceCode();
+                const source = context.sourceCode;
 
                 // Remove the '!' if it's there
-                const definite = source
-                  .getTokens(node)
-                  .find(t => t.type === AST_TOKEN_TYPES.Punctuator && t.value === '!');
+                const definite = source.getTokens(node).find(isDefinite);
                 if (definite) yield fixer.remove(definite);
               }
 
               // Insert 'declare'
               if (node.readonly) {
                 // Insert it before the 'readonly' token if it's present
-                const source = context.getSourceCode();
-                const readonly = source
-                  .getTokens(node)
-                  .find(t => t.type === AST_TOKEN_TYPES.Identifier && t.value === 'readonly');
+                const source = context.sourceCode;
+                const readonly = source.getTokens(node).find(isReadonly);
                 if (readonly) yield fixer.insertTextBefore(readonly, 'declare ');
               } else {
                 // Otherwise, insert it before the property name
@@ -86,7 +95,6 @@ export const declareImplicitFields = createRule({
     docs: {
       description:
         'Ensure that implicit ImmutableClass properties and methods are defined with "declare"',
-      recommended: 'recommended',
     },
     messages: {
       useDeclareForProperty: 'Use "declare" for immutable class properties',

@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-/* eslint-env node */
-module.exports = {
-  parserOptions: {
-    tsconfigRootDir: __dirname,
-    project: './tsconfig.lint.json',
-  },
-};
+import baseConfig from '../../eslint-config.mjs';
+
+export default baseConfig;

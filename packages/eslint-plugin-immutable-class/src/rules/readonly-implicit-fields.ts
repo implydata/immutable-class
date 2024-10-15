@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-import { AST_NODE_TYPES, ESLintUtils } from '@typescript-eslint/utils';
+import { ASTUtils, ESLintUtils, TSESTree } from '@typescript-eslint/utils';
 
 const createRule = ESLintUtils.RuleCreator(
   name =>
     `https://github.com/implydata/immutable-class/blob/master/packages/eslint-plugin-immutable-class/src/rules/${name}.md`,
 );
+
+const isClassBody = ASTUtils.isNodeOfType(TSESTree.AST_NODE_TYPES.ClassBody);
+const isClassExpression = ASTUtils.isNodeOfType(TSESTree.AST_NODE_TYPES.ClassExpression);
+const isIdentifier = ASTUtils.isNodeOfType(TSESTree.AST_NODE_TYPES.Identifier);
+const isTSFunctionType = ASTUtils.isNodeOfType(TSESTree.AST_NODE_TYPES.TSFunctionType);
 
 export const readonlyImplicitFields = createRule({
   name: 'readonly-implicit-fields',
@@ -27,14 +32,16 @@ export const readonlyImplicitFields = createRule({
     return {
       PropertyDefinition(node) {
         // Look for the containing class declaration
-        let cls = node.parent;
-        while (cls && cls.type !== AST_NODE_TYPES.ClassDeclaration) {
-          cls = cls.parent!;
+        const body = isClassBody(node.parent) ? node.parent : null;
+
+        let cls = body?.parent;
+        while (cls && isClassExpression(cls.parent)) {
+          cls = cls.parent;
         }
 
         // Ensure the class is an Immutable class (derived from BaseImmutable)
         if (!cls?.superClass) return;
-        if (cls.superClass.type !== AST_NODE_TYPES.Identifier) return;
+        if (!isIdentifier(cls.superClass)) return;
         if (cls.superClass.name !== 'BaseImmutable') return;
 
         const invalid =
@@ -43,10 +50,9 @@ export const readonlyImplicitFields = createRule({
           !node.static; // Not static
 
         if (invalid) {
-          const messageId =
-            node.typeAnnotation?.typeAnnotation?.type === AST_NODE_TYPES.TSFunctionType
-              ? 'useReadonlyForAccessor'
-              : 'useReadonlyForProperty';
+          const messageId = isTSFunctionType(node.typeAnnotation?.typeAnnotation)
+            ? 'useReadonlyForAccessor'
+            : 'useReadonlyForProperty';
 
           context.report({
             messageId,
@@ -64,7 +70,6 @@ export const readonlyImplicitFields = createRule({
   meta: {
     docs: {
       description: 'Ensure that implicit ImmutableClass properties and methods are readonly',
-      recommended: 'recommended',
     },
     messages: {
       useReadonlyForProperty: 'Immutable class properties should be readonly',

@@ -5,17 +5,15 @@ An ESLint plugin with various rules for enforcing `immutable-class` requirements
 ## Usage
 
 ```shell
-$ npm i -D eslint-plugin-immutable-class @typescript-eslint/parser
+$ npm i -D eslint-plugin-immutable-class
 ```
 
-`.eslintrc`:
+`eslint.config.mjs`:
 
-```json
-{
-  "plugins": ["immutable-class"],
-  "extends": "plugin:immutable-class/recommended",
-  "parser": "@typescript-eslint/parser"
-}
+```js
+import immutableClass from 'eslint-plugin-immutable-class';
+
+export default [immutableClass.recommended];
 ```
 
 ## Rules

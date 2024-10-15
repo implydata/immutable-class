@@ -18,18 +18,31 @@
 import { declareImplicitFields } from './rules/declare-implicit-fields';
 import { readonlyImplicitFields } from './rules/readonly-implicit-fields';
 
-module.exports = {
+const { name, version } =
+  // `import`ing here would bypass the TSConfig's `"rootDir": "src"`
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('../package.json');
+
+const rules = {
+  'declare-implicit-fields': declareImplicitFields,
+  'readonly-implicit-fields': readonlyImplicitFields,
+};
+
+const plugin = {
   configs: {
-    recommended: {
-      plugins: ['immutable-class'],
-      rules: {
-        'immutable-class/declare-implicit-fields': 'error',
-        'immutable-class/readonly-implicit-fields': 'error',
-      },
+    get recommended() {
+      return recommended;
     },
   },
-  rules: {
-    'declare-implicit-fields': declareImplicitFields,
-    'readonly-implicit-fields': readonlyImplicitFields,
-  },
+  meta: { name, version },
+  rules,
 };
+
+const recommended = {
+  plugins: {
+    'immutable-class': plugin,
+  },
+  rules,
+};
+
+export = plugin;

@@ -18,9 +18,7 @@ import { RuleTester } from '@typescript-eslint/rule-tester';
 
 import { readonlyImplicitFields } from './readonly-implicit-fields';
 
-const ruleTester = new RuleTester({
-  parser: '@typescript-eslint/parser',
-});
+const ruleTester = new RuleTester();
 
 ruleTester.run('readonly-implicit-fields', readonlyImplicitFields, {
   valid: [
