@@ -15,7 +15,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "http://github.com/implydata/immutable-class.git",
+    "url": "https://github.com/implydata/immutable-class.git",
     "directory": "packages/eslint-plugin-immutable-class"
   },
   "main": "build/index.js",
