@@ -37,6 +37,10 @@ jobs:
     needs: [build]
     name: Release
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
@@ -50,6 +54,9 @@ jobs:
           cache: 'npm'
 
       - run: npm install --prefer-offline --no-audit
+
+      - name: Update npm
+        run: npm install -g npm@latest
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
