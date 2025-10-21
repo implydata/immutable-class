@@ -1,5 +1,11 @@
 # immutable-class
 
+## 0.11.4
+
+### Patch Changes
+
+- [#40](https://github.com/implydata/immutable-class/pull/40) [`a2263ca`](https://github.com/implydata/immutable-class/commit/a2263ca18ad111feca45004450735203e82c9740) Thanks [@jgoz](https://github.com/jgoz)! - Fix repository.url values in packages
+
 ## 0.11.3
 
 ### Patch Changes
