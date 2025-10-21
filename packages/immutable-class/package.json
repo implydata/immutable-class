@@ -1,6 +1,6 @@
 {
   "name": "immutable-class",
-  "version": "0.11.3",
+  "version": "0.11.4",
   "description": "A template for creating immutable classes",
   "keywords": [
     "immutable",
@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.13",
-    "immutable-class-tester": "^0.7.5",
+    "immutable-class-tester": "^0.7.6",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.6.3"
