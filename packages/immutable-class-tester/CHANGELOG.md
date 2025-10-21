@@ -1,5 +1,11 @@
 # immutable-class-tester
 
+## 0.7.5
+
+### Patch Changes
+
+- [#38](https://github.com/implydata/immutable-class/pull/38) [`719dd3c`](https://github.com/implydata/immutable-class/commit/719dd3cc9da0fd304f567d1b23536770c71e1eb9) Thanks [@jgoz](https://github.com/jgoz)! - Add npm trusted publishing support for automated releases via OIDC
+
 ## 0.7.4
 
 ### Patch Changes
