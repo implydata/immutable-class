@@ -29,9 +29,6 @@
     "prettify": "npm exec --ws -- prettier --write 'src/**/*.{ts,tsx,scss}' './*.js'",
     "prettify-check": "npm exec --ws -- prettier --check 'src/**/*.{ts,tsx,scss}' './*.js'"
   },
-  "volta": {
-    "node": "20.18.0"
-  },
   "workspaces": [
     "./packages/*"
   ],
